@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -22,8 +23,27 @@ class UsersDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
-            ->addColumn('action', 'users.action')
-            ->setRowId('DT_RowIndex');
+            ->addColumn('is_active', function($item){
+                return $item->is_active ? 'Aktif' : 'Tidak Aktif';
+            })
+            ->addColumn('action', function($item){
+                if (Auth::user()->role == 'mahasiswa') {
+                    return '';
+                }
+                
+                return '
+                    <div class="d-flex justify-content-center gap-1">
+                        <a href="' . route('users.updatePassword', $item->id) . '" class="btn btn-sm btn-info text-white px-3 rounded" title="Update Password"><i class="fa-solid fa-key"></i></a>
+                        <a href="' . route('users.edit', $item->id) . '" class="btn btn-sm btn-warning text-white px-3 rounded" ><i class="fa-solid fa-pen-to-square"></i></a>
+                        <form action="' . route('users.destroy', $item->id) . '" method="POST" style="display: inline">
+                            ' . csrf_field() . '
+                            ' . method_field('DELETE') . '
+                            <button type="submit" class="btn btn-sm btn-danger px-3 rounded" onclick="return confirm(\'Yakin ingin menghapus data ini?\')"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </div>
+                ';
+            })
+            ->rawColumns(['DT_RowIndex', 'action', 'is_active']);
     }
 
     /**
@@ -33,7 +53,13 @@ class UsersDataTable extends DataTable
      */
     public function query(User $model): QueryBuilder
     {
-        return $model->newQuery();
+        $query = $model->newQuery();
+
+        if (Auth::user()->role == 'mahasiswa') {
+            $query->where('id', Auth::id());
+        }
+
+        return $query;
     }
 
     /**
@@ -49,11 +75,13 @@ class UsersDataTable extends DataTable
                     ->selectStyleSingle()
                     ->buttons([
                         Button::make('excel'),
-            Button::make('csv'),
-            Button::make('pdf'),
-            Button::make('print'),
-            Button::make('reset'),
-            Button::make('reload')
+                        Button::make('csv'),
+                        Button::make('pdf'),
+                        Button::make('print'),
+                        Button::make('reset'),
+                        Button::make('reload')
+                    ])->parameters([
+                        'scrollX' => true,
                     ]);
     }
 
@@ -62,20 +90,31 @@ class UsersDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
+        $columns = [
             Column::make('DT_RowIndex')
                 ->title('NO'),
             Column::make('name')
                 ->title('Nama'),
+            Column::make('nomor_registrasi')
+                ->title('No. Reg'),
             Column::make('email')
                 ->title('Email'),
-            Column::computed('action')
-                ->title('AKSI')
-                  ->exportable(false)
-                  ->printable(false)
-                  ->width(60)
-                  ->addClass('text-center'),
+            Column::make('role')
+                ->title('Role'),
+            Column::make('is_active')
+                ->title('status'),
         ];
+
+        if (Auth::user()->role != 'mahasiswa') {
+            $columns[] = Column::computed('action')
+                ->title('AKSI')
+                ->exportable(false)
+                ->printable(false)
+                ->width(150)
+                ->addClass('text-center');
+        }
+
+        return $columns;
     }
 
     /**

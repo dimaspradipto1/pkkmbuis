@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'nomor_registrasi',
+        'role',
+        'is_active',
     ];
 
     /**
@@ -44,5 +47,45 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function absenPertama()
+    {
+        return $this->hasOne(AbsenPertama::class);
+    }
+
+    public function absenKedua()
+    {
+        return $this->hasOne(AbsenKedua::class);
+    }
+
+    public function absenKetiga()
+    {
+        return $this->hasOne(AbsenKetiga::class);
+    }
+
+    public function kedisiplinanPertama()
+    {
+        return $this->hasOne(KedisiplinanPertama::class);
+    }
+
+    public function kedisiplinanKedua()
+    {
+        return $this->hasOne(KedisiplinanKedua::class);
+    }
+
+    public function kedisiplinanKetiga()
+    {
+        return $this->hasOne(KedisiplinanKetiga::class);
+    }
+
+    public function hasilTests()
+    {
+        return $this->hasMany(HasilTest::class);
+    }
+
+    public function tugasKelompok()
+    {
+        return $this->hasOne(SoalTugasKelompok::class);
     }
 }
