@@ -94,7 +94,6 @@
 @endsection
 
 @push('scripts')
-    {!! $dataTable->scripts() !!}
     <script>
         $(document).ready(function() {
             const table = $('#kedisiplinanketiga-table');
