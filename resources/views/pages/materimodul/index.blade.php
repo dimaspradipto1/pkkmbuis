@@ -24,7 +24,6 @@
     </section>
 @endsection
 @push('scripts')
-    {!! $dataTable->scripts() !!}
      @if(app()->environment('production'))
         {!! str_replace('http:', 'https:', $dataTable->scripts()) !!}
     @else
