@@ -35,36 +35,33 @@
                                 <div class="col-12 col-sm-6 col-md-4">
                                     <div class="p-2 p-md-3 bg-white bg-opacity-25 rounded-3 border border-white border-opacity-10 h-100 text-center">
                                         <p class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.7rem;">Hari Pertama</p>
-                                        <div class="d-flex gap-2">
-                                            <button class="btn btn-light btn-sm flex-fill fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showQR('Hari 1 (Pagi)', 'ABSEN_1_PAGI')">QR Pagi</button>
-                                            <button class="btn btn-light btn-sm flex-fill fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showQR('Hari 1 (Sore)', 'ABSEN_1_SORE')">QR Sore</button>
-                                        </div>
+                                        <button class="btn btn-light btn-sm w-100 fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showAttendanceQR(1)">
+                                            <i class="bi bi-qr-code me-1"></i> QR Absensi
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-4">
                                     <div class="p-2 p-md-3 bg-white bg-opacity-25 rounded-3 border border-white border-opacity-10 h-100 text-center">
                                         <p class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.7rem;">Hari Kedua</p>
-                                        <div class="d-flex gap-2">
-                                            <button class="btn btn-light btn-sm flex-fill fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showQR('Hari 2 (Pagi)', 'ABSEN_2_PAGI')">QR Pagi</button>
-                                            <button class="btn btn-light btn-sm flex-fill fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showQR('Hari 2 (Sore)', 'ABSEN_2_SORE')">QR Sore</button>
-                                        </div>
+                                        <button class="btn btn-light btn-sm w-100 fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showAttendanceQR(2)">
+                                            <i class="bi bi-qr-code me-1"></i> QR Absensi
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="col-12 col-sm-6 col-md-4 offset-sm-3 offset-md-0">
                                     <div class="p-2 p-md-3 bg-white bg-opacity-25 rounded-3 border border-white border-opacity-10 h-100 text-center">
                                         <p class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.7rem;">Hari Ketiga</p>
-                                        <div class="d-flex gap-2">
-                                            <button class="btn btn-light btn-sm flex-fill fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showQR('Hari 3 (Pagi)', 'ABSEN_3_PAGI')">QR Pagi</button>
-                                            <button class="btn btn-light btn-sm flex-fill fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showQR('Hari 3 (Sore)', 'ABSEN_3_SORE')">QR Sore</button>
-                                        </div>
+                                        <button class="btn btn-light btn-sm w-100 fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showAttendanceQR(3)">
+                                            <i class="bi bi-qr-code me-1"></i> QR Absensi
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         @else
                             <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start mt-2">
-                                <a href="{{ route('absen-scan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm btn-sm" style="color: #087C39;">Scan H-1</a>
-                                <a href="{{ route('absenkedua-scan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm btn-sm" style="color: #087C39;">Scan H-2</a>
-                                <a href="{{ route('absenketiga-scan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm btn-sm" style="color: #087C39;">Scan H-3</a>
+                                <a href="{{ route('absen-scan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm btn-sm" style="color: #087C39;">
+                                    <i class="bi bi-qr-code-scan me-1"></i> Scan QR Kehadiran
+                                </a>
                             </div>
                         @endif
                     </div>
@@ -1356,44 +1353,13 @@
             </div>
         </div>
 
-        {{-- Global QR Modal --}}
-        <div class="modal fade" id="qrModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content text-center border-0 shadow-lg" style="border-radius: 20px;">
-                    <div class="modal-header border-0 pb-0">
-                        <h5 class="modal-title w-100 fw-bold mt-2" id="qrTitle" style="color: #012970;">QR Code</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <div id="qrcode"
-                            class="d-flex justify-content-center p-3 bg-white rounded border shadow-sm mx-auto"
-                            style="width: fit-content;"></div>
-                        <p class="text-muted small mt-3 mb-0">Tunjukkan QR ini kepada mahasiswa untuk discan.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
     </section>
 
     @push('scripts')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
         <script>
-            let qrcode = new QRCode(document.getElementById("qrcode"), {
-                width: 256,
-                height: 256,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
 
-            function showQR(title, code) {
-                document.getElementById('qrTitle').innerText = title;
-                qrcode.clear();
-                qrcode.makeCode(code);
-                var myModal = new bootstrap.Modal(document.getElementById('qrModal'));
-                myModal.show();
-            }
 
             // Academic Bar Chart: Comparative
             document.addEventListener("DOMContentLoaded", () => {

@@ -25,6 +25,7 @@ use App\Http\Controllers\SoalPretestPertamaController;
 use App\Http\Controllers\SoalTugasKelompokController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RekapKeseluruhanController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -36,6 +37,10 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('profile/password', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
+    Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::get('rekap-keseluruhan', [RekapKeseluruhanController::class, 'index'])->name('rekapkeseluruhan.index');
     Route::get('hasiltest/export', [HasilTestController::class, 'export'])->name('hasiltest.export');
     Route::post('hasiltest/bulk-reset', [HasilTestController::class, 'bulkReset'])->name('hasiltest.bulkReset');
@@ -52,6 +57,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::resource('absenkedua', AbsenKeduaController::class);
     Route::resource('absenketiga', AbsenKetigaController::class);
     Route::get('absen-scan', [AbsenScanController::class, 'index'])->name('absen-scan.index');
+    Route::get('absen-scan/get-token/{session}', [AbsenScanController::class, 'getDynamicToken'])->name('absen-scan.get-token');
     Route::post('absen-scan', [AbsenScanController::class, 'process'])->name('absen-scan.process');
     Route::get('absenkedua-scan', [AbsenKeduaScanController::class, 'index'])->name('absenkedua-scan.index');
     Route::post('absenkedua-scan', [AbsenKeduaScanController::class, 'process'])->name('absenkedua-scan.process');

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\DataTables\AbsenPertamaDataTable;
 use App\Models\AbsenPertama;
+use App\Models\AbsenKedua;
+use App\Models\AbsenKetiga;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +25,37 @@ class AbsenScanController extends Controller
      * Process the scanned data.
      */
     /**
+     * Get dynamic token for a session.
+     */
+    public function getDynamicToken($session)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $validSessions = [
+            'ABSEN_1_PAGI', 'ABSEN_1_SORE',
+            'ABSEN_2_PAGI', 'ABSEN_2_SORE',
+            'ABSEN_3_PAGI', 'ABSEN_3_SORE'
+        ];
+
+        if (!in_array($session, $validSessions)) {
+            return response()->json(['error' => 'Invalid session'], 400);
+        }
+
+        $timeStep = floor(time() / 60);
+        $hash = md5($session . '_' . $timeStep . '_' . config('app.key'));
+        $token = $session . ':' . $hash;
+
+        $secondsLeft = 60 - (time() % 60);
+
+        return response()->json([
+            'token' => $token,
+            'seconds_left' => $secondsLeft
+        ]);
+    }
+
+    /**
      * Process the scanned data.
      */
     public function process(Request $request)
@@ -32,6 +65,17 @@ class AbsenScanController extends Controller
 
         // 1. Logic for MAHASISWA scanning ADMIN QR
         if ($currentUser->role == 'mahasiswa') {
+            $parts = explode(':', $barcodeData);
+            if (count($parts) !== 2) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Format QR Code tidak valid.'
+                ], 422);
+            }
+
+            $sessionCode = $parts[0];
+            $scannedHash = $parts[1];
+
             // Mapping for tokens
             $sessionMap = [
                 'ABSEN_1_PAGI' => ['model' => \App\Models\AbsenPertama::class, 'col' => 'hadir_pagi', 'day' => 'Hari I Pagi'],
@@ -42,14 +86,33 @@ class AbsenScanController extends Controller
                 'ABSEN_3_SORE' => ['model' => \App\Models\AbsenKetiga::class, 'col' => 'hadir_sore', 'day' => 'Hari III Sore'],
             ];
 
-            if (!isset($sessionMap[$barcodeData])) {
+            if (!isset($sessionMap[$sessionCode])) {
                 return response()->json([
                     'success' => false,
                     'message' => 'QR Code tidak valid atau bukan merupakan QR Absensi resmi.'
                 ], 422);
             }
 
-            $map = $sessionMap[$barcodeData];
+            // Verify hash with a 1-step grace period
+            $timeStep = floor(time() / 60);
+            $isValid = false;
+            for ($i = 0; $i <= 1; $i++) {
+                $checkStep = $timeStep - $i;
+                $expectedHash = md5($sessionCode . '_' . $checkStep . '_' . config('app.key'));
+                if (hash_equals($expectedHash, $scannedHash)) {
+                    $isValid = true;
+                    break;
+                }
+            }
+
+            if (!$isValid) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'QR Code sudah kadaluwarsa (diperbarui setiap 1 menit). Silakan scan QR terbaru.'
+                ], 422);
+            }
+
+            $map = $sessionMap[$sessionCode];
             $absen = $map['model']::firstOrCreate(
                 ['user_id' => $currentUser->id],
                 ['hadir_pagi' => 'Belum Absen', 'hadir_sore' => 'Belum Absen']

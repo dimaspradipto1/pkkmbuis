@@ -355,15 +355,15 @@
 
                 <div class="synergy-group">
                     <label class="synergy-label">Password</label>
-                    <input type="password" name="password" id="passInput" class="synergy-input" placeholder="••••••••"
-                        required>
+                    <div style="position: relative;">
+                        <input type="password" name="password" id="passInput" class="synergy-input" style="padding-right: 3rem;" placeholder="••••••••" required>
+                        <button type="button" id="togglePassBtn" style="position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 0; outline: none; display: flex; align-items: center;">
+                            <i class="bi bi-eye-slash" id="togglePassIcon" style="font-size: 1.2rem;"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="action-flex">
-                    <label class="custom-check">
-                        <input type="checkbox" id="showPass">
-                        <span>Lihat Password</span>
-                    </label>
+                <div class="action-flex" style="justify-content: flex-end;">
                     <a href="#" class="forgot-pass">Lupa Password?</a>
                 </div>
 
@@ -437,8 +437,18 @@
         resize();
         animate();
 
-        document.getElementById('showPass').addEventListener('change', function() {
-            document.getElementById('passInput').type = this.checked ? 'text' : 'password';
+        document.getElementById('togglePassBtn').addEventListener('click', function() {
+            const passInput = document.getElementById('passInput');
+            const icon = document.getElementById('togglePassIcon');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                passInput.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
         });
     </script>
 </body>
