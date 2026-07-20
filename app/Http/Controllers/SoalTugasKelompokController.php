@@ -6,6 +6,7 @@ use App\DataTables\SoalTugasKelompokDataTable;
 use App\Models\SoalTugasKelompok;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Support\Facades\Log;
 
 class SoalTugasKelompokController extends Controller
 {
@@ -49,6 +50,40 @@ class SoalTugasKelompokController extends Controller
 
         Alert::success('Link tugas berhasil diperbarui.', 'Success')->toToast()->autoClose(3000);
         return redirect()->route('soaltugaskelompok.index');
+    }
+
+    public function updateNilai(Request $request, string $id)
+    {
+        try {
+            $soalTugasKelompok = SoalTugasKelompok::findOrFail($id);
+
+            $nilai = $request->input('nilai');
+            
+            if ($nilai === null || $nilai === '') {
+                $soalTugasKelompok->nilai = null;
+            } else {
+                if (!is_numeric($nilai) || $nilai < 0 || $nilai > 100) {
+                    throw new \Exception('Nilai harus berupa angka 0-100.');
+                }
+                $soalTugasKelompok->nilai = $nilai;
+            }
+
+            $soalTugasKelompok->save();
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => true, 'message' => 'Nilai tugas berhasil disimpan.']);
+            }
+
+            Alert::success('Nilai tugas berhasil disimpan.', 'Success')->toToast()->autoClose(3000);
+            return redirect()->back();
+        } catch (\Exception $e) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
+            }
+
+            Alert::error('Gagal menyimpan: ' . $e->getMessage(), 'Error')->toToast()->autoClose(5000);
+            return redirect()->back();
+        }
     }
 
     public function destroy(string $id)

@@ -38,8 +38,8 @@
             </div>
         </div>
 
-        <!-- Detail Table -->
-        <div class="row">
+        <!-- Detail Table (Hidden but kept for Excel Export) -->
+        <div class="row d-none">
             <div class="col-lg-12">
                 <div class="card shadow-lg border-0" style="border-radius: 20px; background: rgba(255,255,255,1);">
                     <div class="card-body px-4 py-4">

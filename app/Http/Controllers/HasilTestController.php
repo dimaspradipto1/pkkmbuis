@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Models\HasilTest;
 use App\Models\User;
-use App\DataTables\HasilTestDataTable;
+use App\DataTables\HasilTestAbsensiDataTable;
+use App\DataTables\HasilTestKedisiplinanDataTable;
+use App\DataTables\HasilTestPenilaianDataTable;
 use App\Imports\HasilTestImport;
 use App\Exports\HasilTestExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -17,9 +19,27 @@ class HasilTestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(HasilTestDataTable $dataTable)
-    {
-        return $dataTable->render('pages.hasiltest.index');
+    public function index(
+        HasilTestAbsensiDataTable $absensiDataTable,
+        HasilTestKedisiplinanDataTable $kedisiplinanDataTable,
+        HasilTestPenilaianDataTable $penilaianDataTable
+    ) {
+        if (request()->ajax()) {
+            $table = request()->get('table');
+            if ($table === 'kedisiplinan') {
+                return $kedisiplinanDataTable->ajax();
+            }
+            if ($table === 'penilaian') {
+                return $penilaianDataTable->ajax();
+            }
+            return $absensiDataTable->ajax();
+        }
+
+        return view('pages.hasiltest.index', [
+            'absensiTable' => $absensiDataTable->html(),
+            'kedisiplinanTable' => $kedisiplinanDataTable->html(),
+            'penilaianTable' => $penilaianDataTable->html(),
+        ]);
     }
 
     /**

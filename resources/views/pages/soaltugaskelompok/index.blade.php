@@ -40,4 +40,49 @@
     @else
         {!! $dataTable->scripts() !!}
     @endif
+    <script>
+        $(document).ready(function() {
+            // Use event delegation for dynamically loaded inputs
+            $(document).on('change', '.input-nilai-tugas', function() {
+                var input = $(this);
+                var url = input.data('url');
+                var nilai = input.val();
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        nilai: nilai
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                icon: 'success',
+                                title: response.message,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        var msg = 'Gagal menyimpan nilai.';
+                        if(xhr.responseJSON && xhr.responseJSON.message) {
+                            msg = xhr.responseJSON.message;
+                        }
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: msg,
+                            showConfirmButton: false,
+                            timer: 5000
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 @endpush

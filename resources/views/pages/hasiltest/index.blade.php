@@ -36,8 +36,34 @@
                             </div>
                         </div>
 
-                        <div class="table-responsive">
-                            {!! $dataTable->table(['width' => '100%', 'class' => 'table table-hover align-middle border-0 mb-0']) !!}
+                        <ul class="nav nav-tabs nav-tabs-bordered mb-3" id="hasilTestTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-bold active" id="absensi-tab" data-bs-toggle="tab" data-bs-target="#absensi" type="button" role="tab" aria-controls="absensi" aria-selected="true">Tabel Absensi</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-bold" id="kedisiplinan-tab" data-bs-toggle="tab" data-bs-target="#kedisiplinan" type="button" role="tab" aria-controls="kedisiplinan" aria-selected="false">Tabel Kedisiplinan</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link fw-bold" id="penilaian-tab" data-bs-toggle="tab" data-bs-target="#penilaian" type="button" role="tab" aria-controls="penilaian" aria-selected="false">Tabel Pretest, Posttest, Tugas</button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content pt-2" id="hasilTestTabsContent">
+                            <div class="tab-pane fade show active" id="absensi" role="tabpanel" aria-labelledby="absensi-tab">
+                                <div class="table-responsive">
+                                    {!! $absensiTable->table(['width' => '100%', 'class' => 'table table-hover align-middle border-0 mb-0']) !!}
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="kedisiplinan" role="tabpanel" aria-labelledby="kedisiplinan-tab">
+                                <div class="table-responsive">
+                                    {!! $kedisiplinanTable->table(['width' => '100%', 'class' => 'table table-hover align-middle border-0 mb-0']) !!}
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="penilaian" role="tabpanel" aria-labelledby="penilaian-tab">
+                                <div class="table-responsive">
+                                    {!! $penilaianTable->table(['width' => '100%', 'class' => 'table table-hover align-middle border-0 mb-0']) !!}
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mt-4 pt-3 border-top border-light">
@@ -77,10 +103,12 @@
 @endsection
 
 @push('scripts')
-    {!! $dataTable->scripts() !!}
+    {!! $absensiTable->scripts() !!}
+    {!! $kedisiplinanTable->scripts() !!}
+    {!! $penilaianTable->scripts() !!}
     <script>
         $(document).ready(function() {
-            const tableId = '#hasiltest-table';
+            const tableId = '#penilaian-table';
             const bulkBtn = $('#btn-bulk-reset');
             const bulkCount = $('#selected-count');
             const bulkForm = $('#bulk-reset-form');
@@ -131,6 +159,11 @@
                     container.append(`<input type="hidden" name="ids[]" value="${$(this).val()}">`);
                 });
                 return true;
+            });
+
+            // Redraw table when tab becomes visible so columns adjust their width
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
             });
         });
     </script>

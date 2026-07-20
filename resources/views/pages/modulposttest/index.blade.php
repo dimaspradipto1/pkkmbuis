@@ -370,7 +370,7 @@
                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/50?text=LOGO'">
                                 <h6 class="fw-bold mb-0 text-success" style="font-size: 0.8rem;">
                                     PENGENALAN KEHIDUPAN KAMPUS BAGI MAHASISWA BARU<br>
-                                    (PKKMB) 2025 <span class="text-primary">UNIVERSITAS IBNU SINA</span>
+                                    (PKKMB) 2025 <span class="text-primary"><br>UNIVERSITAS IBNU SINA</span>
                                 </h6>
                             </div>
                             <hr class="mt-4 mb-2">
@@ -471,10 +471,4 @@
     </section>
 @endsection
 
-@push('scripts')
-     @if(app()->environment('production'))
-        {!! str_replace('http:', 'https:', $dataTable->scripts()) !!}
-    @else
-        {!! $dataTable->scripts() !!}
-    @endif
-@endpush
+

@@ -112,6 +112,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::post('soalposttestkeempat/import', [SoalPostTestKeempatController::class, 'import'])->name('soalposttestkeempat.import');
     Route::get('soalposttestkeempat/export', [SoalPostTestKeempatController::class, 'export'])->name('soalposttestkeempat.export');
     Route::resource('soalposttestkeempat', SoalPostTestKeempatController::class);
+    Route::post('soaltugaskelompok/{id}/update-nilai', [SoalTugasKelompokController::class, 'updateNilai'])->name('soaltugaskelompok.update-nilai');
     Route::resource('soaltugaskelompok', SoalTugasKelompokController::class);
     Route::post('modulposttest/reset', [ModulPostTestController::class, 'reset'])->name('modulposttest.reset');
     Route::post('modulposttest/upload-tugas', [ModulPostTestController::class, 'uploadTugasKelompok'])->name('modulposttest.upload-tugas');

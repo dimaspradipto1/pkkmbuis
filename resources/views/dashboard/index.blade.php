@@ -1173,7 +1173,12 @@
                                                 dataLabels: {
                                                     total: {
                                                         show: true,
-                                                        label: 'Completion'
+                                                        label: 'Completion',
+                                                        formatter: function (w) {
+                                                            let sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                                            let avg = sum / w.globals.seriesTotals.length;
+                                                            return avg.toFixed(2) + '%';
+                                                        }
                                                     }
                                                 }
                                             }
