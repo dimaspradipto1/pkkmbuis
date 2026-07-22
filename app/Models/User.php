@@ -96,4 +96,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(SoalTugasKelompok::class);
     }
+
+    public function evaluasiPengenalanWawasanIbnuSina()
+    {
+        return $this->hasOne(EvaluasiPengenalanWawasanIbnuSina::class);
+    }
 }
+
+
+

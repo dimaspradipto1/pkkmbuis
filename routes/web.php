@@ -28,7 +28,11 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\RekapKeseluruhanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\EvaluasiPengenalanWawasanIbnuSinaController;
 use Illuminate\Support\Facades\Route;
+
+
+
 
 
 Route::controller(AuthController::class)->group(function () {
@@ -131,4 +135,16 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::post('kelompok/{id}/add-member', [KelompokController::class, 'addMember'])->name('kelompok.add-member');
     Route::delete('kelompok/{kelompokId}/remove-member/{userId}', [KelompokController::class, 'removeMember'])->name('kelompok.remove-member');
     Route::resource('kelompok', KelompokController::class);
+
+    Route::resource('evaluasipengenalanwawasanibnusina', EvaluasiPengenalanWawasanIbnuSinaController::class)->parameters([
+        'evaluasipengenalanwawasanibnusina' => 'evaluasi'
+    ]);
+
+    Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');
+    Route::post('evaluasimenu/{id}/toggle', [\App\Http\Controllers\EvaluasiMenuController::class, 'toggle'])->name('evaluasimenu.toggle');
 });
+
+
+
+
+
