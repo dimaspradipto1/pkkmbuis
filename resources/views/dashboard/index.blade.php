@@ -817,20 +817,20 @@
                         </div>
 
                         {{-- Academic Snapshot row --}}
-                        <div class="col-12 col-md-6 col-xl-4 mb-4">
+                        <div class="col-12 mb-4">
                             <div class="card border-0 shadow-sm h-100">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h5 class="card-title mb-0">Pre-Test</h5>
-                                        <div class="d-flex gap-1">
+                                        <div class="d-flex align-items-center gap-2">
                                             <input type="text"
                                                 class="form-control form-control-sm rounded-pill search-input"
-                                                data-target="pretest-table" placeholder="Cari..."
-                                                style="width: 70px; font-size: 0.65rem;">
+                                                data-target="pretest-table" placeholder="Cari nama..."
+                                                style="width: 200px; font-size: 0.8rem;">
                                             <a href="{{ route('hasiltest.index') }}"
                                                 class="btn btn-outline-info btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center"
-                                                style="width: 24px; height: 24px;"><i
-                                                    class="bi bi-eye-fill scale-75"></i></a>
+                                                style="width: 32px; height: 32px;"><i
+                                                    class="bi bi-eye-fill"></i></a>
                                         </div>
                                     </div>
                                     <div class="table-responsive">
@@ -838,9 +838,9 @@
                                             <thead>
                                                 <tr class="text-uppercase extra-small fw-bold"
                                                     style="background: #f8fafc; color: #012970;">
-                                                    <th class="ps-3 py-2">NO</th>
-                                                    <th>NAMA</th>
-                                                    <th class="text-end pe-3">SKOR</th>
+                                                    <th class="ps-3 py-2" style="width: 60px;">NO</th>
+                                                    <th>NAMA MAHASISWA</th>
+                                                    <th class="text-end pe-3" style="width: 120px;">SKOR PRE-TEST</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -851,13 +851,12 @@
                                                                 class="fw-bold text-dark search-target">{{ $pre->user->name }}</span>
                                                         </td>
                                                         <td class="text-end pe-3"><span
-                                                                class="badge bg-info text-white">{{ $pre->skor }}</span>
+                                                                class="badge bg-info text-white fs-6 px-3 py-1">{{ $pre->skor }}</span>
                                                         </td>
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="3" class="text-center py-2 text-muted small">No
-                                                            data</td>
+                                                        <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Pre-Test</td>
                                                     </tr>
                                                 @endforelse
                                             </tbody>
@@ -867,20 +866,20 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-6 col-xl-4 mb-4">
+                        <div class="col-12 mb-4">
                             <div class="card border-0 shadow-sm h-100">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h5 class="card-title mb-0">Post-Test</h5>
-                                        <div class="d-flex gap-1">
+                                        <div class="d-flex align-items-center gap-2">
                                             <input type="text"
                                                 class="form-control form-control-sm rounded-pill search-input"
-                                                data-target="posttest-table" placeholder="Cari..."
-                                                style="width: 70px; font-size: 0.65rem;">
+                                                data-target="posttest-table" placeholder="Cari nama..."
+                                                style="width: 200px; font-size: 0.8rem;">
                                             <a href="{{ route('hasiltest.index') }}"
                                                 class="btn btn-outline-primary btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center"
-                                                style="width: 24px; height: 24px;"><i
-                                                    class="bi bi-eye-fill scale-75"></i></a>
+                                                style="width: 32px; height: 32px;"><i
+                                                    class="bi bi-eye-fill"></i></a>
                                         </div>
                                     </div>
                                     <div class="table-responsive">
@@ -888,9 +887,9 @@
                                             <thead>
                                                 <tr class="text-uppercase extra-small fw-bold"
                                                     style="background: #f8fafc; color: #012970;">
-                                                    <th class="ps-3 py-2">NO</th>
-                                                    <th>NAMA</th>
-                                                    <th class="text-end pe-3">SKOR</th>
+                                                    <th class="ps-3 py-2" style="width: 60px;">NO</th>
+                                                    <th>NAMA MAHASISWA</th>
+                                                    <th class="text-end pe-3" style="width: 120px;">SKOR POST-TEST</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -901,12 +900,11 @@
                                                                 class="fw-bold text-dark search-target">{{ $post->user->name }}</span>
                                                         </td>
                                                         <td class="text-end pe-3"><span
-                                                                class="badge bg-primary">{{ $post->skor }}</span></td>
+                                                                class="badge bg-primary fs-6 px-3 py-1">{{ $post->skor }}</span></td>
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="3" class="text-center py-2 text-muted small">No
-                                                            data</td>
+                                                        <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Post-Test</td>
                                                     </tr>
                                                 @endforelse
                                             </tbody>
@@ -916,20 +914,20 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-12 col-xl-4 mb-4">
+                        <div class="col-12 mb-4">
                             <div class="card border-0 shadow-sm h-100">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h5 class="card-title mb-0">Kelompok</h5>
-                                        <div class="d-flex gap-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="card-title mb-0">Kelompok / Tugas</h5>
+                                        <div class="d-flex align-items-center gap-2">
                                             <input type="text"
                                                 class="form-control form-control-sm rounded-pill search-input"
-                                                data-target="tugas-table" placeholder="Cari..."
-                                                style="width: 70px; font-size: 0.65rem;">
+                                                data-target="tugas-table" placeholder="Cari nama..."
+                                                style="width: 200px; font-size: 0.8rem;">
                                             <a href="{{ route('soaltugaskelompok.index') }}"
                                                 class="btn btn-outline-success btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center"
-                                                style="width: 24px; height: 24px;"><i
-                                                    class="bi bi-eye-fill scale-75"></i></a>
+                                                style="width: 32px; height: 32px;"><i
+                                                    class="bi bi-eye-fill"></i></a>
                                         </div>
                                     </div>
                                     <div class="table-responsive">
@@ -937,9 +935,9 @@
                                             <thead>
                                                 <tr class="text-uppercase extra-small fw-bold"
                                                     style="background: #f8fafc; color: #012970;">
-                                                    <th class="ps-3 py-2">NO</th>
-                                                    <th>NAMA</th>
-                                                    <th class="text-end pe-3">LINK</th>
+                                                    <th class="ps-3 py-2" style="width: 60px;">NO</th>
+                                                    <th>NAMA MAHASISWA</th>
+                                                    <th class="text-end pe-3" style="width: 120px;">LINK TUGAS</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -951,14 +949,13 @@
                                                         </td>
                                                         <td class="text-end pe-3">
                                                             <a href="{{ $tug->link_tugas }}" target="_blank"
-                                                                class="btn btn-link btn-sm p-0 extra-small"><i
-                                                                    class="bi bi-link-45deg"></i></a>
+                                                                class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 extra-small fw-bold"><i
+                                                                    class="bi bi-link-45deg me-1"></i> Buka Link</a>
                                                         </td>
                                                     </tr>
                                                 @empty
                                                     <tr>
-                                                        <td colspan="3" class="text-center py-2 text-muted small">No
-                                                            data</td>
+                                                        <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Tugas Kelompok</td>
                                                     </tr>
                                                 @endforelse
                                             </tbody>
