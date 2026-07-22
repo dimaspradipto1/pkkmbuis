@@ -75,19 +75,65 @@
                 <div class="col-12">
                     <div class="card border-0 shadow-sm overflow-hidden" style="background: #fff; border-radius: 12px;">
                         <div class="card-body p-3 p-md-4">
-                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-success bg-opacity-10 p-3 rounded-circle" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                                    <div class="bg-success bg-opacity-10 p-3 rounded-circle flex-shrink-0" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
                                         <i class="bi bi-book-half text-success fs-4"></i>
                                     </div>
                                     <div>
-                                        <h5 class="fw-bold text-dark mb-0">Modul, Pritest dan Postes Mahasiswa</h5>
+                                        <h5 class="fw-bold text-dark mb-1 mb-md-0">Modul, Pritest dan Postes Mahasiswa</h5>
                                         <p class="text-muted small mb-0 d-none d-md-block">Akses materi pembelajaran dan kerjakan evaluasi modul Anda di sini.</p>
                                     </div>
                                 </div>
-                                <a href="{{ route('modulposttest.index') }}" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm">
+                                <a href="{{ route('modulposttest.index') }}" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm w-100 w-lg-auto mt-2 mt-lg-0">
                                     <i class="bi bi-arrow-right-circle me-1"></i> Buka Modul & Ujian
                                 </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if (Auth::user()->role == 'mahasiswa')
+            {{-- Top Banner: Dokumen Pendukung --}}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm overflow-hidden" style="background: #fff; border-radius: 12px;">
+                        <div class="card-body p-3 p-md-4">
+                            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle flex-shrink-0" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="bi bi-file-earmark-text text-primary fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold text-dark mb-1 mb-md-0">Dokumen Pendukung</h5>
+                                        <p class="text-muted small mb-0 d-none d-md-block">Akses Buku Saku, Daftar Kelompok, dan Rundown acara di sini.</p>
+                                    </div>
+                                </div>
+                                @php
+                                    $dokumen = \App\Models\Dokumen::latest()->first();
+                                @endphp
+                                <div class="d-grid gap-2 d-lg-flex mt-3 mt-lg-0 w-100 w-lg-auto">
+                                    @if($dokumen && $dokumen->link_buku_saku)
+                                        <a href="{{ $dokumen->link_buku_saku }}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                            <i class="bi bi-book me-1"></i> Buku Saku
+                                        </a>
+                                    @endif
+                                    @if($dokumen && $dokumen->link_daftar_kelompok)
+                                        <a href="{{ $dokumen->link_daftar_kelompok }}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                            <i class="bi bi-people me-1"></i> Daftar Kelompok
+                                        </a>
+                                    @endif
+                                    @if($dokumen && $dokumen->link_rundown)
+                                        <a href="{{ $dokumen->link_rundown }}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                            <i class="bi bi-calendar-event me-1"></i> Rundown
+                                        </a>
+                                    @endif
+                                    @if(!$dokumen || (!$dokumen->link_buku_saku && !$dokumen->link_daftar_kelompok && !$dokumen->link_rundown))
+                                        <span class="text-muted small">Belum ada dokumen yang diunggah.</span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>

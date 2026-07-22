@@ -97,4 +97,28 @@ class MateriModulController extends Controller
         Alert::success('Materi modul berhasil dihapus.', 'Deleted')->toToast()->autoClose(3000);
         return redirect()->route('materimodul.index');
     }
+
+    public function download($id, $modul)
+    {
+        $materiModul = MateriModul::findOrFail($id);
+        $field = 'modul' . $modul;
+        
+        if (!$materiModul->$field || !Storage::disk('public')->exists($materiModul->$field)) {
+            abort(404, 'File materi tidak ditemukan');
+        }
+
+        return response()->download(storage_path('app/public/' . $materiModul->$field));
+    }
+
+    public function viewFile($id, $modul)
+    {
+        $materiModul = MateriModul::findOrFail($id);
+        $field = 'modul' . $modul;
+        
+        if (!$materiModul->$field || !Storage::disk('public')->exists($materiModul->$field)) {
+            abort(404, 'File materi tidak ditemukan');
+        }
+
+        return response()->file(storage_path('app/public/' . $materiModul->$field));
+    }
 }

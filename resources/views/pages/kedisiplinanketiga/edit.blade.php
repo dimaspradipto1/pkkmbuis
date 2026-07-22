@@ -48,36 +48,44 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label for="kelengkapan_atribut" class="col-sm-2 col-form-label">Kelengkapan Atribut</label>
-                                <div class="col-sm-10">
-                                    <select name="kelengkapan_atribut" id="kelengkapan_atribut" class="form-select">
-                                        <option value="Lengkap" {{ (old('kelengkapan_atribut', $kedisiplinanKetiga->kelengkapan_atribut) == 'Lengkap') ? 'selected' : '' }}>Lengkap</option>
-                                        <option value="Cukup Lengkap" {{ (old('kelengkapan_atribut', $kedisiplinanKetiga->kelengkapan_atribut) == 'Cukup Lengkap') ? 'selected' : '' }}>Cukup Lengkap</option>
-                                        <option value="Tidak Lengkap" {{ (old('kelengkapan_atribut', $kedisiplinanKetiga->kelengkapan_atribut) == 'Tidak Lengkap') ? 'selected' : '' }}>Tidak Lengkap</option>
-                                    </select>
+                                <label class="col-sm-2 col-form-label">Kelengkapan Atribut</label>
+                                <div class="col-sm-10 d-flex align-items-center">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="kelengkapan_atribut" id="atribut_lengkap" value="Lengkap" {{ old('kelengkapan_atribut', $kedisiplinanKetiga->kelengkapan_atribut) == 'Lengkap' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="atribut_lengkap">Lengkap</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="kelengkapan_atribut" id="atribut_tidak_lengkap" value="Tidak Lengkap" {{ old('kelengkapan_atribut', $kedisiplinanKetiga->kelengkapan_atribut) == 'Tidak Lengkap' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="atribut_tidak_lengkap">Tidak Lengkap</label>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label for="ketepatan_waktu" class="col-sm-2 col-form-label">Ketepatan Waktu</label>
-                                <div class="col-sm-10">
-                                    <select name="ketepatan_waktu" id="ketepatan_waktu" class="form-select">
-                                        <option value="Tepat Waktu" {{ (old('ketepatan_waktu', $kedisiplinanKetiga->ketepatan_waktu) == 'Tepat Waktu') ? 'selected' : '' }}>Tepat Waktu</option>
-                                        <option value="Terlambat" {{ (old('ketepatan_waktu', $kedisiplinanKetiga->ketepatan_waktu) == 'Terlambat') ? 'selected' : '' }}>Terlambat</option>
-                                        <option value="Sangat Terlambat" {{ (old('ketepatan_waktu', $kedisiplinanKetiga->ketepatan_waktu) == 'Sangat Terlambat') ? 'selected' : '' }}>Sangat Terlambat</option>
-                                    </select>
+                                <label class="col-sm-2 col-form-label">Ketepatan Waktu</label>
+                                <div class="col-sm-10 d-flex align-items-center">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="ketepatan_waktu" id="waktu_tepat" value="Tepat Waktu" {{ old('ketepatan_waktu', $kedisiplinanKetiga->ketepatan_waktu) == 'Tepat Waktu' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="waktu_tepat">Tepat Waktu</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="ketepatan_waktu" id="waktu_terlambat" value="Terlambat" {{ old('ketepatan_waktu', $kedisiplinanKetiga->ketepatan_waktu) == 'Terlambat' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="waktu_terlambat">Terlambat</label>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label for="perilaku" class="col-sm-2 col-form-label">Perilaku</label>
-                                <div class="col-sm-10">
-                                    <select name="perilaku" id="perilaku" class="form-select">
-                                        <option value="Sangat Baik" {{ (old('perilaku', $kedisiplinanKetiga->perilaku) == 'Sangat Baik') ? 'selected' : '' }}>Sangat Baik</option>
-                                        <option value="Baik" {{ (old('perilaku', $kedisiplinanKetiga->perilaku) == 'Baik') ? 'selected' : '' }}>Baik</option>
-                                        <option value="Cukup" {{ (old('perilaku', $kedisiplinanKetiga->perilaku) == 'Cukup') ? 'selected' : '' }}>Cukup</option>
-                                        <option value="Buruk" {{ (old('perilaku', $kedisiplinanKetiga->perilaku) == 'Buruk') ? 'selected' : '' }}>Buruk</option>
-                                    </select>
+                                <label class="col-sm-2 col-form-label">Perilaku</label>
+                                <div class="col-sm-10 d-flex align-items-center">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="perilaku" id="perilaku_baik" value="Baik" {{ old('perilaku', $kedisiplinanKetiga->perilaku) == 'Baik' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="perilaku_baik">Baik</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="perilaku" id="perilaku_tidak_baik" value="Tidak Baik" {{ old('perilaku', $kedisiplinanKetiga->perilaku) == 'Tidak Baik' ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="perilaku_tidak_baik">Tidak Baik</label>
+                                    </div>
                                 </div>
                             </div>
 

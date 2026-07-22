@@ -52,7 +52,15 @@
                                 <div class="py-3">
                                     <h5 class="fw-bold mb-3">Materi Modul {{ $id }}</h5>
 
-                                    @if ($materi_file)
+                                    @if (in_array($id, [1, 2, 3, 4]) && !$hasil_pre && Auth::user()->role == 'mahasiswa')
+                                        <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center mt-4">
+                                            <i class="bi bi-lock-fill fs-1 me-3 text-warning"></i>
+                                            <div>
+                                                <h6 class="fw-bold mb-1">Materi Terkunci</h6>
+                                                <p class="mb-0 text-muted">Silakan selesaikan <strong>Pre Test</strong> terlebih dahulu untuk dapat membaca dan mengunduh materi pada Modul ini.</p>
+                                            </div>
+                                        </div>
+                                    @elseif ($materi_file)
                                         @php
                                             $ext = strtolower(pathinfo($materi_file, PATHINFO_EXTENSION));
                                             $fileUrl = asset('storage/' . $materi_file);
@@ -61,20 +69,20 @@
                                         @if ($ext === 'pdf')
                                             {{-- PDF: tampilkan langsung di iframe --}}
                                             <div class="mb-3 d-flex justify-content-end">
-                                                <a href="{{ $fileUrl }}" target="_blank"
+                                                <a href="{{ route('materimodul.view', ['id' => $materi_id, 'modul' => $id]) }}" target="_blank"
                                                     class="btn btn-sm btn-outline-primary me-2">
                                                     <i class="bi bi-box-arrow-up-right me-1"></i> Buka di Tab Baru
                                                 </a>
-                                                <a href="{{ $fileUrl }}" download
+                                                <a href="{{ route('materimodul.download', ['id' => $materi_id, 'modul' => $id]) }}"
                                                     class="btn btn-sm btn-success">
                                                     <i class="bi bi-download me-1"></i> Unduh Materi
                                                 </a>
                                             </div>
                                             <div class="border rounded" style="height: 520px; overflow: hidden;">
-                                                <iframe src="{{ $fileUrl }}" width="100%" height="100%"
+                                                <iframe src="{{ route('materimodul.view', ['id' => $materi_id, 'modul' => $id]) }}" width="100%" height="100%"
                                                     style="border: none;" title="Materi Modul {{ $id }}">
                                                     <p>Browser Anda tidak mendukung tampilan PDF.
-                                                        <a href="{{ $fileUrl }}">Klik di sini untuk mengunduh.</a>
+                                                        <a href="{{ route('materimodul.download', ['id' => $materi_id, 'modul' => $id]) }}">Klik di sini untuk mengunduh.</a>
                                                     </p>
                                                 </iframe>
                                             </div>
@@ -104,7 +112,7 @@
                                                 </p>
                                                 <p class="text-muted small mb-4">Klik tombol di bawah untuk mengunduh
                                                     materi modul {{ $id }}.</p>
-                                                <a href="{{ $fileUrl }}" download
+                                                <a href="{{ route('materimodul.download', ['id' => $materi_id, 'modul' => $id]) }}"
                                                     class="btn btn-success px-4">
                                                     <i class="bi bi-download me-2"></i> Unduh Materi Modul {{ $id }}
                                                 </a>

@@ -13,6 +13,7 @@ use App\Http\Controllers\KedisiplinanKeduaController;
 use App\Http\Controllers\KedisiplinanKetigaController;
 use App\Http\Controllers\KedisiplinanPertamaController;
 use App\Http\Controllers\MateriModulController;
+use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\ModulPostTestController;
 use App\Http\Controllers\SoalPostTestKeduaController;
 use App\Http\Controllers\SoalPostTestKeempatController;
@@ -117,5 +118,8 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::post('modulposttest/reset', [ModulPostTestController::class, 'reset'])->name('modulposttest.reset');
     Route::post('modulposttest/upload-tugas', [ModulPostTestController::class, 'uploadTugasKelompok'])->name('modulposttest.upload-tugas');
     Route::resource('modulposttest', ModulPostTestController::class);
+    Route::resource('dokumen', DokumenController::class);
+    Route::get('materimodul/{id}/download/{modul}', [MateriModulController::class, 'download'])->name('materimodul.download');
+    Route::get('materimodul/{id}/view/{modul}', [MateriModulController::class, 'viewFile'])->name('materimodul.view');
     Route::resource('materimodul', MateriModulController::class);
 });

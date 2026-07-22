@@ -164,7 +164,7 @@
               </li>
           @endif
 
-          @if (Auth::user()->role == 'mahasiswa')
+          @if (Auth::user()->role == 'mahasiswa' || Auth::user()->role == 'admin')
               <li class="nav-item">
                   <a class="nav-link collapsed" href="{{ route('modulposttest.index') }}">
                       <i class="bi bi-book"></i>
@@ -172,6 +172,13 @@
                   </a>
               </li>
           @endif
+
+          <li class="nav-item">
+              <a class="nav-link collapsed" href="{{ route('dokumen.index') }}">
+                  <i class="bi bi-file-earmark-text"></i>
+                  <span>Dokumen Pendukung</span>
+              </a>
+          </li>
 
       </ul>
 
