@@ -43,16 +43,18 @@ class UsersController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'nomor_registrasi' => 'required|string|unique:users,nomor_registrasi',
+            'id_pendaftar' => 'required|string|unique:users,id_pendaftar',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:admin,mahasiswa,stafbaak,pimpinan',
+            'role' => 'required|in:admin,mahasiswa,stafbaak,pimpinan,kakakleting',
+            'fakultas' => 'nullable|string|max:255',
+            'program_studi' => 'nullable|string|max:255',
         ], [
-            'nomor_registrasi.unique' => 'Nomor registrasi sudah terdaftar.',
+            'id_pendaftar.unique' => 'ID pendaftar sudah terdaftar.',
             'email.unique' => 'Email sudah digunakan.',
         ]);
 
-        $validated = $request->only(['name', 'nomor_registrasi', 'email', 'password', 'role']);
+        $validated = $request->only(['name', 'id_pendaftar', 'email', 'password', 'role', 'fakultas', 'program_studi']);
 
         $validated['is_active'] = $request->has('is_active');
         $validated['password'] = Hash::make($validated['password']);
@@ -133,7 +135,7 @@ class UsersController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'nomor_registrasi' => [
+            'id_pendaftar' => [
                 'required',
                 'string',
                 Rule::unique('users')->ignore($user->id),
@@ -145,7 +147,9 @@ class UsersController extends Controller
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
-            'role' => 'required|in:admin,mahasiswa,stafbaak,pimpinan',
+            'role' => 'required|in:admin,mahasiswa,stafbaak,pimpinan,kakakleting',
+            'fakultas' => 'nullable|string|max:255',
+            'program_studi' => 'nullable|string|max:255',
         ]);
 
         $validated['is_active'] = $request->has('is_active');
@@ -214,9 +218,9 @@ class UsersController extends Controller
 
     public function downloadTemplate()
     {
-        $headers = ['name', 'email', 'password', 'nomor_registrasi', 'role'];
+        $headers = ['name', 'email', 'password', 'id_pendaftar', 'role', 'fakultas', 'program_studi'];
         $data = [
-            ['Jhon Doe', 'jhon@example.com', 'password123', 'REG001', 'mahasiswa'],
+            ['Jhon Doe', 'jhon@example.com', 'password123', 'REG001', 'mahasiswa', 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'S1 TEKNIK INFORMATIKA'],
         ];
 
         return Excel::download(new class($headers, $data) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {

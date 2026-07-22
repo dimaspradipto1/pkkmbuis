@@ -348,7 +348,7 @@
             <form action="{{ route('login.post') }}" method="POST">
                 @csrf
                 <div class="synergy-group">
-                    <label class="synergy-label">Registration ID / Email</label>
+                    <label class="synergy-label">ID Pendaftar / Email</label>
                     <input type="text" name="login" class="synergy-input" value="{{ old('login') }}"
                         placeholder="Contoh: 20240101" required>
                 </div>

@@ -61,10 +61,24 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label class="col-md-4 col-form-label fw-bold">Nomor Registrasi</label>
+                                <label class="col-md-4 col-form-label fw-bold">ID Pendaftar</label>
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control bg-light" value="{{ $user->nomor_registrasi }}" readonly disabled>
-                                    <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Nomor registrasi tidak dapat diubah.</span>
+                                    <input type="text" class="form-control bg-light" value="{{ $user->id_pendaftar }}" readonly disabled>
+                                    <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>ID pendaftar tidak dapat diubah.</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-md-4 col-form-label fw-bold">Fakultas</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control bg-light" value="{{ $user->fakultas ?? '-' }}" readonly disabled>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label class="col-md-4 col-form-label fw-bold">Program Studi</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control bg-light" value="{{ $user->program_studi ?? '-' }}" readonly disabled>
                                 </div>
                             </div>
 

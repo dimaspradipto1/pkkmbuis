@@ -6,6 +6,7 @@ use App\DataTables\AbsenKeduaDataTable;
 use App\Models\AbsenKedua;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class AbsenKeduaScanController extends Controller
@@ -24,17 +25,27 @@ class AbsenKeduaScanController extends Controller
     public function process(Request $request)
     {
         $request->validate([
-            'nomor_registrasi' => 'required|string',
+            'id_pendaftar' => 'required|string',
             'sesi' => 'required|in:hadir_pagi,hadir_sore',
         ]);
 
-        $user = User::where('nomor_registrasi', $request->nomor_registrasi)->first();
+        $user = User::where('id_pendaftar', $request->id_pendaftar)->first();
 
         if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pengguna dengan nomor registrasi ' . $request->nomor_registrasi . ' tidak ditemukan.'
+                'message' => 'Pengguna dengan ID pendaftar ' . $request->id_pendaftar . ' tidak ditemukan.'
             ], 404);
+        }
+
+        if (Auth::user()->role == 'kakakleting') {
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())->pluck('id')->toArray();
+            if (!in_array($user->kelompok_id, $myKelompokIds)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Mahasiswa ' . $user->name . ' bukan anggota kelompok Anda.'
+                ], 403);
+            }
         }
 
         $absen = AbsenKedua::where('user_id', $user->id)->first();

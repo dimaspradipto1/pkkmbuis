@@ -23,13 +23,15 @@ class UsersImport implements ToModel, WithHeadingRow, SkipsEmptyRows
     */
     public function model(array $row)
     {
-        // Headers expected: name, email, password, nomor_registrasi, role
+        // Headers expected: name, email, password, id_pendaftar, role, fakultas, program_studi
         $user = User::create([
             'name'             => $row['name'],
             'email'            => $row['email'],
             'password'         => Hash::make($row['password'] ?? 'password123'),
-            'nomor_registrasi' => $row['nomor_registrasi'],
+            'id_pendaftar'     => $row['id_pendaftar'],
             'role'             => $row['role'] ?? 'mahasiswa',
+            'fakultas'         => $row['fakultas'] ?? null,
+            'program_studi'    => $row['program_studi'] ?? null,
             'is_active'        => 1,
         ]);
 

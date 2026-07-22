@@ -13,7 +13,7 @@ class HasilTestImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {
-            $user = User::where('nomor_registrasi', $row['nomor_registrasi'])->first();
+            $user = User::where('id_pendaftar', $row['id_pendaftar'])->first();
 
             if ($user) {
                 // Update or create scores for each module

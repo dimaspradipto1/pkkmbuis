@@ -37,10 +37,10 @@
                                 <label for="user_id" class="col-sm-2 col-form-label">Nama Pengguna</label>
                                 <div class="col-sm-10">
                                     <select name="user_id" id="user_id" class="form-select" required>
-                                        <option value="" disabled selected>Pilih Pengguna...</option>
+                                        <option value=""></option>
                                         @foreach($users as $user)
                                             <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                                {{ $user->name }} ({{ $user->nomor_registrasi }})
+                                                {{ $user->name }} ({{ $user->id_pendaftar }})
                                             </option>
                                         @endforeach
                                     </select>
@@ -90,8 +90,9 @@
         $(document).ready(function() {
             $('#user_id').select2({
                 theme: 'bootstrap-5',
-                placeholder: 'Pilih Pengguna...',
-                allowClear: true
+                placeholder: 'Cari / Pilih Pengguna...',
+                allowClear: true,
+                width: '100%'
             });
         });
     </script>

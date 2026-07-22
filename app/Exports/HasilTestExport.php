@@ -14,7 +14,7 @@ class HasilTestExport implements FromCollection, WithHeadings
 
         return $users->map(function ($user) {
             return [
-                'nomor_registrasi' => $user->nomor_registrasi,
+                'id_pendaftar' => $user->id_pendaftar,
                 'name'             => $user->name,
                 'm1_pre'           => $user->hasilTests->where('modul', 1)->where('type', 'pretest')->first()?->skor ?? '',
                 'm1_post'          => $user->hasilTests->where('modul', 1)->where('type', 'posttest')->first()?->skor ?? '',
@@ -31,7 +31,7 @@ class HasilTestExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            'nomor_registrasi',
+            'id_pendaftar',
             'name',
             'm1_pre',
             'm1_post',

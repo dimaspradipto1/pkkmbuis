@@ -45,7 +45,7 @@ class AbsenKeduaDataTable extends DataTable
             ->filterColumn('user_name', function ($query, $keyword) {
                 $query->whereHas('user', function ($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%")
-                        ->orWhere('nomor_registrasi', 'like', "%{$keyword}%");
+                        ->orWhere('id_pendaftar', 'like', "%{$keyword}%");
                 });
             })
             ->rawColumns(['action', 'DT_RowIndex']);
@@ -58,14 +58,19 @@ class AbsenKeduaDataTable extends DataTable
      */
     public function query(AbsenKedua $model): QueryBuilder
     {
-        $query = $model->newQuery()->whereHas('user', function ($q) {
+        $query = $model->newQuery()->whereHas('user', function($q) {
             $q->where('role', 'mahasiswa');
         })->with('user');
-
+        
         if (Auth::user()->role == 'mahasiswa') {
             $query->where('user_id', Auth::id());
+        } elseif (Auth::user()->role == 'kakakleting') {
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())->pluck('id');
+            $query->whereHas('user', function($q) use ($myKelompokIds) {
+                $q->whereIn('kelompok_id', $myKelompokIds);
+            });
         }
-
+        
         return $query;
     }
 

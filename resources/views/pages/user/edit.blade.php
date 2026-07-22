@@ -40,9 +40,9 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="nomor_registrasi" class="col-sm-2 col-form-label">Nomor Registrasi</label>
+                                <label for="id_pendaftar" class="col-sm-2 col-form-label">ID Pendaftar</label>
                                 <div class="col-sm-10">
-                                    <input type="text" name="nomor_registrasi" class="form-control" id="nomor_registrasi" value="{{ old('nomor_registrasi', $user->nomor_registrasi) }}" required>
+                                    <input type="text" name="id_pendaftar" class="form-control" id="id_pendaftar" value="{{ old('id_pendaftar', $user->id_pendaftar) }}" required>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -58,7 +58,46 @@
                                         <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                                         <option value="stafbaak" {{ old('role', $user->role) == 'stafbaak' ? 'selected' : '' }}>Staf BAAK</option>
                                         <option value="pimpinan" {{ old('role', $user->role) == 'pimpinan' ? 'selected' : '' }}>Pimpinan</option>
+                                        <option value="kakakleting" {{ old('role', $user->role) == 'kakakleting' ? 'selected' : '' }}>Kakak Leting</option>
                                         <option value="mahasiswa" {{ old('role', $user->role) == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="fakultas" class="col-sm-2 col-form-label">Fakultas</label>
+                                <div class="col-sm-10">
+                                    <select name="fakultas" class="form-select" id="fakultas">
+                                        <option value="" selected>-- Pilih Fakultas --</option>
+                                        <option value="FAKULTAS EKONOMI DAN BISNIS (FEB)" {{ old('fakultas', $user->fakultas) == 'FAKULTAS EKONOMI DAN BISNIS (FEB)' ? 'selected' : '' }}>FAKULTAS EKONOMI DAN BISNIS (FEB)</option>
+                                        <option value="FAKULTAS SAINS DAN TEKNOLOGI (FST)" {{ old('fakultas', $user->fakultas) == 'FAKULTAS SAINS DAN TEKNOLOGI (FST)' ? 'selected' : '' }}>FAKULTAS SAINS DAN TEKNOLOGI (FST)</option>
+                                        <option value="FAKULTAS ILMU KESEHATAN (FIKes)" {{ old('fakultas', $user->fakultas) == 'FAKULTAS ILMU KESEHATAN (FIKes)' ? 'selected' : '' }}>FAKULTAS ILMU KESEHATAN (FIKes)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="program_studi" class="col-sm-2 col-form-label">Program Studi</label>
+                                <div class="col-sm-10">
+                                    <select name="program_studi" class="form-select" id="program_studi">
+                                        <option value="" selected>-- Pilih Program Studi --</option>
+                                        <optgroup label="FAKULTAS EKONOMI DAN BISNIS (FEB)">
+                                            <option value="S2 MAGISTER MANAJEMEN" {{ old('program_studi', $user->program_studi) == 'S2 MAGISTER MANAJEMEN' ? 'selected' : '' }}>S2 MAGISTER MANAJEMEN</option>
+                                            <option value="S1 AKUNTANSI" {{ old('program_studi', $user->program_studi) == 'S1 AKUNTANSI' ? 'selected' : '' }}>S1 AKUNTANSI</option>
+                                            <option value="S1 MANAJEMEN" {{ old('program_studi', $user->program_studi) == 'S1 MANAJEMEN' ? 'selected' : '' }}>S1 MANAJEMEN</option>
+                                        </optgroup>
+                                        <optgroup label="FAKULTAS SAINS DAN TEKNOLOGI (FST)">
+                                            <option value="S1 TEKNIK INDUSTRI" {{ old('program_studi', $user->program_studi) == 'S1 TEKNIK INDUSTRI' ? 'selected' : '' }}>S1 TEKNIK INDUSTRI</option>
+                                            <option value="S1 TEKNIK INFORMATIKA" {{ old('program_studi', $user->program_studi) == 'S1 TEKNIK INFORMATIKA' ? 'selected' : '' }}>S1 TEKNIK INFORMATIKA</option>
+                                            <option value="S1 TEKNIK LOGISTIK" {{ old('program_studi', $user->program_studi) == 'S1 TEKNIK LOGISTIK' ? 'selected' : '' }}>S1 TEKNIK LOGISTIK</option>
+                                            <option value="S1 SISTEM INFORMASI" {{ old('program_studi', $user->program_studi) == 'S1 SISTEM INFORMASI' ? 'selected' : '' }}>S1 SISTEM INFORMASI</option>
+                                            <option value="S1 TEKNIK PERKAPALAN" {{ old('program_studi', $user->program_studi) == 'S1 TEKNIK PERKAPALAN' ? 'selected' : '' }}>S1 TEKNIK PERKAPALAN</option>
+                                        </optgroup>
+                                        <optgroup label="FAKULTAS ILMU KESEHATAN (FIKes)">
+                                            <option value="S1 KESEHATAN DAN KESELAMATAN KERJA" {{ old('program_studi', $user->program_studi) == 'S1 KESEHATAN DAN KESELAMATAN KERJA' ? 'selected' : '' }}>S1 KESEHATAN DAN KESELAMATAN KERJA</option>
+                                            <option value="S1 KESEHATAN LINGKUNGAN" {{ old('program_studi', $user->program_studi) == 'S1 KESEHATAN LINGKUNGAN' ? 'selected' : '' }}>S1 KESEHATAN LINGKUNGAN</option>
+                                            <option value="S2 KESEHATAN MASYARAKAT" {{ old('program_studi', $user->program_studi) == 'S2 KESEHATAN MASYARAKAT' ? 'selected' : '' }}>S2 KESEHATAN MASYARAKAT</option>
+                                        </optgroup>
                                     </select>
                                 </div>
                             </div>

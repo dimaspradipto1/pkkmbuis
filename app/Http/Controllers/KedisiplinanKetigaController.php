@@ -6,6 +6,7 @@ use App\DataTables\KedisiplinanKetigaDataTable;
 use App\Models\KedisiplinanKetiga;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class KedisiplinanKetigaController extends Controller
@@ -23,7 +24,13 @@ class KedisiplinanKetigaController extends Controller
      */
     public function create()
     {
-        $users = User::all();
+        $authUser = Auth::user();
+        if ($authUser->role == 'kakakleting') {
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
+            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
+        } else {
+            $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
+        }
         return view('pages.kedisiplinanketiga.create', compact('users'));
     }
 
@@ -55,7 +62,13 @@ class KedisiplinanKetigaController extends Controller
     public function edit(string $id)
     {
         $kedisiplinanKetiga = KedisiplinanKetiga::findOrFail($id);
-        $users = User::all();
+        $authUser = Auth::user();
+        if ($authUser->role == 'kakakleting') {
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
+            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
+        } else {
+            $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
+        }
         return view('pages.kedisiplinanketiga.edit', compact('kedisiplinanKetiga', 'users'));
     }
 

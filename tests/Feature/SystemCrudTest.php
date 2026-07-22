@@ -54,7 +54,7 @@ class SystemCrudTest extends TestCase
         // 2. Create (Store)
         $userData = [
             'name' => 'New Mahasiswa Test',
-            'nomor_registrasi' => 'MHS999',
+            'id_pendaftar' => 'MHS999',
             'email' => 'mhs999@test.com',
             'password' => 'password123',
             'role' => 'mahasiswa',
@@ -62,16 +62,16 @@ class SystemCrudTest extends TestCase
         $response = $this->actingAs($admin)->post('/users', $userData);
         $response->assertRedirect('/users');
         $this->assertDatabaseHas('users', [
-            'nomor_registrasi' => 'MHS999',
+            'id_pendaftar' => 'MHS999',
             'email' => 'mhs999@test.com',
         ]);
 
-        $createdUser = User::where('nomor_registrasi', 'MHS999')->first();
+        $createdUser = User::where('id_pendaftar', 'MHS999')->first();
 
         // 3. Update (Edit)
         $updateData = [
             'name' => 'Updated Mahasiswa Test',
-            'nomor_registrasi' => 'MHS999',
+            'id_pendaftar' => 'MHS999',
             'email' => 'mhs999_updated@test.com',
             'role' => 'mahasiswa',
         ];
@@ -281,7 +281,7 @@ class SystemCrudTest extends TestCase
 
         // Verify we can login with the new password
         $response = $this->post('/', [
-            'login' => $student->nomor_registrasi,
+            'login' => $student->id_pendaftar,
             'password' => 'newpassword123',
         ]);
         $response->assertRedirect('/dashboard');

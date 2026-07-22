@@ -174,11 +174,112 @@
           @endif
 
           <li class="nav-item">
-              <a class="nav-link collapsed" href="{{ route('dokumen.index') }}">
+              <a class="nav-link {{ request()->routeIs('kelompok.*') ? '' : 'collapsed' }}" href="{{ route('kelompok.index') }}">
+                  <i class="bi bi-people-fill"></i>
+                  <span>Manajemen Kelompok</span>
+              </a>
+          </li>
+
+          <li class="nav-item">
+              <a class="nav-link {{ request()->routeIs('dokumen.*') ? '' : 'collapsed' }}" href="{{ route('dokumen.index') }}">
                   <i class="bi bi-file-earmark-text"></i>
                   <span>Dokumen Pendukung</span>
               </a>
           </li>
+
+          <li class="nav-item">
+                  <a class="nav-link collapsed" data-bs-target="#evaluasi" data-bs-toggle="collapse" href="#">
+                      <i class="bi bi-layout-text-window-reverse"></i><span>Evaluasi Penyampaian Materi</span><i
+                          class="bi bi-chevron-down ms-auto"></i>
+                  </a>
+                  <ul id="evaluasi" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                      <li>
+                          <a href="{{ route('soalpretestpertama.index') }}">
+                              <i class="bi bi-circle"></i><span>1. Pengenalan wawasan sejarah Ibnu Sina</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkedua.index') }}">
+                              <i class="bi bi-circle"></i><span>2. Pelayanan Kemahasiswaan Pusat Prestasi</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestketiga.index') }}">
+                              <i class="bi bi-circle"></i><span>3. Pelayanan sistem Akademik</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>4. Pelayanan sistem administrasi keuangan</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>5. Kehidupan Berbangsa, Bernegara dan pembinaan kesadaran bela negara</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>6. Sistem Pendidikan Tinggi di Indonesia</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>7. Pendidikan Tinggi di Era Digital dan Revolusi Industri</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>8. Pengenalan Keselamatan,Kesehatan Kerja dan Lingkungan ( K3L)</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>9. Perpustakaan</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>10. IKA UIS</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>11. Kewirausahaan</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>12. Pencarian Bakat Mahasiswa UIS (Survei minat UKM) dan Sosialiasi BEI</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>13. Motivasi Wali Kota Batam</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>14. Motivasi Gubernur Kepulauan Riau</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>15. (FIKes) (FAKULTAS ILMU KESEHATAN)</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>16. (FST) (FAKULTAS SAINS & TEKNOLOGI)</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('soalpretestkeempat.index') }}">
+                              <i class="bi bi-circle"></i><span>17. (FEB) (FAKULTAS EKONOMI DAN BISNIS)</span>
+                          </a>
+                      </li>
+                  </ul>
+              </li>
 
       </ul>
 

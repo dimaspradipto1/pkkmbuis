@@ -749,12 +749,12 @@ h6 {
 
 .sidebar-nav .nav-content a {
   display: flex;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 600;
+  align-items: flex-start;
+  font-size: 12px;
+  font-weight: 500;
   color: #012970;
-  transition: 0.3;
-  padding: 10px 0 10px 40px;
+  padding: 6px 10px 6px 35px;
+  line-height: 1.4;
   transition: 0.3s;
 }
 
@@ -763,6 +763,8 @@ h6 {
   margin-right: 8px;
   line-height: 0;
   border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
 }
 
 .sidebar-nav .nav-content a:hover,
@@ -773,6 +775,7 @@ h6 {
 .sidebar-nav .nav-content a.active i {
   background-color: #4154f1;
 }
+
 
 /*--------------------------------------------------------------
 # Dashboard

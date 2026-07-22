@@ -21,10 +21,18 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'nomor_registrasi',
+        'id_pendaftar',
         'role',
+        'fakultas',
+        'program_studi',
+        'kelompok_id',
         'is_active',
     ];
+
+    public function kelompok()
+    {
+        return $this->belongsTo(Kelompok::class, 'kelompok_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

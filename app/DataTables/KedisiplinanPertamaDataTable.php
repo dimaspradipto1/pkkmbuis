@@ -47,7 +47,7 @@ class KedisiplinanPertamaDataTable extends DataTable
             ->filterColumn('user_name', function($query, $keyword) {
                 $query->whereHas('user', function($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%")
-                      ->orWhere('nomor_registrasi', 'like', "%{$keyword}%");
+                      ->orWhere('id_pendaftar', 'like', "%{$keyword}%");
                 });
             })
             ->rawColumns(['action', 'DT_RowIndex', 'checkbox']);
@@ -64,6 +64,11 @@ class KedisiplinanPertamaDataTable extends DataTable
         
         if (Auth::user()->role == 'mahasiswa') {
             $query->where('user_id', Auth::id());
+        } elseif (Auth::user()->role == 'kakakleting') {
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())->pluck('id');
+            $query->whereHas('user', function($q) use ($myKelompokIds) {
+                $q->whereIn('kelompok_id', $myKelompokIds);
+            });
         }
         
         return $query;

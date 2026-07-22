@@ -6,6 +6,7 @@ use App\DataTables\AbsenPertamaDataTable;
 use App\Models\AbsenPertama;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class AbsenPertamaController extends Controller
@@ -23,7 +24,13 @@ class AbsenPertamaController extends Controller
      */
     public function create()
     {
-        $users = User::all();
+        $authUser = Auth::user();
+        if ($authUser->role == 'kakakleting') {
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
+            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
+        } else {
+            $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
+        }
         return view('pages.absenpertama.create', compact('users'));
     }
 
@@ -53,7 +60,13 @@ class AbsenPertamaController extends Controller
     public function edit(string $id)
     {
         $absenPertama = AbsenPertama::findOrFail($id);
-        $users = User::all();
+        $authUser = Auth::user();
+        if ($authUser->role == 'kakakleting') {
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
+            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
+        } else {
+            $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
+        }
         return view('pages.absenpertama.edit', compact('absenPertama', 'users'));
     }
 

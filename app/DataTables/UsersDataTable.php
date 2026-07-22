@@ -23,6 +23,9 @@ class UsersDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
+            ->editColumn('id_pendaftar', function($item){
+                return $item->id_pendaftar;
+            })
             ->addColumn('is_active', function($item){
                 return $item->is_active ? 'Aktif' : 'Tidak Aktif';
             })
@@ -95,10 +98,14 @@ class UsersDataTable extends DataTable
                 ->title('NO'),
             Column::make('name')
                 ->title('Nama'),
-            Column::make('nomor_registrasi')
-                ->title('No. Reg'),
+            Column::make('id_pendaftar')
+                ->title('ID Pendaftar'),
             Column::make('email')
                 ->title('Email'),
+            Column::make('fakultas')
+                ->title('Fakultas'),
+            Column::make('program_studi')
+                ->title('Program Studi'),
             Column::make('role')
                 ->title('Role'),
             Column::make('is_active')

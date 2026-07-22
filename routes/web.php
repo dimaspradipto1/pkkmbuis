@@ -25,6 +25,7 @@ use App\Http\Controllers\SoalPretestKetigaController;
 use App\Http\Controllers\SoalPretestPertamaController;
 use App\Http\Controllers\SoalTugasKelompokController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\RekapKeseluruhanController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -122,4 +123,12 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::get('materimodul/{id}/download/{modul}', [MateriModulController::class, 'download'])->name('materimodul.download');
     Route::get('materimodul/{id}/view/{modul}', [MateriModulController::class, 'viewFile'])->name('materimodul.view');
     Route::resource('materimodul', MateriModulController::class);
+
+    Route::get('kelompok/template', [KelompokController::class, 'downloadTemplate'])->name('kelompok.template');
+    Route::post('kelompok/import', [KelompokController::class, 'import'])->name('kelompok.import');
+    Route::get('kelompok/{slug}/template-member', [KelompokController::class, 'downloadMemberTemplate'])->name('kelompok.template-member');
+    Route::post('kelompok/{slug}/import-member', [KelompokController::class, 'importMembers'])->name('kelompok.import-member');
+    Route::post('kelompok/{id}/add-member', [KelompokController::class, 'addMember'])->name('kelompok.add-member');
+    Route::delete('kelompok/{kelompokId}/remove-member/{userId}', [KelompokController::class, 'removeMember'])->name('kelompok.remove-member');
+    Route::resource('kelompok', KelompokController::class);
 });

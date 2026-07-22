@@ -24,16 +24,16 @@ class AbsenKetigaScanController extends Controller
     public function process(Request $request)
     {
         $request->validate([
-            'nomor_registrasi' => 'required|string',
+            'id_pendaftar' => 'required|string',
             'sesi' => 'required|in:hadir_pagi,hadir_sore',
         ]);
 
-        $user = User::where('nomor_registrasi', $request->nomor_registrasi)->first();
+        $user = User::where('id_pendaftar', $request->id_pendaftar)->first();
 
         if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pengguna dengan nomor registrasi ' . $request->nomor_registrasi . ' tidak ditemukan.'
+                'message' => 'Pengguna dengan ID pendaftar ' . $request->id_pendaftar . ' tidak ditemukan.'
             ], 404);
         }
 

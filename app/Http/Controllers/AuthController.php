@@ -26,7 +26,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $loginField = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'nomor_registrasi';
+        $loginField = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'id_pendaftar';
 
         $credentials = [
             $loginField => $request->input('login'),
@@ -49,7 +49,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'login' => 'Login gagal, silakan periksa kembali email/nomor registrasi dan password Anda.',
+            'login' => 'Login gagal, silakan periksa kembali email/ID pendaftar dan password Anda.',
         ])->onlyInput('login');
     }
 }

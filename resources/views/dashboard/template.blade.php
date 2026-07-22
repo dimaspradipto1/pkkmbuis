@@ -250,8 +250,86 @@
 
     {{-- Select2 JS --}}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            if ($('#user_id, .select2').length) {
+                $('#user_id, .select2').select2({
+                    theme: 'bootstrap-5',
+                    placeholder: 'Cari / Pilih Pengguna...',
+                    allowClear: true,
+                    width: '100%'
+                });
+            }
+        });
+    </script>
 
     <script src="https://kit.fontawesome.com/63b8672806.js" crossorigin="anonymous"></script>
+
+    {{-- SweetAlert2 JS --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // Global SweetAlert2 confirm for onsubmit / onclick confirm()
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            const onsubmitAttr = form.getAttribute('onsubmit');
+            if (onsubmitAttr && onsubmitAttr.includes('confirm(')) {
+                e.preventDefault();
+                let match = onsubmitAttr.match(/confirm\(['"](.*?)['"]\)/);
+                let message = match ? match[1] : 'Apakah Anda yakin?';
+                
+                form.removeAttribute('onsubmit');
+                
+                Swal.fire({
+                    title: 'Konfirmasi Akses',
+                    text: message,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Lanjutkan!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    } else {
+                        form.setAttribute('onsubmit', onsubmitAttr);
+                    }
+                });
+            }
+        }, true);
+
+        $(document).on('click', 'button[onclick*="confirm("], a[onclick*="confirm("]', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const btn = this;
+            const onclickAttr = $(btn).attr('onclick');
+            let match = onclickAttr ? onclickAttr.match(/confirm\(['"](.*?)['"]\)/) : null;
+            let message = match ? match[1] : 'Apakah Anda yakin?';
+            const form = $(btn).closest('form');
+
+            Swal.fire({
+                title: 'Konfirmasi Akses',
+                text: message,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Lanjutkan!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (form.length) {
+                        $(btn).removeAttr('onclick');
+                        form.submit();
+                    } else if ($(btn).is('a') && $(btn).attr('href')) {
+                        window.location.href = $(btn).attr('href');
+                    }
+                }
+            });
+        });
+    </script>
 
     @if (Auth::check() && Auth::user()->role != 'mahasiswa')
         <!-- Global Dynamic QR Modal -->

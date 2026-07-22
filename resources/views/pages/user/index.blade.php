@@ -49,7 +49,7 @@
                     @csrf
                     <div class="modal-body p-4">
                         <div class="alert alert-info py-2 small mb-3">
-                            Format header: <strong>name</strong>, <strong>email</strong>, <strong>password</strong>, <strong>nomor_registrasi</strong>, <strong>role</strong>.
+                            Format header: <strong>name</strong>, <strong>email</strong>, <strong>password</strong>, <strong>id_pendaftar</strong>, <strong>role</strong>, <strong>fakultas</strong>, <strong>program_studi</strong>.
                             <br>
                             <a href="{{ route('users.template') }}" class="fw-bold"><i class="bi bi-cloud-download me-1"></i> Download Template</a>
                         </div>

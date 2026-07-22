@@ -38,9 +38,10 @@
                                 <label for="user_id" class="col-sm-2 col-form-label">Nama Pengguna</label>
                                 <div class="col-sm-10">
                                     <select name="user_id" id="user_id" class="form-select" required>
+                                        <option value=""></option>
                                         @foreach($users as $user)
                                             <option value="{{ $user->id }}" {{ (old('user_id', $absenPertama->user_id) == $user->id) ? 'selected' : '' }}>
-                                                {{ $user->name }} ({{ $user->nomor_registrasi }})
+                                                {{ $user->name }} ({{ $user->id_pendaftar }})
                                             </option>
                                         @endforeach
                                     </select>
@@ -51,10 +52,10 @@
                                 <label for="hadir_pagi" class="col-sm-2 col-form-label">Hadir Pagi</label>
                                 <div class="col-sm-10">
                                     <select name="hadir_pagi" id="hadir_pagi" class="form-select">
-                                        <option value="" disabled selected>Pilih Hadir Pagi...</option>
-                                        <option value="Hadir" {{ (old('hadir_pagi', $absenPertama->hadir_pagi) == 'Hadir') ? 'selected' : '' }}>Hadir</option>
-                                        <option value="Izin" {{ (old('hadir_pagi', $absenPertama->hadir_pagi) == 'Izin') ? 'selected' : '' }}>Izin</option>
-                                        <option value="Tidak Hadir" {{ (old('hadir_pagi', $absenPertama->hadir_pagi) == 'Tidak Hadir') ? 'selected' : '' }}>Tidak Hadir</option>
+                                        <option value="" disabled>Pilih Hadir Pagi...</option>
+                                        <option value="Hadir" {{ old('hadir_pagi', $absenPertama->hadir_pagi) == 'Hadir' ? 'selected' : '' }}>Hadir</option>
+                                        <option value="Izin" {{ old('hadir_pagi', $absenPertama->hadir_pagi) == 'Izin' ? 'selected' : '' }}>Izin</option>
+                                        <option value="Tidak Hadir" {{ old('hadir_pagi', $absenPertama->hadir_pagi) == 'Tidak Hadir' ? 'selected' : '' }}>Tidak Hadir</option>
                                     </select>
                                 </div>
                             </div>
@@ -63,16 +64,16 @@
                                 <label for="hadir_sore" class="col-sm-2 col-form-label">Hadir Sore</label>
                                 <div class="col-sm-10">
                                     <select name="hadir_sore" id="hadir_sore" class="form-select">
-                                        <option value="" disabled selected>Pilih Hadir Sore...</option>
-                                        <option value="Hadir" {{ (old('hadir_sore', $absenPertama->hadir_sore) == 'Hadir') ? 'selected' : '' }}>Hadir</option>
-                                        <option value="Izin" {{ (old('hadir_sore', $absenPertama->hadir_sore) == 'Izin') ? 'selected' : '' }}>Izin</option>
-                                        <option value="Tidak Hadir" {{ (old('hadir_sore', $absenPertama->hadir_sore) == 'Tidak Hadir') ? 'selected' : '' }}>Tidak Hadir</option>
+                                        <option value="" disabled>Pilih Hadir Sore...</option>
+                                        <option value="Hadir" {{ old('hadir_sore', $absenPertama->hadir_sore) == 'Hadir' ? 'selected' : '' }}>Hadir</option>
+                                        <option value="Izin" {{ old('hadir_sore', $absenPertama->hadir_sore) == 'Izin' ? 'selected' : '' }}>Izin</option>
+                                        <option value="Tidak Hadir" {{ old('hadir_sore', $absenPertama->hadir_sore) == 'Tidak Hadir' ? 'selected' : '' }}>Tidak Hadir</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="text-end mt-4">
-                                <button type="submit" class="btn btn-warning text-white">Update Absensi</button>
+                                <button type="submit" class="btn btn-primary">Update Absensi</button>
                                 <a href="{{ route('absenpertama.index') }}" class="btn btn-secondary">Batal</a>
                             </div>
                         </form>
@@ -90,8 +91,9 @@
         $(document).ready(function() {
             $('#user_id').select2({
                 theme: 'bootstrap-5',
-                placeholder: 'Pilih Pengguna...',
-                allowClear: true
+                placeholder: 'Cari / Pilih Pengguna...',
+                allowClear: true,
+                width: '100%'
             });
         });
     </script>

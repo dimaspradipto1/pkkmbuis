@@ -123,7 +123,7 @@
                     "X-CSRF-TOKEN": "{{ csrf_token() }}",
                 },
                 body: JSON.stringify({
-                    nomor_registrasi: decodedText,
+                    id_pendaftar: decodedText,
                     sesi: sesi
                 })
             })
@@ -178,7 +178,7 @@
             li.innerHTML = `
                 <div>
                     <strong>${data.user.name}</strong><br>
-                    <small class="text-muted">${data.user.nomor_registrasi} - ${new Date().toLocaleTimeString()}</small>
+                    <small class="text-muted">${data.user.id_pendaftar} - ${new Date().toLocaleTimeString()}</small>
                 </div>
                 <span class="badge bg-success rounded-pill">Hadir</span>
             `;

@@ -137,14 +137,24 @@ class AbsenScanController extends Controller
 
         // 2. Logic for ADMIN scanning MAHASISWA QR (Fallback / Original)
         else {
-            $regNumber = $barcodeData ?? $request->nomor_registrasi;
-            $targetUser = User::where('nomor_registrasi', $regNumber)->where('role', 'mahasiswa')->first();
+            $regNumber = $barcodeData ?? $request->id_pendaftar;
+            $targetUser = User::where('id_pendaftar', $regNumber)->where('role', 'mahasiswa')->first();
 
             if (!$targetUser) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Mahasiswa tidak ditemukan.'
                 ], 404);
+            }
+
+            if (Auth::user()->role == 'kakakleting') {
+                $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())->pluck('id')->toArray();
+                if (!in_array($targetUser->kelompok_id, $myKelompokIds)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Mahasiswa ' . $targetUser->name . ' bukan anggota kelompok Anda.'
+                    ], 403);
+                }
             }
 
             $sesi = $request->sesi; // hadir_pagi or hadir_sore

@@ -1260,7 +1260,7 @@
                                                     </td>
                                                     <td class="text-end">
                                                         <span
-                                                            class="badge bg-light text-success border border-success border-opacity-10">{{ $user->nomor_registrasi }}</span>
+                                                            class="badge bg-light text-success border border-success border-opacity-10">{{ $user->id_pendaftar }}</span>
                                                     </td>
                                                 </tr>
                                             @empty
