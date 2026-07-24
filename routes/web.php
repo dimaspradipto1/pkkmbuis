@@ -38,6 +38,7 @@ use App\Http\Controllers\EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndust
 use App\Http\Controllers\EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkunganController;
 use App\Http\Controllers\PerpustakaanController;
 use App\Http\Controllers\EvaluasiIkaUisController;
+use App\Http\Controllers\EvaluasiKewirausahaanController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -183,6 +184,10 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::resource('evaluasiikauis', EvaluasiIkaUisController::class)->parameters([
         'evaluasiikauis' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasikewirausahaan', EvaluasiKewirausahaanController::class)->parameters([
+        'evaluasikewirausahaan' => 'evaluasi'
     ]);
 
     Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');

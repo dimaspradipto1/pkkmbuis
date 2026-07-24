@@ -33,7 +33,7 @@ return new class extends Migration
             ['nomor' => 8, 'nama' => '8. Pengenalan Keselamatan,Kesehatan Kerja dan Lingkungan ( K3L)', 'route_name' => 'evaluasipengenalank3l.index', 'is_active' => true],
             ['nomor' => 9, 'nama' => '9. Perpustakaan', 'route_name' => 'evaluasiperpustakaan.index', 'is_active' => true],
             ['nomor' => 10, 'nama' => '10. IKA UIS', 'route_name' => 'evaluasiikauis.index', 'is_active' => true],
-            ['nomor' => 11, 'nama' => '11. Kewirausahaan', 'route_name' => null, 'is_active' => false],
+            ['nomor' => 11, 'nama' => '11. Kewirausahaan', 'route_name' => 'evaluasikewirausahaan.index', 'is_active' => true],
             ['nomor' => 12, 'nama' => '12. Pencarian Bakat Mahasiswa UIS (Survei minat UKM) dan Sosialiasi BEI', 'route_name' => null, 'is_active' => false],
             ['nomor' => 13, 'nama' => '13. Motivasi Wali Kota Batam', 'route_name' => null, 'is_active' => false],
             ['nomor' => 14, 'nama' => '14. Motivasi Gubernur Kepulauan Riau', 'route_name' => null, 'is_active' => false],
