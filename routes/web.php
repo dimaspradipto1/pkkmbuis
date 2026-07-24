@@ -39,6 +39,9 @@ use App\Http\Controllers\EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkunga
 use App\Http\Controllers\PerpustakaanController;
 use App\Http\Controllers\EvaluasiIkaUisController;
 use App\Http\Controllers\EvaluasiKewirausahaanController;
+use App\Http\Controllers\EvaluasiPencarianBakatMahasiswaController;
+use App\Http\Controllers\EvaluasiMotivasiWaliKotaBatamController;
+use App\Http\Controllers\EvaluasiMotivasiGubernurKepulauanRiauController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -188,6 +191,18 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::resource('evaluasikewirausahaan', EvaluasiKewirausahaanController::class)->parameters([
         'evaluasikewirausahaan' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasipencarianbakatmahasiswa', EvaluasiPencarianBakatMahasiswaController::class)->parameters([
+        'evaluasipencarianbakatmahasiswa' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasimotivasiwalikotabatam', EvaluasiMotivasiWaliKotaBatamController::class)->parameters([
+        'evaluasimotivasiwalikotabatam' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasimotivasigubernurkepulauanriau', EvaluasiMotivasiGubernurKepulauanRiauController::class)->parameters([
+        'evaluasimotivasigubernurkepulauanriau' => 'evaluasi'
     ]);
 
     Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');
