@@ -275,6 +275,9 @@ class EvaluasiPengenalanWawasanIbnuSinaController extends Controller
     public function show($id)
     {
         $evaluasi = EvaluasiPengenalanWawasanIbnuSina::with('user.kelompok')->findOrFail($id);
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
         $questions = EvaluasiPengenalanWawasanIbnuSina::questions();
         return view('pages.evaluasipengenalanwawasanibnusina.show', compact('evaluasi', 'questions'));
     }
@@ -285,7 +288,7 @@ class EvaluasiPengenalanWawasanIbnuSinaController extends Controller
     public function edit($id)
     {
         $evaluasi = EvaluasiPengenalanWawasanIbnuSina::findOrFail($id);
-        if (Auth::user()->role == 'mahasiswa' && $evaluasi->user_id != Auth::id()) {
+        if (Auth::user()->role == 'mahasiswa') {
             abort(403);
         }
         $questions = EvaluasiPengenalanWawasanIbnuSina::questions();

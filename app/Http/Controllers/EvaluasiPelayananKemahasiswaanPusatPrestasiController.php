@@ -75,6 +75,9 @@ class EvaluasiPelayananKemahasiswaanPusatPrestasiController extends Controller
     public function show($id)
     {
         $evaluasi = EvaluasiPelayananKemahasiswaanPusatPrestasi::with('user.kelompok')->findOrFail($id);
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
         $questions = EvaluasiPelayananKemahasiswaanPusatPrestasi::questions();
         return view('pages.evaluasipelayanankemahasiswaanpusatprestasi.show', compact('evaluasi', 'questions'));
     }
@@ -85,7 +88,7 @@ class EvaluasiPelayananKemahasiswaanPusatPrestasiController extends Controller
     public function edit($id)
     {
         $evaluasi = EvaluasiPelayananKemahasiswaanPusatPrestasi::findOrFail($id);
-        if (Auth::user()->role == 'mahasiswa' && $evaluasi->user_id != Auth::id()) {
+        if (Auth::user()->role == 'mahasiswa') {
             abort(403);
         }
         $questions = EvaluasiPelayananKemahasiswaanPusatPrestasi::questions();

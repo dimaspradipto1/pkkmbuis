@@ -170,9 +170,6 @@
             padding: 14px 16px;
             margin-bottom: 16px;
         }
-        .eval-header-body p {
-            font-size: 0.85rem !important;
-        }
         .eval-question-title {
             font-size: 0.9rem;
             margin-bottom: 16px;
@@ -181,20 +178,11 @@
             gap: 2px;
             padding: 4px 0;
         }
-        .eval-scale-label.left {
+        .eval-scale-label.left, .eval-scale-label.right {
             width: 72px;
             min-width: 72px;
             font-size: 0.72rem;
             text-align: center;
-            padding-right: 2px;
-            color: #64748b;
-        }
-        .eval-scale-label.right {
-            width: 72px;
-            min-width: 72px;
-            font-size: 0.72rem;
-            text-align: center;
-            padding-left: 2px;
             color: #64748b;
         }
         .eval-radio-options {
@@ -230,19 +218,19 @@
 </style>
 
 <div class="pagetitle">
-    <h1>Edit Evaluasi Pengenalan Wawasan Sejarah Ibnu Sina</h1>
+    <h1>Edit Evaluasi Pelayanan Sistem Akademik</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('evaluasipengenalanwawasanibnusina.index') }}">Evaluasi</a></li>
-            <li class="breadcrumb-item active">Edit Evaluasi</li>
+            <li class="breadcrumb-item"><a href="{{ route('evaluasipelayanansistemakademik.index') }}">Evaluasi</a></li>
+            <li class="breadcrumb-item active">Edit Form</li>
         </ol>
     </nav>
 </div>
 
-<section class="section">
+<div class="container-fluid py-3">
     <div class="eval-container">
-        <form action="{{ route('evaluasipengenalanwawasanibnusina.update', $evaluasi->id) }}" method="POST" id="evalForm">
+        <form action="{{ route('evaluasipelayanansistemakademik.update', $evaluasi->id) }}" method="POST" id="evalForm">
             @csrf
             @method('PUT')
 
@@ -251,8 +239,8 @@
                 <div class="eval-top-bar"></div>
                 <div class="eval-top-body">
                     <h2 class="eval-top-title">
-                        EVALUASI PENYAMPAIAN MATERI PKKMB {{ date('Y') }}<br>
-                        (Pengenalan Wawasan Sejarah Ibnu Sina)
+                        EDIT EVALUASI PENYAMPAIAN MATERI PKKMB {{ date('Y') }} (Leni Utami,, S.Si.,M.Si)<br>
+                        (Pelayanan sistem Akademik)
                     </h2>
                     <div class="eval-top-divider"></div>
                     <div class="eval-required-note">
@@ -261,9 +249,9 @@
                 </div>
             </div>
 
-            <!-- Instruction Header Card -->
+            <!-- Header Section 1: Pemateri -->
             <div class="eval-header-card">
-                PENILAIAN EVALUASI PEMATERI (EDIT)
+                PENILAIAN EVALUASI PEMATERI
             </div>
             <div class="eval-header-body">
                 <p class="mb-1 text-secondary" style="font-size: 0.95rem;">
@@ -274,34 +262,81 @@
                 </p>
             </div>
 
-            <!-- Questions q1 to q13 -->
+            <!-- Questions q1 to q8 (Pemateri) -->
             @foreach($questions as $key => $questionText)
-                <div class="eval-card">
-                    <div class="eval-question-title">
-                        {{ $loop->iteration }}. {{ $questionText }} <span class="req">*</span>
-                    </div>
-
-                    <div class="eval-scale-wrapper">
-                        <div class="eval-scale-label left">Sangat tidak setuju</div>
-                        <div class="eval-radio-options">
-                            @for($i = 1; $i <= 4; $i++)
-                                <div class="eval-radio-col">
-                                    <span class="eval-num">{{ $i }}</span>
-                                    <input type="radio" 
-                                           name="{{ $key }}" 
-                                           id="{{ $key }}_{{ $i }}" 
-                                           value="{{ $i }}" 
-                                           {{ old($key, $evaluasi->$key) == $i ? 'checked' : '' }} 
-                                           required>
-                                </div>
-                            @endfor
+                @if(in_array($key, ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8']))
+                    <div class="eval-card">
+                        <div class="eval-question-title">
+                            {{ $questionText }} <span class="req">*</span>
                         </div>
-                        <div class="eval-scale-label right">Sangat setuju</div>
+
+                        <div class="eval-scale-wrapper">
+                            <div class="eval-scale-label left">Sangat tidak setuju</div>
+                            <div class="eval-radio-options">
+                                @for($i = 1; $i <= 4; $i++)
+                                    <div class="eval-radio-col">
+                                        <span class="eval-num">{{ $i }}</span>
+                                        <input type="radio" 
+                                               name="{{ $key }}" 
+                                               id="{{ $key }}_{{ $i }}" 
+                                               value="{{ $i }}" 
+                                               {{ old($key, $evaluasi->$key) == $i ? 'checked' : '' }} 
+                                               required>
+                                    </div>
+                                @endfor
+                            </div>
+                            <div class="eval-scale-label right">Sangat setuju</div>
+                        </div>
+                        @error($key)
+                            <div class="text-danger mt-2 small text-center">{{ $message }}</div>
+                        @enderror
                     </div>
-                    @error($key)
-                        <div class="text-danger mt-2 small text-center">{{ $message }}</div>
-                    @enderror
-                </div>
+                @endif
+            @endforeach
+
+            <!-- Header Section 2: Isi Materi -->
+            <div class="eval-header-card">
+                PENILAIAN EVALUASI ISI MATERI
+            </div>
+            <div class="eval-header-body">
+                <p class="mb-1 text-secondary" style="font-size: 0.95rem;">
+                    Berikan tanggapan Anda terhadap keseluruhan Materi disajikan yang Anda ikuti.
+                </p>
+                <p class="mb-0 text-secondary" style="font-size: 0.95rem;">
+                    1 = Sangat tidak setuju 4 = Sangat setuju
+                </p>
+            </div>
+
+            <!-- Questions q9 to q13 (Isi Materi) -->
+            @foreach($questions as $key => $questionText)
+                @if(in_array($key, ['q9', 'q10', 'q11', 'q12', 'q13']))
+                    <div class="eval-card">
+                        <div class="eval-question-title">
+                            {{ $questionText }} <span class="req">*</span>
+                        </div>
+
+                        <div class="eval-scale-wrapper">
+                            <div class="eval-scale-label left">Sangat tidak setuju</div>
+                            <div class="eval-radio-options">
+                                @for($i = 1; $i <= 4; $i++)
+                                    <div class="eval-radio-col">
+                                        <span class="eval-num">{{ $i }}</span>
+                                        <input type="radio" 
+                                               name="{{ $key }}" 
+                                               id="{{ $key }}_{{ $i }}" 
+                                               value="{{ $i }}" 
+                                               {{ old($key, $evaluasi->$key) == $i ? 'checked' : '' }} 
+                                               required>
+                                    </div>
+                                @endfor
+                            </div>
+                            <div class="eval-scale-label right">Sangat setuju</div>
+                        </div>
+                        @error($key)
+                            <div class="text-danger mt-2 small text-center">{{ $message }}</div>
+                        @enderror
+                    </div>
+                @endif
             @endforeach
 
             <!-- Saran & Masukan Card -->
@@ -323,15 +358,9 @@
             <!-- Bottom Actions -->
             <div class="eval-action-bar">
                 <div>
-                    @if(Auth::user()->role == 'mahasiswa')
-                        <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary px-4 me-2">
-                            Kembali
-                        </a>
-                    @else
-                        <a href="{{ route('evaluasipengenalanwawasanibnusina.index') }}" class="btn btn-outline-secondary px-4 me-2">
-                            Kembali
-                        </a>
-                    @endif
+                    <a href="{{ route('evaluasipelayanansistemakademik.index') }}" class="btn btn-outline-secondary px-4 me-2">
+                        Batal
+                    </a>
                     <button type="submit" class="btn btn-primary px-4">
                         Update Evaluasi
                     </button>
@@ -340,5 +369,5 @@
 
         </form>
     </div>
-</section>
+</div>
 @endsection

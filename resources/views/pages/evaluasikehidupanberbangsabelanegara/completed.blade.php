@@ -73,7 +73,6 @@
     .btn-eval-primary:hover {
         background-color: #2a552e;
         border-color: #2a552e;
-        color: #ffffff;
     }
 
     @media (max-width: 576px) {
@@ -106,11 +105,11 @@
 </style>
 
 <div class="pagetitle">
-    <h1>Evaluasi Pelayanan Kemahasiswaan & Pusat Prestasi</h1>
+    <h1>Evaluasi Kehidupan Berbangsa, Bernegara dan Pembinaan Kesadaran Bela Negara</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('evaluasipelayanankemahasiswaanpusatprestasi.index') }}">Evaluasi</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('evaluasikehidupanberbangsabelanegara.index') }}">Evaluasi</a></li>
             <li class="breadcrumb-item active">Status Evaluasi</li>
         </ol>
     </nav>
@@ -123,14 +122,14 @@
             <div class="eval-completed-body">
                 <h1 class="eval-completed-title">Anda sudah menanggapi.</h1>
                 <p class="eval-completed-subtitle">
-                    Anda hanya dapat mengisi formulir evaluasi ini satu kali. Tanggapan Anda untuk <strong>Pelayanan Kemahasiswaan & Pusat Prestasi</strong> telah berhasil disimpan dalam sistem.
+                    Anda hanya dapat mengisi formulir evaluasi ini satu kali. Tanggapan Anda untuk <strong>Materi Kehidupan Berbangsa, Bernegara dan pembinaan kesadaran bela negara</strong> telah berhasil disimpan dalam sistem.
                 </p>
                 <div class="eval-completed-actions">
                     <a href="{{ route('dashboard') }}" class="btn-eval-outline">
                         <i class="bi bi-house me-2"></i> Kembali ke Dashboard
                     </a>
                     @if(Auth::user()->role != 'mahasiswa')
-                        <a href="{{ route('evaluasipelayanankemahasiswaanpusatprestasi.show', $evaluasi->id) }}" class="btn-eval-primary">
+                        <a href="{{ route('evaluasikehidupanberbangsabelanegara.show', $evaluasi->id) }}" class="btn-eval-primary">
                             <i class="bi bi-eye me-2"></i> Lihat Tanggapan Saya
                         </a>
                     @endif
@@ -140,4 +139,3 @@
     </div>
 </section>
 @endsection
-

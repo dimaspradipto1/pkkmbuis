@@ -87,12 +87,10 @@
                         </table>
                     </div>
 
-                    @if($evaluasi->saran_dan_masukan)
-                        <div class="mt-4 p-3 bg-light rounded-3 border">
-                            <h6 class="fw-bold text-dark mb-1 small"><i class="bi bi-chat-left-text text-primary me-1"></i> Saran dan Masukan:</h6>
-                            <p class="text-secondary small mb-0">{{ $evaluasi->saran_dan_masukan }}</p>
-                        </div>
-                    @endif
+                    <div class="mt-4 p-3 bg-light rounded-3 border">
+                        <h6 class="fw-bold text-dark mb-1 small"><i class="bi bi-chat-left-text text-primary me-1"></i> Saran dan Masukan:</h6>
+                        <p class="text-secondary small mb-0">{{ $evaluasi->saran_dan_masukan ?: '-' }}</p>
+                    </div>
                 </div>
             </div>
         </div>

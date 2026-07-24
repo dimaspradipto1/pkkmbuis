@@ -30,6 +30,10 @@ use App\Http\Controllers\RekapKeseluruhanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EvaluasiPengenalanWawasanIbnuSinaController;
 use App\Http\Controllers\EvaluasiPelayananKemahasiswaanPusatPrestasiController;
+use App\Http\Controllers\EvaluasiPelayanansistemAkademikController;
+use App\Http\Controllers\EvaluasiPelayanansistemAdministrasiKeuanganController;
+use App\Http\Controllers\EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegaraController;
+use App\Http\Controllers\EvaluasiSistemPendidikanTinggidiIndonesiaController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -143,6 +147,22 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::resource('evaluasipelayanankemahasiswaanpusatprestasi', EvaluasiPelayananKemahasiswaanPusatPrestasiController::class)->parameters([
         'evaluasipelayanankemahasiswaanpusatprestasi' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasipelayanansistemakademik', EvaluasiPelayanansistemAkademikController::class)->parameters([
+        'evaluasipelayanansistemakademik' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasipelayanansistemadministrasikeuangan', EvaluasiPelayanansistemAdministrasiKeuanganController::class)->parameters([
+        'evaluasipelayanansistemadministrasikeuangan' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasikehidupanberbangsabelanegara', EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegaraController::class)->parameters([
+        'evaluasikehidupanberbangsabelanegara' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasisistempendidikantinggidiindonesia', EvaluasiSistemPendidikanTinggidiIndonesiaController::class)->parameters([
+        'evaluasisistempendidikantinggidiindonesia' => 'evaluasi'
     ]);
 
     Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');

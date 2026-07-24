@@ -3,45 +3,79 @@
 @section('content')
 <style>
     .eval-completed-container {
-        max-width: 680px;
+        max-width: 750px;
         margin: 30px auto;
     }
     .eval-completed-card {
         background: #ffffff;
-        border-radius: 10px;
+        border-radius: 12px;
         border: 1px solid #dadce0;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         overflow: hidden;
     }
     .eval-completed-top-bar {
-        height: 10px;
-        background-color: #1b7a42; /* Warna Hijau UIS */
+        height: 12px;
+        background-color: #356B3A;
     }
     .eval-completed-body {
-        padding: 32px 36px;
+        padding: 36px 40px;
+        text-align: center;
     }
     .eval-completed-title {
-        font-size: 2rem;
+        font-size: 2.2rem;
         font-weight: 500;
         color: #202124;
         letter-spacing: -0.5px;
-        margin-bottom: 16px;
+        margin-bottom: 18px;
         line-height: 1.25;
+        text-align: center;
     }
     .eval-completed-subtitle {
-        font-size: 0.95rem;
+        font-size: 1.05rem;
         color: #3c4043;
         line-height: 1.6;
-        margin-bottom: 28px;
-        text-align: justify; /* Rata Kiri Kanan */
+        margin-bottom: 32px;
+        text-align: center;
     }
     .eval-completed-actions {
         display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+        justify-content: center;
+    }
+    .btn-eval-outline {
+        border: 1px solid #747775;
+        color: #3c4043;
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    .btn-eval-outline:hover {
+        background-color: #f8f9fa;
+        color: #1f1f1f;
+        border-color: #5f6368;
+    }
+    .btn-eval-primary {
+        background-color: #356B3A;
+        border: 1px solid #356B3A;
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 10px 22px;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    .btn-eval-primary:hover {
+        background-color: #2a552e;
+        border-color: #2a552e;
+        color: #ffffff;
     }
 
-    /* Full width buttons on mobile */
     @media (max-width: 576px) {
         .eval-completed-container {
             margin: 15px auto;
@@ -50,19 +84,19 @@
             padding: 24px 20px;
         }
         .eval-completed-title {
-            font-size: 1.5rem;
-            margin-bottom: 12px;
+            font-size: 1.6rem;
+            margin-bottom: 14px;
         }
         .eval-completed-subtitle {
-            font-size: 0.88rem;
-            margin-bottom: 20px;
+            font-size: 0.92rem;
+            margin-bottom: 24px;
         }
         .eval-completed-actions {
             flex-direction: column;
             width: 100%;
-            gap: 10px;
+            gap: 12px;
         }
-        .eval-completed-actions .btn {
+        .eval-completed-actions a {
             width: 100%;
             display: flex;
             justify-content: center;
@@ -92,15 +126,18 @@
                     Anda hanya dapat mengisi formulir evaluasi ini satu kali. Tanggapan Anda untuk <strong>Pengenalan Wawasan Sejarah Ibnu Sina</strong> telah berhasil disimpan dalam sistem.
                 </p>
                 <div class="eval-completed-actions">
-                    <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary px-4 py-2">
-                        <i class="bi bi-house me-1"></i> Kembali ke Dashboard
+                    <a href="{{ route('dashboard') }}" class="btn-eval-outline">
+                        <i class="bi bi-house me-2"></i> Kembali ke Dashboard
                     </a>
-                    <a href="{{ route('evaluasipengenalanwawasanibnusina.show', $evaluasi->id) }}" class="btn btn-success text-white px-4 py-2" style="background-color: #1b7a42; border-color: #1b7a42;">
-                        <i class="bi bi-eye me-1"></i> Lihat Tanggapan Saya
-                    </a>
+                    @if(Auth::user()->role != 'mahasiswa')
+                        <a href="{{ route('evaluasipengenalanwawasanibnusina.show', $evaluasi->id) }}" class="btn-eval-primary">
+                            <i class="bi bi-eye me-2"></i> Lihat Tanggapan Saya
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </section>
 @endsection
+

@@ -15,8 +15,8 @@
         margin-bottom: 20px;
     }
     .eval-header-card {
-        background-color: #90cbd7 !important;
-        color: #1a202c;
+        background-color: #356B3A !important;
+        color: #ffffff;
         border-radius: 10px 10px 0 0;
         padding: 16px 24px;
         font-weight: 700;
@@ -86,7 +86,7 @@
         width: 20px;
         height: 20px;
         cursor: pointer;
-        accent-color: #2b7082;
+        accent-color: #356B3A;
         margin: 0;
     }
     .eval-input-line {
@@ -111,7 +111,7 @@
     }
     .eval-top-bar {
         height: 10px;
-        background-color: #90cbd7;
+        background-color: #356B3A;
     }
     .eval-top-body {
         padding: 24px 28px;
@@ -238,20 +238,21 @@
                 </div>
             @endforeach
 
-            {{-- SECTION 3: SARAN DAN MASUKAN --}}
+            <!-- Saran & Masukan Card -->
             <div class="eval-card">
                 <div class="eval-question-title">
                     Berikan saran dan masukan terhadap pemateri
                 </div>
-                <div>
-                    <input type="text" name="saran_dan_masukan" class="eval-input-line" placeholder="Jawaban Anda" value="{{ old('saran_dan_masukan') }}">
+                <div class="mt-3">
+                    <textarea name="saran_dan_masukan" 
+                              class="form-control eval-input-line eval-text-break @error('saran_dan_masukan') is-invalid @enderror" 
+                              rows="2" 
+                              placeholder="Jawaban Anda">{{ old('saran_dan_masukan') }}</textarea>
+                    @error('saran_dan_masukan')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
-                @error('saran_dan_masukan')
-                    <div class="text-danger small mt-2">{{ $message }}</div>
-                @enderror
-            </div>
-
-            {{-- Action Buttons --}}
+            </div> {{-- Action Buttons --}}
             <div class="d-flex justify-content-between align-items-center mt-4 mb-5">
                 <button type="submit" class="btn btn-primary px-4 py-2 rounded-3 shadow-sm fw-semibold" style="background-color: #2b7082; border-color: #2b7082;">
                     <i class="bi bi-send me-1"></i> Kirim Evaluasi

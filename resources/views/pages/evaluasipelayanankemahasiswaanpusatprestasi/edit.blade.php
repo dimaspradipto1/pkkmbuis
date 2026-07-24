@@ -15,8 +15,8 @@
         margin-bottom: 20px;
     }
     .eval-header-card {
-        background-color: #90cbd7 !important;
-        color: #1a202c;
+        background-color: #356B3A !important;
+        color: #ffffff;
         border-radius: 10px 10px 0 0;
         padding: 16px 24px;
         font-weight: 700;
@@ -86,7 +86,7 @@
         width: 20px;
         height: 20px;
         cursor: pointer;
-        accent-color: #2b7082;
+        accent-color: #356B3A;
         margin: 0;
     }
     .eval-input-line {
@@ -111,7 +111,7 @@
     }
     .eval-top-bar {
         height: 10px;
-        background-color: #90cbd7;
+        background-color: #356B3A;
     }
     .eval-top-body {
         padding: 24px 28px;

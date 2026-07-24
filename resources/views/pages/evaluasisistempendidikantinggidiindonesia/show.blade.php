@@ -60,11 +60,11 @@
 </style>
 
 <div class="pagetitle">
-    <h1>Detail Evaluasi Pengenalan Wawasan Sejarah Ibnu Sina</h1>
+    <h1>Detail Evaluasi Sistem Pendidikan Tinggi di Indonesia</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('evaluasipengenalanwawasanibnusina.index') }}">Evaluasi</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('evaluasisistempendidikantinggidiindonesia.index') }}">Evaluasi</a></li>
             <li class="breadcrumb-item active">Detail</li>
         </ol>
     </nav>
@@ -74,7 +74,7 @@
     <div class="eval-container">
         <!-- Header Banner Card -->
         <div class="eval-header-card">
-            DETAIL EVALUASI PEMATERI
+            DETAIL EVALUASI SISTEM PENDIDIKAN TINGGI DI INDONESIA
         </div>
         <div class="eval-header-body">
             <div class="row">
@@ -121,12 +121,12 @@
         </div>
 
         <div class="d-flex justify-content-between my-4">
-            <a href="{{ route('evaluasipengenalanwawasanibnusina.index') }}" class="btn btn-outline-secondary px-4">
+            <a href="{{ route('evaluasisistempendidikantinggidiindonesia.index') }}" class="btn btn-outline-secondary px-4">
                 <i class="bi bi-arrow-left me-1"></i> Kembali
             </a>
             <div>
                 @if(Auth::user()->role != 'mahasiswa')
-                    <a href="{{ route('evaluasipengenalanwawasanibnusina.edit', $evaluasi->id) }}" class="btn btn-primary px-4 me-2">
+                    <a href="{{ route('evaluasisistempendidikantinggidiindonesia.edit', $evaluasi->id) }}" class="btn btn-primary px-4 me-2">
                         <i class="bi bi-pencil me-1"></i> Edit
                     </a>
                 @endif

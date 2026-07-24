@@ -15,8 +15,8 @@
         margin-bottom: 20px;
     }
     .eval-header-card {
-        background-color: #90cbd7 !important;
-        color: #1a202c;
+        background-color: #356B3A !important;
+        color: #ffffff;
         border-radius: 10px 10px 0 0;
         padding: 16px 24px;
         font-weight: 700;
@@ -86,7 +86,7 @@
         width: 20px;
         height: 20px;
         cursor: pointer;
-        accent-color: #2b7082;
+        accent-color: #356B3A;
         margin: 0;
     }
     .eval-input-line {
@@ -119,7 +119,7 @@
     }
     .eval-top-bar {
         height: 10px;
-        background-color: #90cbd7;
+        background-color: #356B3A;
     }
     .eval-top-body {
         padding: 24px 28px;
@@ -306,14 +306,13 @@
             <!-- Saran & Masukan Card -->
             <div class="eval-card">
                 <div class="eval-question-title">
-                    Berikan saran dan masukan terhadap pemateri <span class="req">*</span>
+                    Berikan saran dan masukan terhadap pemateri
                 </div>
                 <div class="mt-3">
                     <textarea name="saran_dan_masukan" 
                               class="form-control eval-input-line eval-text-break @error('saran_dan_masukan') is-invalid @enderror" 
                               rows="2" 
-                              placeholder="Jawaban Anda" 
-                              required>{{ old('saran_dan_masukan') }}</textarea>
+                              placeholder="Jawaban Anda">{{ old('saran_dan_masukan') }}</textarea>
                     @error('saran_dan_masukan')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -332,7 +331,7 @@
                             Kembali
                         </a>
                     @endif
-                    <button type="submit" class="btn btn-info text-white px-4" style="background-color: #82c4d5; border-color: #82c4d5;">
+                    <button type="submit" class="btn text-white px-4" style="background-color: #356B3A; border-color: #356B3A;">
                         Simpan Evaluasi
                     </button>
                 </div>
