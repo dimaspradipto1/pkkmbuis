@@ -34,6 +34,10 @@ use App\Http\Controllers\EvaluasiPelayanansistemAkademikController;
 use App\Http\Controllers\EvaluasiPelayanansistemAdministrasiKeuanganController;
 use App\Http\Controllers\EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegaraController;
 use App\Http\Controllers\EvaluasiSistemPendidikanTinggidiIndonesiaController;
+use App\Http\Controllers\EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustriController;
+use App\Http\Controllers\EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkunganController;
+use App\Http\Controllers\PerpustakaanController;
+use App\Http\Controllers\EvaluasiIkaUisController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -163,6 +167,22 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::resource('evaluasisistempendidikantinggidiindonesia', EvaluasiSistemPendidikanTinggidiIndonesiaController::class)->parameters([
         'evaluasisistempendidikantinggidiindonesia' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasipendidikantinggieradigital', EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustriController::class)->parameters([
+        'evaluasipendidikantinggieradigital' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasipengenalank3l', EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkunganController::class)->parameters([
+        'evaluasipengenalank3l' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasiperpustakaan', PerpustakaanController::class)->parameters([
+        'evaluasiperpustakaan' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasiikauis', EvaluasiIkaUisController::class)->parameters([
+        'evaluasiikauis' => 'evaluasi'
     ]);
 
     Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');
