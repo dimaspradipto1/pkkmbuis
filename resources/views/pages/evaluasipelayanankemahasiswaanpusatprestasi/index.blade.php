@@ -1,36 +1,18 @@
 @extends('dashboard.template')
 
 @section('content')
-    @php
-        if (!function_exists('getKategoriBadgeStyle')) {
-            function getKategoriBadgeStyle($kat) {
-                $k = strtolower(trim($kat));
-                if (str_contains($k, 'sangat baik')) {
-                    return 'bg-success text-white fw-bold shadow-sm';
-                } elseif (str_contains($k, 'kurang baik')) {
-                    return 'bg-warning text-dark fw-bold shadow-sm';
-                } elseif (str_contains($k, 'tidak baik')) {
-                    return 'bg-danger text-white fw-bold shadow-sm';
-                } elseif (str_contains($k, 'baik')) {
-                    return 'bg-primary text-white fw-bold shadow-sm';
-                }
-                return 'bg-secondary text-white fw-bold';
-            }
-        }
-    @endphp
-
     <div class="pagetitle d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <div>
-            <h1 class="h4 fw-bold text-dark mb-1">Evaluasi Pengenalan Wawasan Sejarah Ibnu Sina</h1>
+            <h1 class="h4 fw-bold text-dark mb-1">Evaluasi Pelayanan Kemahasiswaan & Pusat Prestasi</h1>
             <nav>
                 <ol class="breadcrumb mb-0 extra-small">
                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
                     <li class="breadcrumb-item">Evaluasi</li>
-                    <li class="breadcrumb-item active">Pengenalan Wawasan Sejarah Ibnu Sina</li>
+                    <li class="breadcrumb-item active">Pelayanan Kemahasiswaan & Pusat Prestasi</li>
                 </ol>
             </nav>
         </div>
-        <a href="{{ route('evaluasipengenalanwawasanibnusina.create') }}" class="btn btn-primary btn-sm shadow-sm rounded-pill px-3 py-2">
+        <a href="{{ route('evaluasipelayanankemahasiswaanpusatprestasi.create') }}" class="btn btn-primary btn-sm shadow-sm rounded-pill px-3 py-2">
             <i class="bi bi-plus-lg me-1"></i> Isi Evaluasi
         </a>
     </div>

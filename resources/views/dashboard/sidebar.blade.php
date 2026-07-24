@@ -192,11 +192,11 @@
           @endphp
 
           <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('evaluasipengenalanwawasanibnusina.*') || request()->routeIs('evaluasimenu.*') ? '' : 'collapsed' }}" data-bs-target="#evaluasi" data-bs-toggle="collapse" href="#">
+                  <a class="nav-link {{ request()->routeIs('evaluasi*') ? '' : 'collapsed' }}" data-bs-target="#evaluasi" data-bs-toggle="collapse" href="#">
                       <i class="bi bi-layout-text-window-reverse"></i><span>Evaluasi Penyampaian Materi</span><i
                           class="bi bi-chevron-down ms-auto"></i>
                   </a>
-                  <ul id="evaluasi" class="nav-content collapse {{ request()->routeIs('evaluasipengenalanwawasanibnusina.*') || request()->routeIs('evaluasimenu.*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                  <ul id="evaluasi" class="nav-content collapse {{ request()->routeIs('evaluasi*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
                       @foreach($evaluasiMenus as $menu)
                           @if(Auth::user()->role != 'mahasiswa' || $menu->is_active)
                               <li>

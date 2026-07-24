@@ -29,6 +29,7 @@ use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\RekapKeseluruhanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EvaluasiPengenalanWawasanIbnuSinaController;
+use App\Http\Controllers\EvaluasiPelayananKemahasiswaanPusatPrestasiController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -138,6 +139,10 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::resource('evaluasipengenalanwawasanibnusina', EvaluasiPengenalanWawasanIbnuSinaController::class)->parameters([
         'evaluasipengenalanwawasanibnusina' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasipelayanankemahasiswaanpusatprestasi', EvaluasiPelayananKemahasiswaanPusatPrestasiController::class)->parameters([
+        'evaluasipelayanankemahasiswaanpusatprestasi' => 'evaluasi'
     ]);
 
     Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');

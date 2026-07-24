@@ -24,7 +24,7 @@ return new class extends Migration
         // Insert initial 17 evaluasi submenus
         $items = [
             ['nomor' => 1, 'nama' => '1. Pengenalan wawasan sejarah Ibnu Sina', 'route_name' => 'evaluasipengenalanwawasanibnusina.index', 'is_active' => true],
-            ['nomor' => 2, 'nama' => '2. Pelayanan Kemahasiswaan Pusat Prestasi', 'route_name' => null, 'is_active' => false],
+            ['nomor' => 2, 'nama' => '2. Pelayanan Kemahasiswaan Pusat Prestasi', 'route_name' => 'evaluasipelayanankemahasiswaanpusatprestasi.index', 'is_active' => true],
             ['nomor' => 3, 'nama' => '3. Pelayanan sistem Akademik', 'route_name' => null, 'is_active' => false],
             ['nomor' => 4, 'nama' => '4. Pelayanan sistem administrasi keuangan', 'route_name' => null, 'is_active' => false],
             ['nomor' => 5, 'nama' => '5. Kehidupan Berbangsa, Bernegara dan pembinaan kesadaran bela negara', 'route_name' => null, 'is_active' => false],

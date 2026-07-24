@@ -125,11 +125,12 @@
         padding: 24px 28px;
     }
     .eval-top-title {
-        font-size: 1.45rem;
-        font-weight: 500;
-        color: #222222;
-        line-height: 1.4;
-        margin-bottom: 20px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1e293b;
+        line-height: 1.5;
+        margin-bottom: 16px;
+        text-align: center;
     }
     .eval-top-divider {
         border-top: 1px solid #eeeeee;
@@ -239,7 +240,7 @@
     </nav>
 </div>
 
-<section class="section">
+<div class="container-fluid py-3">
     <div class="eval-container">
         <form action="{{ route('evaluasipengenalanwawasanibnusina.store') }}" method="POST" id="evalForm">
             @csrf
@@ -249,9 +250,8 @@
                 <div class="eval-top-bar"></div>
                 <div class="eval-top-body">
                     <h2 class="eval-top-title">
-                        EVALUASI PENYAMPAIAN MATERI<br>
-                        PKKMB 2025 (Dr. Juni Bedu, LC.,MA)<br>
-                        (Pengenalan wawasan sejarah Ibnu Sina)
+                        EVALUASI PENYAMPAIAN MATERI PKKMB {{ date('Y') }}<br>
+                        (Pengenalan Wawasan Sejarah Ibnu Sina)
                     </h2>
                     <div class="eval-top-divider"></div>
                     <div class="eval-required-note">

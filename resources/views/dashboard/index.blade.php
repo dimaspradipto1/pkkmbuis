@@ -1,6 +1,175 @@
 @extends('dashboard.template')
 
 @section('content')
+    <style>
+        /* Celebratory Lulus Card */
+        .celebration-lulus-card {
+            background: linear-gradient(135deg, #059669 0%, #10B981 45%, #047857 100%);
+            border: 2px solid rgba(251, 191, 36, 0.5);
+            box-shadow: 0 15px 35px -5px rgba(16, 185, 129, 0.45), 0 0 25px rgba(245, 158, 11, 0.35);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+        }
+
+        .celebration-lulus-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 45px -5px rgba(16, 185, 129, 0.55), 0 0 35px rgba(245, 158, 11, 0.5);
+        }
+
+        /* Shimmer Light Effect */
+        .shimmer-sweep {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.03) 45%,
+                rgba(255,255,255,0.3) 50%,
+                rgba(255,255,255,0.03) 55%,
+                rgba(255,255,255,0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shimmerSweep 4s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmerSweep {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            30%, 100% { transform: translateX(100%) rotate(30deg); }
+        }
+
+        /* Ribbon Dust & Confetti Particles */
+        .ribbon-dust-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .ribbon-particle {
+            position: absolute;
+            border-radius: 4px;
+            opacity: 0.85;
+            animation: floatRibbon 4s infinite ease-in-out;
+        }
+
+        .ribbon-1 { width: 14px; height: 6px; background: #FDE047; top: 12%; left: 8%; transform: rotate(25deg); animation-delay: 0s; }
+        .ribbon-2 { width: 10px; height: 18px; background: #F43F5E; top: 72%; left: 6%; transform: rotate(-40deg); animation-delay: 0.7s; }
+        .ribbon-3 { width: 16px; height: 6px; background: #60A5FA; top: 15%; right: 10%; transform: rotate(15deg); animation-delay: 1.2s; }
+        .ribbon-4 { width: 8px; height: 14px; background: #A78BFA; top: 75%; right: 8%; transform: rotate(-20deg); animation-delay: 1.8s; }
+        .ribbon-5 { width: 12px; height: 5px; background: #F472B6; top: 48%; left: 4%; transform: rotate(50deg); animation-delay: 2.3s; }
+        .ribbon-6 { width: 14px; height: 6px; background: #34D399; top: 52%; right: 4%; transform: rotate(-35deg); animation-delay: 2.8s; }
+
+        .sparkle-particle {
+            position: absolute;
+            font-size: 1.1rem;
+            animation: sparklePulse 2.5s infinite ease-in-out;
+            pointer-events: none;
+        }
+        .sparkle-1 { top: 10%; left: 20%; animation-delay: 0.2s; }
+        .sparkle-2 { top: 65%; left: 18%; animation-delay: 1.1s; }
+        .sparkle-3 { top: 12%; right: 18%; animation-delay: 0.6s; }
+        .sparkle-4 { top: 68%; right: 20%; animation-delay: 1.7s; }
+
+        @keyframes floatRibbon {
+            0%, 100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.75; }
+            50% { transform: translateY(-9px) rotate(22deg) scale(1.15); opacity: 1; }
+        }
+
+        @keyframes sparklePulse {
+            0%, 100% { transform: scale(0.8); opacity: 0.4; }
+            50% { transform: scale(1.35); opacity: 1; filter: drop-shadow(0 0 8px #FDE047); }
+        }
+
+        /* Trumpet Animations */
+        .trumpet-wrapper {
+            transition: transform 0.3s ease;
+        }
+        .trumpet-left {
+            animation: trumpetTiltLeft 3s infinite ease-in-out;
+        }
+        .trumpet-right {
+            animation: trumpetTiltRight 3s infinite ease-in-out;
+        }
+
+        @keyframes trumpetTiltLeft {
+            0%, 100% { transform: rotate(-8deg) scale(1); }
+            50% { transform: rotate(-18deg) scale(1.12); }
+        }
+        @keyframes trumpetTiltRight {
+            0%, 100% { transform: rotate(8deg) scale(1); }
+            50% { transform: rotate(18deg) scale(1.12); }
+        }
+
+        /* Trophy Emblem */
+        .trophy-emblem-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .trophy-glow-ring {
+            position: absolute;
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(253, 224, 71, 0.75) 0%, rgba(245, 158, 11, 0) 70%);
+            animation: pulseRing 2.2s infinite ease-in-out;
+        }
+
+        @keyframes pulseRing {
+            0%, 100% { transform: scale(0.88); opacity: 0.5; }
+            50% { transform: scale(1.3); opacity: 0.95; }
+        }
+
+        .trophy-circle {
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FEF08A 0%, #F59E0B 65%, #B45309 100%);
+            border: 3px solid #FFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 2;
+        }
+
+        .trophy-icon {
+            font-size: 2.3rem;
+            color: #78350F;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25));
+        }
+
+        /* 3D Ribbon Banner LULUS */
+        .lulus-ribbon-banner {
+            background: linear-gradient(180deg, #15803D 0%, #166534 100%);
+            border: 2px solid #FCD34D;
+            border-radius: 16px;
+            padding: 8px 32px;
+            display: inline-block;
+            box-shadow: 0 8px 22px rgba(0,0,0,0.35), inset 0 2px 0 rgba(255,255,255,0.35);
+            position: relative;
+        }
+
+        .lulus-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.9rem;
+            font-weight: 900;
+            letter-spacing: 5px;
+            color: #FFFFFF;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.4), 0 0 15px rgba(252, 211, 77, 0.7);
+        }
+
+        .bg-amber-gradient {
+            background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+        }
+    </style>
+
     <div class="pagetitle">
         <h1>Dashboard</h1>
         <nav>
@@ -1368,13 +1537,130 @@
                             <div class="text-uppercase tracking-wider extra-small fw-bold text-muted mb-4">Total Nilai
                                 Terbobot</div>
 
-                            <div
-                                class="p-3 rounded-4 {{ $isPassed ? 'bg-success bg-opacity-10 text-success' : 'bg-warning bg-opacity-10 text-warning' }} mb-4">
-                                <i
-                                    class="bi {{ $isPassed ? 'bi-trophy-fill' : 'bi-shield-lock-fill' }} fs-4 d-block mb-1"></i>
-                                <span
-                                    class="fw-bold text-uppercase fs-5">{{ $isPassed ? 'LULUS' : 'DALAM PROSES' }}</span>
-                            </div>
+                            @if ($isPassed)
+                                {{-- CELEBRATORY LULUS BADGE WITH TRUMPETS & RIBBON DUST --}}
+                                <div class="celebration-lulus-card position-relative overflow-hidden p-4 rounded-4 text-white text-center mb-4 shadow-lg" 
+                                     id="lulusCelebrationBadge"
+                                     onclick="fireConfettiBurst()"
+                                     style="cursor: pointer;"
+                                     title="Klik untuk merayakan dengan pita & confetti!">
+                                    
+                                    {{-- Scoped Canvas for card-only confetti --}}
+                                    <canvas id="lulusConfettiCanvas" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
+
+                                    {{-- Floating Ribbon Dust Particles Background --}}
+                                    <div class="ribbon-dust-overlay">
+                                        <span class="ribbon-particle ribbon-1"></span>
+                                        <span class="ribbon-particle ribbon-2"></span>
+                                        <span class="ribbon-particle ribbon-3"></span>
+                                        <span class="ribbon-particle ribbon-4"></span>
+                                        <span class="ribbon-particle ribbon-5"></span>
+                                        <span class="ribbon-particle ribbon-6"></span>
+                                        <span class="sparkle-particle sparkle-1">✨</span>
+                                        <span class="sparkle-particle sparkle-2">✨</span>
+                                        <span class="sparkle-particle sparkle-3">🌟</span>
+                                        <span class="sparkle-particle sparkle-4">⭐</span>
+                                    </div>
+
+                                    {{-- Shimmer Light Sweep Effect --}}
+                                    <div class="shimmer-sweep"></div>
+
+                                    {{-- Celebration Content --}}
+                                    <div class="position-relative z-index-2">
+                                        
+                                        {{-- Top Ribbon Tag --}}
+                                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 mb-3 shadow-sm">
+                                            <i class="bi bi-stars"></i>
+                                            <span class="extra-small fw-bold text-uppercase tracking-wider text-white">Selamat! Anda Dinyatakan</span>
+                                            <i class="bi bi-stars"></i>
+                                        </div>
+
+                                        {{-- Main Badge Content with Trumpets --}}
+                                        <div class="d-flex align-items-center justify-content-center gap-2 gap-sm-3 my-2">
+                                            
+                                            {{-- Left Party Trumpet --}}
+                                            <div class="trumpet-wrapper trumpet-left">
+                                                <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="trumpet-svg">
+                                                    <path d="M12 40L28 28L38 34L22 46L12 40Z" fill="url(#goldGrad1_l)"/>
+                                                    <path d="M28 28L50 12L56 16L38 34L28 28Z" fill="url(#goldGrad2_l)"/>
+                                                    <path d="M50 12C54 9 60 10 62 14C64 18 61 24 56 24C52 24 50 18 50 12Z" fill="url(#goldGrad1_l)"/>
+                                                    <path d="M56 14C60 10 64 8 64 4" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>
+                                                    <path d="M58 18C62 18 64 22 64 26" stroke="#F43F5E" stroke-width="3" stroke-linecap="round"/>
+                                                    <path d="M54 22C56 26 58 30 56 34" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/>
+                                                    <defs>
+                                                        <linearGradient id="goldGrad1_l" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                                                            <stop stop-color="#FCD34D"/>
+                                                            <stop offset="0.5" stop-color="#F59E0B"/>
+                                                            <stop offset="1" stop-color="#B45309"/>
+                                                        </linearGradient>
+                                                        <linearGradient id="goldGrad2_l" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                                                            <stop stop-color="#FEF08A"/>
+                                                            <stop offset="0.5" stop-color="#FBBF24"/>
+                                                            <stop offset="1" stop-color="#D97706"/>
+                                                        </linearGradient>
+                                                    </defs>
+                                                </svg>
+                                            </div>
+
+                                            {{-- Central Trophy Emblem --}}
+                                            <div class="trophy-emblem-wrapper">
+                                                <div class="trophy-glow-ring"></div>
+                                                <div class="trophy-circle">
+                                                    <i class="bi bi-trophy-fill trophy-icon"></i>
+                                                </div>
+                                            </div>
+
+                                            {{-- Right Party Trumpet --}}
+                                            <div class="trumpet-wrapper trumpet-right">
+                                                <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="trumpet-svg">
+                                                    <g transform="scale(-1, 1) translate(-64, 0)">
+                                                        <path d="M12 40L28 28L38 34L22 46L12 40Z" fill="url(#goldGrad1_r)"/>
+                                                        <path d="M28 28L50 12L56 16L38 34L28 28Z" fill="url(#goldGrad2_r)"/>
+                                                        <path d="M50 12C54 9 60 10 62 14C64 18 61 24 56 24C52 24 50 18 50 12Z" fill="url(#goldGrad1_r)"/>
+                                                        <path d="M56 14C60 10 64 8 64 4" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>
+                                                        <path d="M58 18C62 18 64 22 64 26" stroke="#EC4899" stroke-width="3" stroke-linecap="round"/>
+                                                        <path d="M54 22C56 26 58 30 56 34" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>
+                                                    </g>
+                                                    <defs>
+                                                        <linearGradient id="goldGrad1_r" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                                                            <stop stop-color="#FCD34D"/>
+                                                            <stop offset="0.5" stop-color="#F59E0B"/>
+                                                            <stop offset="1" stop-color="#B45309"/>
+                                                        </linearGradient>
+                                                        <linearGradient id="goldGrad2_r" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                                                            <stop stop-color="#FEF08A"/>
+                                                            <stop offset="0.5" stop-color="#FBBF24"/>
+                                                            <stop offset="1" stop-color="#D97706"/>
+                                                        </linearGradient>
+                                                    </defs>
+                                                </svg>
+                                            </div>
+
+                                        </div>
+
+                                        {{-- 3D Ribbon Banner LULUS --}}
+                                        <div class="lulus-ribbon-banner mt-3">
+                                            <span class="lulus-text">LULUS</span>
+                                        </div>
+
+                                        <p class="mt-3 mb-0 text-white-50 extra-small fw-semibold">
+                                            <i class="bi bi-patch-check-fill text-warning me-1"></i> Klik untuk merayakan dengan pita & confetti 🎉
+                                        </p>
+
+                                    </div>
+                                </div>
+                            @else
+                                {{-- DALAM PROSES BADGE --}}
+                                <div class="p-4 rounded-4 bg-amber-gradient text-white text-center mb-4 shadow-sm position-relative overflow-hidden">
+                                    <div class="d-flex align-items-center justify-content-center mb-2">
+                                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                                            <i class="bi bi-hourglass-split fs-2 text-warning"></i>
+                                        </div>
+                                    </div>
+                                    <span class="fw-bold text-uppercase fs-4 d-block tracking-wider">DALAM PROSES</span>
+                                    <span class="extra-small text-white-50">Nilai sedang diaudit oleh sistem</span>
+                                </div>
+                            @endif
 
                             <div class="text-start border-top pt-4">
                                 <h6 class="extra-small fw-bold text-uppercase text-muted mb-3">Rincian Komponen Nilai</h6>
@@ -1406,6 +1692,106 @@
     </section>
 
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+        <script>
+            let scopedCardConfetti = null;
+
+            function getCardConfettiInstance() {
+                if (!scopedCardConfetti) {
+                    const canvas = document.getElementById('lulusConfettiCanvas');
+                    if (canvas && typeof confetti === 'function') {
+                        scopedCardConfetti = confetti.create(canvas, {
+                            resize: true,
+                            useWorker: true
+                        });
+                    }
+                }
+                return scopedCardConfetti;
+            }
+
+            function fireConfettiBurst() {
+                const cardConfetti = getCardConfettiInstance();
+                if (cardConfetti) {
+                    // Left trumpet confetti burst inside card
+                    cardConfetti({
+                        particleCount: 45,
+                        angle: 60,
+                        spread: 55,
+                        origin: { x: 0.1, y: 0.6 },
+                        colors: ['#FDE047', '#F43F5E', '#3B82F6', '#10B981', '#F59E0B', '#A78BFA']
+                    });
+                    // Right trumpet confetti burst inside card
+                    cardConfetti({
+                        particleCount: 45,
+                        angle: 120,
+                        spread: 55,
+                        origin: { x: 0.9, y: 0.6 },
+                        colors: ['#FDE047', '#EC4899', '#3B82F6', '#34D399', '#FBBF24', '#F472B6']
+                    });
+                }
+            }
+
+            function startContinuousConfetti() {
+                const cardConfetti = getCardConfettiInstance();
+                if (!cardConfetti) return;
+
+                // Continuous gentle confetti shower INSIDE THE CARD ONLY
+                function dropShower() {
+                    if (document.hidden) return;
+
+                    cardConfetti({
+                        particleCount: 2,
+                        startVelocity: 0,
+                        ticks: 220,
+                        origin: {
+                            x: Math.random(),
+                            y: -0.15
+                        },
+                        colors: ['#FDE047', '#F43F5E', '#3B82F6', '#10B981', '#F59E0B', '#A78BFA', '#EC4899', '#34D399'],
+                        gravity: 0.7,
+                        scalar: 1.1,
+                        drift: (Math.random() - 0.5) * 0.6
+                    });
+                }
+
+                // Drop continuous ribbon dust confetti inside card every 220ms non-stop
+                setInterval(dropShower, 220);
+
+                // Periodic celebratory trumpet bursts inside card every 3.2 seconds
+                setInterval(() => {
+                    if (!document.hidden) {
+                        cardConfetti({
+                            particleCount: 20,
+                            angle: 60,
+                            spread: 50,
+                            origin: { x: 0.1, y: 0.65 },
+                            colors: ['#FDE047', '#F43F5E', '#10B981', '#FBBF24']
+                        });
+                        cardConfetti({
+                            particleCount: 20,
+                            angle: 120,
+                            spread: 50,
+                            origin: { x: 0.9, y: 0.65 },
+                            colors: ['#3B82F6', '#EC4899', '#34D399', '#FDE047']
+                        });
+                    }
+                }, 3200);
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                if (document.getElementById('lulusCelebrationBadge')) {
+                    // Initial burst inside card on page load
+                    setTimeout(() => {
+                        fireConfettiBurst();
+                    }, 400);
+
+                    // Continuous confetti & ribbon dust shower inside card
+                    setTimeout(() => {
+                        startContinuousConfetti();
+                    }, 800);
+                }
+            });
+        </script>
         <script>
 
 

@@ -27,7 +27,206 @@ class EvaluasiPengenalanWawasanIbnuSinaController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasipengenalanwawasanibnusina.index');
+        $allResponses = EvaluasiPengenalanWawasanIbnuSina::with('user')->get();
+        $totalRespondents = $allResponses->count();
+        $questions = EvaluasiPengenalanWawasanIbnuSina::questions();
+
+        // 1. Calculate Per-Question Overall Summary
+        $rekapData = [];
+        $sumNI = 0;
+
+        foreach ($questions as $key => $questionText) {
+            $avgScore = $totalRespondents > 0 ? (float) $allResponses->avg($key) : 0;
+            $nik = $avgScore * 25; // Nilai Interval Konversi (%)
+
+            if ($avgScore >= 3.26) {
+                $mutu = 'A';
+                $kategori = 'SANGAT BAIK';
+                $badgeClass = 'bg-success';
+            } elseif ($avgScore >= 3.0664) {
+                $mutu = 'B';
+                $kategori = 'BAIK';
+                $badgeClass = 'bg-info';
+            } elseif ($avgScore >= 2.60) {
+                $mutu = 'C';
+                $kategori = 'KURANG BAIK';
+                $badgeClass = 'bg-warning text-dark';
+            } else {
+                $mutu = 'D';
+                $kategori = 'TIDAK BAIK';
+                $badgeClass = 'bg-danger';
+            }
+
+            $indicator = in_array($key, ['q1','q2','q3','q4','q5','q6','q7','q8']) ? 'Pemateri' : 'Materi';
+
+            $rekapData[] = [
+                'key' => $key,
+                'indikator' => $indicator,
+                'pertanyaan' => $questionText,
+                'ni' => number_format($avgScore, 2),
+                'ni_raw' => $avgScore,
+                'nik' => number_format($nik, 2),
+                'nik_raw' => $nik,
+                'mutu' => $mutu,
+                'kategori' => $kategori,
+                'badgeClass' => $badgeClass,
+            ];
+
+            $sumNI += $avgScore;
+        }
+
+        $countQ = count($questions);
+        $overallAvgNI = $countQ > 0 ? $sumNI / $countQ : 0;
+        $overallNIK = $overallAvgNI * 25;
+
+        if ($overallAvgNI >= 3.26) {
+            $overallMutu = 'A';
+            $overallKategori = 'SANGAT BAIK';
+            $overallBadge = 'bg-success';
+        } elseif ($overallAvgNI >= 3.0664) {
+            $overallMutu = 'B';
+            $overallKategori = 'BAIK';
+            $overallBadge = 'bg-info';
+        } elseif ($overallAvgNI >= 2.60) {
+            $overallMutu = 'C';
+            $overallKategori = 'KURANG BAIK';
+            $overallBadge = 'bg-warning text-dark';
+        } else {
+            $overallMutu = 'D';
+            $overallKategori = 'TIDAK BAIK';
+            $overallBadge = 'bg-danger';
+        }
+
+        // 2. Faculty Breakdown Matrix (Dynamic Per Fakultas like Image 1)
+        $defaultFaculties = [
+            'FAKULTAS ILMU KESEHATAN (FIKes)',
+            'FAKULTAS SAINS DAN TEKNOLOGI (FST)',
+            'FAKULTAS EKONOMI DAN BISNIS (FEB)',
+        ];
+
+        $dbFaculties = \App\Models\User::whereNotNull('fakultas')
+            ->where('fakultas', '!=', '')
+            ->pluck('fakultas')
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $facultyList = !empty($dbFaculties) ? array_unique(array_merge($defaultFaculties, $dbFaculties)) : $defaultFaculties;
+
+        $facultyShortNames = [];
+        foreach ($facultyList as $fac) {
+            if (preg_match('/\((.*?)\)/', $fac, $matches)) {
+                $facultyShortNames[$fac] = $matches[1];
+            } else {
+                $facultyShortNames[$fac] = $fac;
+            }
+        }
+
+        $responsesByFaculty = [];
+        foreach ($facultyList as $fac) {
+            $responsesByFaculty[$fac] = $allResponses->filter(function($item) use ($fac) {
+                return $item->user && $item->user->fakultas === $fac;
+            });
+        }
+
+        $matrixFakultas = [];
+        $sumFacultyTCR = array_fill_keys($facultyList, 0);
+
+        foreach ($questions as $key => $questionText) {
+            $rowTcr = [];
+            $rowSum = 0;
+
+            foreach ($facultyList as $fac) {
+                $facGroup = $responsesByFaculty[$fac];
+                $facCount = $facGroup->count();
+                $avgVal = $facCount > 0 ? (float) $facGroup->avg($key) : 0;
+                
+                // Fallback to global avg if specific faculty has no entries yet
+                if ($facCount == 0 && $totalRespondents > 0) {
+                    $avgVal = (float) $allResponses->avg($key);
+                }
+
+                $tcrVal = round($avgVal * 25, 2);
+                $rowTcr[$fac] = $tcrVal;
+                $rowSum += $tcrVal;
+                $sumFacultyTCR[$fac] += $tcrVal;
+            }
+
+            $countFac = count($facultyList);
+            $rerataFakultasTcr = $countFac > 0 ? round($rowSum / $countFac, 2) : 0;
+
+            $indicator = in_array($key, ['q1','q2','q3','q4','q5','q6','q7','q8']) ? 'Fasilitas Penyelenggara' : 'Sarana dan Prasarana';
+
+            $matrixFakultas[] = [
+                'key' => $key,
+                'indikator' => $indicator,
+                'pertanyaan' => $questionText,
+                'tcr_per_fac' => $rowTcr,
+                'rerata_fakultas' => $rerataFakultasTcr,
+            ];
+        }
+
+        // Summary footer per faculty
+        $avgTcrPerFaculty = [];
+        $kategoriPerFaculty = [];
+        $sumOverallRerata = 0;
+
+        foreach ($facultyList as $fac) {
+            $facAvg = count($questions) > 0 ? round($sumFacultyTCR[$fac] / count($questions), 2) : 0;
+            $avgTcrPerFaculty[$fac] = $facAvg;
+            $sumOverallRerata += $facAvg;
+
+            if ($facAvg >= 88.31) {
+                $kategoriPerFaculty[$fac] = 'Sangat Baik';
+            } elseif ($facAvg >= 76.61) {
+                $kategoriPerFaculty[$fac] = 'Baik';
+            } elseif ($facAvg >= 65.00) {
+                $kategoriPerFaculty[$fac] = 'Kurang Baik';
+            } else {
+                $kategoriPerFaculty[$fac] = 'Tidak Baik';
+            }
+        }
+
+        $overallRerataTCR = count($facultyList) > 0 ? round($sumOverallRerata / count($facultyList), 2) : 0;
+
+        if ($overallRerataTCR >= 88.31) {
+            $overallRerataKategori = 'Sangat Baik';
+        } elseif ($overallRerataTCR >= 76.61) {
+            $overallRerataKategori = 'Baik';
+        } elseif ($overallRerataTCR >= 65.00) {
+            $overallRerataKategori = 'Kurang Baik';
+        } else {
+            $overallRerataKategori = 'Tidak Baik';
+        }
+
+        // 3. Prepare Chart Data for ApexCharts (Image 2 & Image 3)
+        $chartCategories = [];
+        $chartValues = [];
+
+        foreach ($matrixFakultas as $item) {
+            $shortText = mb_strimwidth($item['pertanyaan'], 0, 25, '...');
+            $chartCategories[] = $shortText;
+            $chartValues[] = $item['rerata_fakultas'];
+        }
+
+        return $dataTable->render('pages.evaluasipengenalanwawasanibnusina.index', compact(
+            'rekapData',
+            'totalRespondents',
+            'overallAvgNI',
+            'overallNIK',
+            'overallMutu',
+            'overallKategori',
+            'overallBadge',
+            'facultyList',
+            'facultyShortNames',
+            'matrixFakultas',
+            'avgTcrPerFaculty',
+            'kategoriPerFaculty',
+            'overallRerataTCR',
+            'overallRerataKategori',
+            'chartCategories',
+            'chartValues'
+        ));
     }
 
     /**

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('evaluasi_pengenalan_wawasan_ibnu_sinas', function (Blueprint $table) {
+        Schema::create('evaluasi_pelayanan_kemahasiswaan_pusat_prestasis', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->unsignedTinyInteger('q1');
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('evaluasi_pengenalan_wawasan_ibnu_sinas');
+        Schema::dropIfExists('evaluasi_pelayanan_kemahasiswaan_pusat_prestasis');
     }
 };

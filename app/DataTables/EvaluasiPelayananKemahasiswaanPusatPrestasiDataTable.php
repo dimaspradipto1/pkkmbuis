@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\EvaluasiPengenalanWawasanIbnuSina;
+use App\Models\EvaluasiPelayananKemahasiswaanPusatPrestasi;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\EloquentDataTable;
@@ -11,12 +11,12 @@ use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class EvaluasiPengenalanWawasanIbnuSinaDataTable extends DataTable
+class EvaluasiPelayananKemahasiswaanPusatPrestasiDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder<EvaluasiPengenalanWawasanIbnuSina> $query Results from query() method.
+     * @param QueryBuilder<EvaluasiPelayananKemahasiswaanPusatPrestasi> $query Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
@@ -35,11 +35,11 @@ class EvaluasiPengenalanWawasanIbnuSinaDataTable extends DataTable
                 return $item->created_at ? $item->created_at->format('d-m-Y H:i') : '-';
             })
             ->addColumn('action', function ($item) {
-                $showBtn = '<a href="' . route('evaluasipengenalanwawasanibnusina.show', $item->id) . '" class="btn btn-sm btn-info text-white me-1" title="Detail"><i class="bi bi-eye"></i></a>';
-                $editBtn = '<a href="' . route('evaluasipengenalanwawasanibnusina.edit', $item->id) . '" class="btn btn-sm btn-primary me-1" title="Edit"><i class="bi bi-pencil"></i></a>';
+                $showBtn = '<a href="' . route('evaluasipelayanankemahasiswaanpusatprestasi.show', $item->id) . '" class="btn btn-sm btn-info text-white me-1" title="Detail"><i class="bi bi-eye"></i></a>';
+                $editBtn = '<a href="' . route('evaluasipelayanankemahasiswaanpusatprestasi.edit', $item->id) . '" class="btn btn-sm btn-primary me-1" title="Edit"><i class="bi bi-pencil"></i></a>';
                 $deleteBtn = '';
                 if (Auth::user()->role == 'admin') {
-                    $deleteBtn = '<form action="' . route('evaluasipengenalanwawasanibnusina.destroy', $item->id) . '" method="POST" class="d-inline" onsubmit="return confirm(\'Apakah Anda yakin ingin menghapus evaluasi ini?\')">
+                    $deleteBtn = '<form action="' . route('evaluasipelayanankemahasiswaanpusatprestasi.destroy', $item->id) . '" method="POST" class="d-inline" onsubmit="return confirm(\'Apakah Anda yakin ingin menghapus evaluasi ini?\')">
                                     ' . csrf_field() . method_field('DELETE') . '
                                     <button type="submit" class="btn btn-sm btn-danger" title="Hapus"><i class="bi bi-trash"></i></button>
                                   </form>';
@@ -53,9 +53,9 @@ class EvaluasiPengenalanWawasanIbnuSinaDataTable extends DataTable
     /**
      * Get the query source of dataTable.
      *
-     * @return QueryBuilder<EvaluasiPengenalanWawasanIbnuSina>
+     * @return QueryBuilder<EvaluasiPelayananKemahasiswaanPusatPrestasi>
      */
-    public function query(EvaluasiPengenalanWawasanIbnuSina $model): QueryBuilder
+    public function query(EvaluasiPelayananKemahasiswaanPusatPrestasi $model): QueryBuilder
     {
         $query = $model->newQuery()->with(['user.kelompok']);
         if (Auth::user()->role == 'mahasiswa') {
@@ -70,7 +70,7 @@ class EvaluasiPengenalanWawasanIbnuSinaDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('evaluasipengenalanwawasanibnusina-table')
+                    ->setTableId('evaluasipelayanankemahasiswaanpusatprestasi-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->orderBy(1)
@@ -106,6 +106,6 @@ class EvaluasiPengenalanWawasanIbnuSinaDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'EvaluasiPengenalanWawasanIbnuSina_' . date('YmdHis');
+        return 'EvaluasiPelayananKemahasiswaanPusatPrestasi_' . date('YmdHis');
     }
 }
