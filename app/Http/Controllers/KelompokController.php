@@ -21,11 +21,10 @@ class KelompokController extends Controller
         $user = Auth::user();
 
         if ($user->role == 'mahasiswa') {
-            // Mahasiswa views their own group or all groups
+            // Mahasiswa views their own group
             $myKelompok = $user->kelompok ? $user->kelompok->load(['pendamping', 'anggota']) : null;
-            $kelompoks = Kelompok::with(['pendamping', 'anggota'])->withCount('anggota')->get();
 
-            return view('pages.kelompok.student', compact('myKelompok', 'kelompoks'));
+            return view('pages.kelompok.student', compact('myKelompok'));
         }
 
         $query = Kelompok::with(['pendamping'])->withCount('anggota');
@@ -94,7 +93,7 @@ class KelompokController extends Controller
         $user = Auth::user();
         $kelompok = Kelompok::with(['pendamping', 'anggota'])->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
 
-        if ($user->role == 'kakakleting' && $kelompok->pendamping_id != $user->id) {
+        if (($user->role == 'kakakleting' && $kelompok->pendamping_id != $user->id) || ($user->role == 'mahasiswa' && $user->kelompok_id != $kelompok->id)) {
             Alert::error('Anda tidak memiliki akses ke kelompok ini.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(4000);

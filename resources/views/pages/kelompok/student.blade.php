@@ -84,36 +84,6 @@
                 </div>
             @endif
 
-            <!-- All Groups Accordion/List -->
-            <div class="col-lg-12">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-4">
-                        <h5 class="card-title p-0 mb-4 fw-bold">Seluruh Kelompok PKKMB</h5>
-
-                        <div class="row g-3">
-                            @foreach($kelompoks as $k)
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="card h-100 border shadow-none rounded-3 {{ ($myKelompok && $myKelompok->id == $k->id) ? 'border-primary border-2 bg-light' : '' }}">
-                                        <div class="card-body p-3">
-                                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <h6 class="fw-bold mb-0 text-dark">{{ $k->nama_kelompok }}</h6>
-                                                <span class="badge bg-secondary rounded-pill">{{ $k->anggota_count }} Anggota</span>
-                                            </div>
-                                            <p class="small text-muted mb-2">
-                                                <i class="bi bi-person-badge me-1"></i> Pendamping:
-                                                <strong>{{ $k->pendamping->name ?? '-' }}</strong>
-                                            </p>
-                                            <a href="{{ route('kelompok.show', $k->slug) }}" class="btn btn-sm btn-outline-primary w-100 mt-2">
-                                                <i class="bi bi-eye me-1"></i> Lihat Anggota Kelompok
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 @endsection
