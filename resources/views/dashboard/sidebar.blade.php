@@ -99,12 +99,14 @@
               </a>
           </li>
 
-          <li class="nav-item">
-              <a class="nav-link {{ request()->routeIs('dokumen.*') ? '' : 'collapsed' }}" href="{{ route('dokumen.index') }}">
-                  <i class="bi bi-file-earmark-text-fill"></i>
-                  <span>Dokumen Pendukung</span>
-              </a>
-          </li>
+          @if (Auth::user()->role != 'mahasiswa')
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('dokumen.*') ? '' : 'collapsed' }}" href="{{ route('dokumen.index') }}">
+                      <i class="bi bi-file-earmark-text-fill"></i>
+                      <span>Dokumen Pendukung</span>
+                  </a>
+              </li>
+          @endif
 
           @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
               <li class="nav-heading">Kelola Modul & Test</li>
