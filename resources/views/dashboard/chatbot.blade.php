@@ -199,9 +199,18 @@
 </style>
 
 {{-- Floating Toggle Button --}}
-<div class="chatbot-floating-btn" id="chatbotToggleBtn" onclick="toggleChatbotDrawer()" title="Bantuan & FAQ Asisten PKKMB">
+<div class="chatbot-floating-btn position-relative" id="chatbotToggleBtn" onclick="toggleChatbotDrawer()" title="Bantuan & FAQ Asisten PKKMB">
     <div class="chatbot-pulse-ring"></div>
     <i class="bi bi-whatsapp fs-3" id="chatbotIcon"></i>
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm" id="chatbotToggleBadge" style="display: none; font-size: 0.72rem; border: 2px solid #ffffff; padding: 4px 7px;">0</span>
+</div>
+
+{{-- Notification Toast Tooltip above button --}}
+<div id="chatbotFloatingToast" class="position-fixed shadow-lg bg-dark text-white rounded-3 p-2 extra-small" style="display: none; bottom: 75px; right: 75px; z-index: 1060; max-width: 230px; cursor: pointer;" onclick="toggleChatbotDrawer()">
+    <div class="d-flex align-items-center gap-1 fw-bold text-success mb-1">
+        <i class="bi bi-chat-dots-fill"></i> Balasan Baru dari Admin
+    </div>
+    <div id="chatbotToastText" class="extra-small text-white-50 text-truncate"></div>
 </div>
 
 {{-- Chat Drawer Window --}}
@@ -304,12 +313,20 @@
     function toggleChatbotDrawer() {
         const drawer = document.getElementById('chatbotDrawer');
         const icon = document.getElementById('chatbotIcon');
+        const badge = document.getElementById('chatbotToggleBadge');
+        const toast = document.getElementById('chatbotFloatingToast');
+
         if (drawer.style.display === 'flex') {
             drawer.style.display = 'none';
             icon.className = 'bi bi-whatsapp fs-3';
         } else {
             drawer.style.display = 'flex';
             icon.className = 'bi bi-x-lg fs-3';
+            if (badge) badge.style.display = 'none';
+            if (toast) toast.style.display = 'none';
+            if (typeof loadHistoryInDrawer === 'function' && !hasLoadedHistory) {
+                loadHistoryInDrawer();
+            }
             scrollToChatBottom();
         }
     }
@@ -439,6 +456,49 @@
     const currentUserRole = @json(Auth::user()->role ?? 'mahasiswa');
     let drawerChatInterval = null;
     let lastFetchedMsgCount = 0;
+    let hasLoadedHistory = false;
+
+    function loadHistoryInDrawer() {
+        if (!adminUserId || currentUserRole === 'admin' || currentUserRole === 'stafbaak' || hasLoadedHistory) return;
+
+        fetch(`/chat/messages/${adminUserId}`, {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.messages.length > 0) {
+                const body = document.getElementById('chatbotBody');
+
+                const divider = document.createElement('div');
+                divider.className = 'text-center my-3';
+                divider.innerHTML = `<span class="badge bg-light text-muted border extra-small px-3 py-1">Riwayat Percakapan Sebelumnya</span>`;
+                body.appendChild(divider);
+
+                data.messages.forEach(msg => {
+                    if (msg.is_me) {
+                        appendUserMessage(msg.message);
+                    } else {
+                        appendBotMessage(`<div class="fw-bold text-success extra-small mb-1"><i class="bi bi-person-fill me-1"></i> Admin (${data.user.name})</div><div>${msg.message}</div>`);
+                    }
+                });
+
+                lastFetchedMsgCount = data.messages.length;
+                hasLoadedHistory = true;
+                scrollToChatBottom();
+            }
+            startDrawerChatPolling();
+        })
+        .catch(err => console.error('Error loading history in drawer:', err));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (currentUserRole !== 'admin' && currentUserRole !== 'stafbaak') {
+            loadHistoryInDrawer();
+        }
+    });
 
     function openDrawerLiveChat() {
         appendUserMessage("💬 Chat Personal Admin (Live Chat)");
@@ -469,6 +529,21 @@
                     newMessages.forEach(msg => {
                         if (!msg.is_me) {
                             appendBotMessage(`<div class="fw-bold text-success extra-small mb-1"><i class="bi bi-person-fill me-1"></i> Admin (${data.user.name})</div><div>${msg.message}</div>`);
+
+                            const drawer = document.getElementById('chatbotDrawer');
+                            if (drawer.style.display !== 'flex') {
+                                const badge = document.getElementById('chatbotToggleBadge');
+                                const toast = document.getElementById('chatbotFloatingToast');
+                                const toastText = document.getElementById('chatbotToastText');
+                                if (badge) {
+                                    badge.innerText = '1';
+                                    badge.style.display = 'inline-block';
+                                }
+                                if (toast && toastText) {
+                                    toastText.innerText = msg.message;
+                                    toast.style.display = 'block';
+                                }
+                            }
                         }
                     });
                     lastFetchedMsgCount = data.messages.length;

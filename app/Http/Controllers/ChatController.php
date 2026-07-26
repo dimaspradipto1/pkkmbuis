@@ -11,6 +11,10 @@ class ChatController extends Controller
 {
     public function index(Request $request)
     {
+        if (Auth::user()->role == 'mahasiswa') {
+            return redirect()->route('dashboard');
+        }
+
         $currentUserId = Auth::id();
 
         // Get all users except current user

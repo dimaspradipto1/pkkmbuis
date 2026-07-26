@@ -12,19 +12,19 @@
               </a>
           </li>
 
-          <li class="nav-heading">Layanan Pesan & Bantuan</li>
-
-          <li class="nav-item">
-              <a class="nav-link {{ request()->routeIs('chat.*') ? '' : 'collapsed' }} d-flex align-items-center justify-content-between" href="{{ route('chat.index') }}">
-                  <div class="d-flex align-items-center">
-                      <i class="bi bi-chat-square-text-fill text-success me-2"></i>
-                      <span>Pesan / Live Chat</span>
-                  </div>
-                  <span class="badge bg-danger rounded-pill px-2 py-1 ms-auto" id="sidebarChatUnreadBadge" style="display: none; font-size: 0.68rem;">0</span>
-              </a>
-          </li>
-
           @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
+              <li class="nav-heading">Layanan Pesan & Bantuan</li>
+
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('chat.*') ? '' : 'collapsed' }} d-flex align-items-center justify-content-between" href="{{ route('chat.index') }}">
+                      <div class="d-flex align-items-center">
+                          <i class="bi bi-chat-square-text-fill text-success me-2"></i>
+                          <span>Pesan / Live Chat</span>
+                      </div>
+                      <span class="badge bg-danger rounded-pill px-2 py-1 ms-auto" id="sidebarChatUnreadBadge" style="display: none; font-size: 0.68rem;">0</span>
+                  </a>
+              </li>
+
               <li class="nav-item">
                   <a class="nav-link {{ request()->routeIs('chatbot-faq.*') ? '' : 'collapsed' }}" href="{{ route('chatbot-faq.index') }}">
                       <i class="bi bi-gear-fill text-primary"></i>
