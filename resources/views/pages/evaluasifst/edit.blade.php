@@ -6,7 +6,7 @@
     .eval-card { background: #ffffff; border-radius: 10px; border: 1px solid #e1e7ec; box-shadow: 0 3px 10px rgba(0,0,0,0.03); padding: 24px 28px; margin-bottom: 20px; }
     .eval-header-card { background-color: #9F1521 !important; color: #ffffff; border-radius: 10px 10px 0 0; padding: 16px 24px; font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px; border-top: 4px solid #FFC107; }
     .eval-header-body { background-color: #ffffff; border-radius: 0 0 10px 10px; border: 1px solid #e1e7ec; border-top: none; padding: 20px 24px; margin-bottom: 24px; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
-    .eval-question-title { font-size: 1rem; font-weight: 600; color: #000000; margin-bottom: 20px; line-height: 1.4; }
+    .eval-question-title { font-size: 1rem; font-weight: 600; color: #2d3748; margin-bottom: 20px; line-height: 1.4; }
     .eval-question-title span.req { color: #9F1521; }
     .eval-scale-wrapper { display: flex; align-items: flex-end; justify-content: space-between; max-width: 650px; margin: 0 auto; padding: 10px 0; }
     .eval-scale-label { font-size: 0.85rem; color: #4a5568; font-weight: 500; line-height: 1.3; }
@@ -14,7 +14,7 @@
     .eval-scale-label.right { text-align: left; width: 130px; padding-left: 12px; }
     .eval-radio-options { display: flex; justify-content: space-around; flex-grow: 1; }
     .eval-radio-col { display: flex; flex-direction: column; align-items: center; }
-    .eval-num { font-size: 0.9rem; font-weight: 600; color: #000000; margin-bottom: 8px; }
+    .eval-num { font-size: 0.9rem; font-weight: 600; color: #2d3748; margin-bottom: 8px; }
     .eval-radio-col input[type="radio"] { width: 20px; height: 20px; cursor: pointer; accent-color: #9F1521; margin: 0; }
     .eval-input-line { border: none; border-bottom: 1px solid #cbd5e0; border-radius: 0; padding: 8px 0; width: 100%; background: transparent; }
     .eval-input-line:focus { outline: none; border-bottom-color: #FFC107; box-shadow: none; }
@@ -22,7 +22,7 @@
     .eval-top-card { background: #ffffff; border-radius: 10px; border: 1px solid #e1e7ec; box-shadow: 0 3px 10px rgba(0,0,0,0.03); overflow: hidden; margin-bottom: 20px; }
     .eval-top-bar { height: 10px; background: linear-gradient(90deg, #9F1521 0%, #FFC107 100%); }
     .eval-top-body { padding: 24px 28px; }
-    .eval-top-title { font-size: 1.25rem; font-weight: 700; color: #000000; line-height: 1.5; margin-bottom: 16px; text-align: center; }
+    .eval-top-title { font-size: 1.25rem; font-weight: 700; color: #1e293b; line-height: 1.5; margin-bottom: 16px; text-align: center; }
     .eval-top-divider { border-top: 1px solid #eeeeee; margin-bottom: 14px; }
     .eval-required-note { color: #9F1521; font-size: 0.85rem; }
     .eval-text-break { word-break: break-word; word-wrap: break-word; overflow-wrap: anywhere; }

@@ -45,6 +45,7 @@ class UsersController extends Controller
             'name' => 'required|string|max:255',
             'id_pendaftar' => 'required|string|unique:users,id_pendaftar',
             'email' => 'required|string|email|max:255|unique:users,email',
+            'no_wa' => 'nullable|string|max:25|unique:users,no_wa',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,mahasiswa,stafbaak,pimpinan,kakakleting',
             'fakultas' => 'nullable|string|max:255',
@@ -52,9 +53,10 @@ class UsersController extends Controller
         ], [
             'id_pendaftar.unique' => 'ID pendaftar sudah terdaftar.',
             'email.unique' => 'Email sudah digunakan.',
+            'no_wa.unique' => 'Nomor WhatsApp sudah digunakan.',
         ]);
 
-        $validated = $request->only(['name', 'id_pendaftar', 'email', 'password', 'role', 'fakultas', 'program_studi']);
+        $validated = $request->only(['name', 'id_pendaftar', 'email', 'no_wa', 'password', 'role', 'fakultas', 'program_studi']);
 
         $validated['is_active'] = $request->has('is_active');
         $validated['password'] = Hash::make($validated['password']);
@@ -147,6 +149,12 @@ class UsersController extends Controller
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'no_wa' => [
+                'nullable',
+                'string',
+                'max:25',
+                Rule::unique('users')->ignore($user->id),
+            ],
             'role' => 'required|in:admin,mahasiswa,stafbaak,pimpinan,kakakleting',
             'fakultas' => 'nullable|string|max:255',
             'program_studi' => 'nullable|string|max:255',
@@ -218,9 +226,9 @@ class UsersController extends Controller
 
     public function downloadTemplate()
     {
-        $headers = ['name', 'email', 'password', 'id_pendaftar', 'role', 'fakultas', 'program_studi'];
+        $headers = ['name', 'email', 'no_wa', 'password', 'id_pendaftar', 'role', 'fakultas', 'program_studi'];
         $data = [
-            ['Jhon Doe', 'jhon@example.com', 'password123', 'REG001', 'mahasiswa', 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'S1 TEKNIK INFORMATIKA'],
+            ['Jhon Doe', 'jhon@example.com', '6281234567890', 'password123', 'REG001', 'mahasiswa', 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'S1 TEKNIK INFORMATIKA'],
         ];
 
         return Excel::download(new class($headers, $data) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {

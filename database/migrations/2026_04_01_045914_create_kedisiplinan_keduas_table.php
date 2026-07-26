@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('kelengkapan_atribut');
             $table->string('ketepatan_waktu');
             $table->string('perilaku');
-            $table->text('catatan');
+            $table->text('catatan')->nullable();
             $table->timestamps();
         });
     }

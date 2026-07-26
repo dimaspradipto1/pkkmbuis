@@ -10,5 +10,7 @@ class Dokumen extends Model
         'link_buku_saku',
         'link_daftar_kelompok',
         'link_rundown',
+        'link_wa_group',
+        'no_wa_admin',
     ];
 }

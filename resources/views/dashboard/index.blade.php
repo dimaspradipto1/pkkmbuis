@@ -246,8 +246,8 @@
                         <div class="card-body p-3 p-md-4">
                             <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-success bg-opacity-10 p-3 rounded-circle flex-shrink-0" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
-                                        <i class="bi bi-book-half text-success fs-4"></i>
+                                    <div class="rounded-circle flex-shrink-0 d-flex align-items-center justify-content-center shadow-sm" style="width: 54px; height: 54px; background: linear-gradient(135deg, #00A551 0%, #007A3B 100%);">
+                                        <i class="bi bi-book-half text-white fs-3"></i>
                                     </div>
                                     <div>
                                         <h5 class="fw-bold text-dark mb-1 mb-md-0">Modul, Pritest dan Postes Mahasiswa</h5>
@@ -272,8 +272,8 @@
                         <div class="card-body p-3 p-md-4">
                             <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
                                 <div class="d-flex align-items-center gap-3">
-                                    <div class="bg-primary bg-opacity-10 p-3 rounded-circle flex-shrink-0" style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;">
-                                        <i class="bi bi-file-earmark-text text-primary fs-4"></i>
+                                    <div class="rounded-circle flex-shrink-0 d-flex align-items-center justify-content-center shadow-sm" style="width: 54px; height: 54px; background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);">
+                                        <i class="bi bi-file-earmark-text-fill text-white fs-3"></i>
                                     </div>
                                     <div>
                                         <h5 class="fw-bold text-dark mb-1 mb-md-0">Dokumen Pendukung</h5>
@@ -1479,51 +1479,114 @@
                             </div>
 
                             @php
-                                // 1. Tests (20%)
-                                $allTests = \App\Models\HasilTest::where('user_id', Auth::id())->get();
-                                $hasTugas = \App\Models\SoalTugasKelompok::where('user_id', Auth::id())->exists();
+                                $userId = Auth::id();
+                                $user = Auth::user();
+
+                                // 1. Absensi (6 Sesi: H1 Pagi/Sore, H2 Pagi/Sore, H3 Pagi/Sore)
+                                $myAbs1 = \App\Models\AbsenPertama::where('user_id', $userId)->first();
+                                $myAbs2 = \App\Models\AbsenKedua::where('user_id', $userId)->first();
+                                $myAbs3 = \App\Models\AbsenKetiga::where('user_id', $userId)->first();
+
+                                $absSessionCount = 0;
+                                foreach ([$myAbs1, $myAbs2, $myAbs3] as $ab) {
+                                    if ($ab) {
+                                        if (!empty($ab->hadir_pagi) && $ab->hadir_pagi !== 'Belum Absen') $absSessionCount++;
+                                        if (!empty($ab->hadir_sore) && $ab->hadir_sore !== 'Belum Absen') $absSessionCount++;
+                                    }
+                                }
+                                $absComplete = ($absSessionCount >= 6);
+
+                                // 2. Kedisiplinan (3 Hari)
+                                $myDis1 = \App\Models\KedisiplinanPertama::where('user_id', $userId)->first();
+                                $myDis2 = \App\Models\KedisiplinanKedua::where('user_id', $userId)->first();
+                                $myDis3 = \App\Models\KedisiplinanKetiga::where('user_id', $userId)->first();
+
+                                $disDayCount = 0;
+                                foreach ([$myDis1, $myDis2, $myDis3] as $di) {
+                                    if ($di && !empty($di->kelengkapan_atribut) && !empty($di->ketepatan_waktu) && !empty($di->perilaku)) {
+                                        $disDayCount++;
+                                    }
+                                }
+                                $disComplete = ($disDayCount >= 3);
+
+                                // 3. Pre-Test (4 Sesi)
+                                $pretestCountUser = \App\Models\HasilTest::where('user_id', $userId)->where('type', 'pretest')->distinct('modul')->count();
+                                $pretestComplete = ($pretestCountUser >= 4);
+
+                                // 4. Post-Test (4 Sesi)
+                                $posttestCountUser = \App\Models\HasilTest::where('user_id', $userId)->where('type', 'posttest')->distinct('modul')->count();
+                                $posttestComplete = ($posttestCountUser >= 4);
+
+                                // 5. Tugas Kelompok (1 Tugas)
+                                $tugasCountUser = \App\Models\SoalTugasKelompok::where('user_id', $userId)->count();
+                                $tugasComplete = ($tugasCountUser >= 1);
+
+                                // 6. Evaluasi Penyampaian Materi
+                                $evaluasiMap = [
+                                    1 => \App\Models\EvaluasiPengenalanWawasanIbnuSina::class,
+                                    2 => \App\Models\EvaluasiPelayananKemahasiswaanPusatPrestasi::class,
+                                    3 => \App\Models\EvaluasiPelayanansistemAkademik::class,
+                                    4 => \App\Models\EvaluasiPelayanansistemAdministrasiKeuangan::class,
+                                    5 => \App\Models\EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegara::class,
+                                    6 => \App\Models\EvaluasiSistemPendidikanTinggidiIndonesia::class,
+                                    7 => \App\Models\EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri::class,
+                                    8 => \App\Models\EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkungan::class,
+                                    9 => \App\Models\Perpustakaan::class,
+                                    10 => \App\Models\EvaluasiIkaUis::class,
+                                    11 => \App\Models\EvaluasiKewirausahaan::class,
+                                    12 => \App\Models\EvaluasiPencarianBakatMahasiswa::class,
+                                    13 => \App\Models\EvaluasiMotivasiWaliKotaBatam::class,
+                                    14 => \App\Models\EvaluasiMotivasiGubernurKepulauanRiau::class,
+                                    15 => \App\Models\EvaluasiFikes::class,
+                                    16 => \App\Models\EvaluasiFst::class,
+                                    17 => \App\Models\EvaluasiFeb::class,
+                                ];
+
+                                $activeEvaluasiMenus = \App\Models\EvaluasiMenu::where('is_active', true)->get();
+                                $userFakultas = strtoupper($user->fakultas ?? '');
+
+                                $requiredEvaluasiTotal = 0;
+                                $completedEvaluasiTotal = 0;
+
+                                foreach ($activeEvaluasiMenus as $menu) {
+                                    $num = $menu->nomor;
+                                    $requiredEvaluasiTotal++;
+                                    if (isset($evaluasiMap[$num])) {
+                                        $modelClass = $evaluasiMap[$num];
+                                        if ($modelClass::where('user_id', $userId)->exists()) {
+                                            $completedEvaluasiTotal++;
+                                        }
+                                    }
+                                }
+
+                                $evaluasiComplete = ($requiredEvaluasiTotal == 0) || ($completedEvaluasiTotal >= $requiredEvaluasiTotal);
+
+                                // Must be 100% completed across ALL components
+                                $isAllComplete = $absComplete && $disComplete && $pretestComplete && $posttestComplete && $tugasComplete && $evaluasiComplete;
+
+                                // Score Calculations (For Display if All Complete)
+                                $allTests = \App\Models\HasilTest::where('user_id', $userId)->get();
+                                $hasTugas = $tugasComplete;
                                 $sumTests = $allTests->sum('skor') + ($hasTugas ? 100 : 0);
                                 $scoreTestsRaw = $sumTests / 9;
 
-                                // 2. Absensi (50%) - Strict Presence Only
                                 $absPoints = 0;
-                                $myAbsRecs = [
-                                    \App\Models\AbsenPertama::where('user_id', Auth::id())->first(),
-                                    \App\Models\AbsenKedua::where('user_id', Auth::id())->first(),
-                                    \App\Models\AbsenKetiga::where('user_id', Auth::id())->first(),
-                                ];
-                                foreach ($myAbsRecs as $myAb) {
+                                foreach ([$myAbs1, $myAbs2, $myAbs3] as $myAb) {
                                     if ($myAb) {
                                         $p = strtolower($myAb->hadir_pagi ?? '');
-                                        if ($p !== '' && str_contains($p, 'hadir') && !str_contains($p, 'tidak')) {
-                                            $absPoints++;
-                                        }
+                                        if ($p !== '' && str_contains($p, 'hadir') && !str_contains($p, 'tidak')) $absPoints++;
                                         $s = strtolower($myAb->hadir_sore ?? '');
-                                        if ($s !== '' && str_contains($s, 'hadir') && !str_contains($s, 'tidak')) {
-                                            $absPoints++;
-                                        }
+                                        if ($s !== '' && str_contains($s, 'hadir') && !str_contains($s, 'tidak')) $absPoints++;
                                     }
                                 }
                                 $scoreAbsRaw = ($absPoints / 6) * 100;
 
-                                // 3. Disiplin (30%) - Strict Honors Only
                                 $disPoints = 0;
-                                $myDisRecs = [
-                                    \App\Models\KedisiplinanPertama::where('user_id', Auth::id())->first(),
-                                    \App\Models\KedisiplinanKedua::where('user_id', Auth::id())->first(),
-                                    \App\Models\KedisiplinanKetiga::where('user_id', Auth::id())->first(),
-                                ];
-                                foreach ($myDisRecs as $myDi) {
+                                foreach ([$myDis1, $myDis2, $myDis3] as $myDi) {
                                     if ($myDi) {
-                                        if (strtolower($myDi->kelengkapan_atribut ?? '') === 'lengkap') {
-                                            $disPoints++;
-                                        }
-                                        if (strtolower($myDi->ketepatan_waktu ?? '') === 'tepat waktu') {
-                                            $disPoints++;
-                                        }
-                                        if (strtolower($myDi->perilaku ?? '') === 'sangat baik') {
-                                            $disPoints++;
-                                        }
+                                        if (strtolower($myDi->kelengkapan_atribut ?? '') === 'lengkap') $disPoints++;
+                                        if (strtolower($myDi->ketepatan_waktu ?? '') === 'tepat waktu') $disPoints++;
+                                        if (strtolower($myDi->perilaku ?? '') === 'sangat baik') $disPoints++;
                                     }
                                 }
                                 $scoreDisRaw = ($disPoints / 9) * 100;
@@ -1532,155 +1595,192 @@
                                 $isPassed = $finalScore >= 65;
                             @endphp
 
-                            <div class="display-4 fw-bold text-dark mb-1">{{ (float) number_format($finalScore, 2) }}
-                            </div>
-                            <div class="text-uppercase tracking-wider extra-small fw-bold text-muted mb-4">Total Nilai
-                                Terbobot</div>
+                            @if ($isAllComplete)
+                                {{-- CARD KELULUSAN HANYA TAMPIL JIKA SEMUA TELAH LENGKAP --}}
+                                <div class="display-4 fw-bold text-dark mb-1">{{ (float) number_format($finalScore, 2) }}</div>
+                                <div class="text-uppercase tracking-wider extra-small fw-bold text-muted mb-4">Total Nilai Terbobot</div>
 
-                            @if ($isPassed)
-                                {{-- CELEBRATORY LULUS BADGE WITH TRUMPETS & RIBBON DUST --}}
-                                <div class="celebration-lulus-card position-relative overflow-hidden p-4 rounded-4 text-white text-center mb-4 shadow-lg" 
-                                     id="lulusCelebrationBadge"
-                                     onclick="fireConfettiBurst()"
-                                     style="cursor: pointer;"
-                                     title="Klik untuk merayakan dengan pita & confetti!">
-                                    
-                                    {{-- Scoped Canvas for card-only confetti --}}
-                                    <canvas id="lulusConfettiCanvas" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
-
-                                    {{-- Floating Ribbon Dust Particles Background --}}
-                                    <div class="ribbon-dust-overlay">
-                                        <span class="ribbon-particle ribbon-1"></span>
-                                        <span class="ribbon-particle ribbon-2"></span>
-                                        <span class="ribbon-particle ribbon-3"></span>
-                                        <span class="ribbon-particle ribbon-4"></span>
-                                        <span class="ribbon-particle ribbon-5"></span>
-                                        <span class="ribbon-particle ribbon-6"></span>
-                                        <span class="sparkle-particle sparkle-1">✨</span>
-                                        <span class="sparkle-particle sparkle-2">✨</span>
-                                        <span class="sparkle-particle sparkle-3">🌟</span>
-                                        <span class="sparkle-particle sparkle-4">⭐</span>
-                                    </div>
-
-                                    {{-- Shimmer Light Sweep Effect --}}
-                                    <div class="shimmer-sweep"></div>
-
-                                    {{-- Celebration Content --}}
-                                    <div class="position-relative z-index-2">
+                                @if ($isPassed)
+                                    {{-- CELEBRATORY LULUS BADGE WITH TRUMPETS & RIBBON DUST --}}
+                                    <div class="celebration-lulus-card position-relative overflow-hidden p-4 rounded-4 text-white text-center mb-4 shadow-lg" 
+                                         id="lulusCelebrationBadge"
+                                         onclick="fireConfettiBurst()"
+                                         style="cursor: pointer;"
+                                         title="Klik untuk merayakan dengan pita & confetti!">
                                         
-                                        {{-- Top Ribbon Tag --}}
-                                        <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 mb-3 shadow-sm">
-                                            <i class="bi bi-stars"></i>
-                                            <span class="extra-small fw-bold text-uppercase tracking-wider text-white">Selamat! Anda Dinyatakan</span>
-                                            <i class="bi bi-stars"></i>
+                                        <canvas id="lulusConfettiCanvas" style="position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
+
+                                        <div class="ribbon-dust-overlay">
+                                            <span class="ribbon-particle ribbon-1"></span>
+                                            <span class="ribbon-particle ribbon-2"></span>
+                                            <span class="ribbon-particle ribbon-3"></span>
+                                            <span class="ribbon-particle ribbon-4"></span>
+                                            <span class="ribbon-particle ribbon-5"></span>
+                                            <span class="ribbon-particle ribbon-6"></span>
+                                            <span class="sparkle-particle sparkle-1">✨</span>
+                                            <span class="sparkle-particle sparkle-2">✨</span>
+                                            <span class="sparkle-particle sparkle-3">🌟</span>
+                                            <span class="sparkle-particle sparkle-4">⭐</span>
                                         </div>
 
-                                        {{-- Main Badge Content with Trumpets --}}
-                                        <div class="d-flex align-items-center justify-content-center gap-2 gap-sm-3 my-2">
-                                            
-                                            {{-- Left Party Trumpet --}}
-                                            <div class="trumpet-wrapper trumpet-left">
-                                                <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="trumpet-svg">
-                                                    <path d="M12 40L28 28L38 34L22 46L12 40Z" fill="url(#goldGrad1_l)"/>
-                                                    <path d="M28 28L50 12L56 16L38 34L28 28Z" fill="url(#goldGrad2_l)"/>
-                                                    <path d="M50 12C54 9 60 10 62 14C64 18 61 24 56 24C52 24 50 18 50 12Z" fill="url(#goldGrad1_l)"/>
-                                                    <path d="M56 14C60 10 64 8 64 4" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>
-                                                    <path d="M58 18C62 18 64 22 64 26" stroke="#F43F5E" stroke-width="3" stroke-linecap="round"/>
-                                                    <path d="M54 22C56 26 58 30 56 34" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/>
-                                                    <defs>
-                                                        <linearGradient id="goldGrad1_l" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-                                                            <stop stop-color="#FCD34D"/>
-                                                            <stop offset="0.5" stop-color="#F59E0B"/>
-                                                            <stop offset="1" stop-color="#B45309"/>
-                                                        </linearGradient>
-                                                        <linearGradient id="goldGrad2_l" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-                                                            <stop stop-color="#FEF08A"/>
-                                                            <stop offset="0.5" stop-color="#FBBF24"/>
-                                                            <stop offset="1" stop-color="#D97706"/>
-                                                        </linearGradient>
-                                                    </defs>
-                                                </svg>
+                                        <div class="shimmer-sweep"></div>
+
+                                        <div class="position-relative z-index-2">
+                                            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 mb-3 shadow-sm">
+                                                <i class="bi bi-stars"></i>
+                                                <span class="extra-small fw-bold text-uppercase tracking-wider text-white">Selamat! Anda Dinyatakan</span>
+                                                <i class="bi bi-stars"></i>
                                             </div>
 
-                                            {{-- Central Trophy Emblem --}}
-                                            <div class="trophy-emblem-wrapper">
-                                                <div class="trophy-glow-ring"></div>
-                                                <div class="trophy-circle">
-                                                    <i class="bi bi-trophy-fill trophy-icon"></i>
+                                            <div class="d-flex align-items-center justify-content-center gap-2 gap-sm-3 my-2">
+                                                <div class="trumpet-wrapper trumpet-left">
+                                                    <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="trumpet-svg">
+                                                        <path d="M12 40L28 28L38 34L22 46L12 40Z" fill="url(#goldGrad1_l)"/>
+                                                        <path d="M28 28L50 12L56 16L38 34L28 28Z" fill="url(#goldGrad2_l)"/>
+                                                        <path d="M50 12C54 9 60 10 62 14C64 18 61 24 56 24C52 24 50 18 50 12Z" fill="url(#goldGrad1_l)"/>
+                                                        <path d="M56 14C60 10 64 8 64 4" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>
+                                                        <path d="M58 18C62 18 64 22 64 26" stroke="#F43F5E" stroke-width="3" stroke-linecap="round"/>
+                                                        <path d="M54 22C56 26 58 30 56 34" stroke="#60A5FA" stroke-width="3" stroke-linecap="round"/>
+                                                        <defs>
+                                                            <linearGradient id="goldGrad1_l" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                                                                <stop stop-color="#FCD34D"/>
+                                                                <stop offset="0.5" stop-color="#F59E0B"/>
+                                                                <stop offset="1" stop-color="#B45309"/>
+                                                            </linearGradient>
+                                                            <linearGradient id="goldGrad2_l" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                                                                <stop stop-color="#FEF08A"/>
+                                                                <stop offset="0.5" stop-color="#FBBF24"/>
+                                                                <stop offset="1" stop-color="#D97706"/>
+                                                            </linearGradient>
+                                                        </defs>
+                                                    </svg>
+                                                </div>
+
+                                                <div class="trophy-emblem-wrapper">
+                                                    <div class="trophy-glow-ring"></div>
+                                                    <div class="trophy-circle">
+                                                        <i class="bi bi-trophy-fill trophy-icon"></i>
+                                                    </div>
+                                                </div>
+
+                                                <div class="trumpet-wrapper trumpet-right">
+                                                    <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="trumpet-svg">
+                                                        <g transform="scale(-1, 1) translate(-64, 0)">
+                                                            <path d="M12 40L28 28L38 34L22 46L12 40Z" fill="url(#goldGrad1_r)"/>
+                                                            <path d="M28 28L50 12L56 16L38 34L28 28Z" fill="url(#goldGrad2_r)"/>
+                                                            <path d="M50 12C54 9 60 10 62 14C64 18 61 24 56 24C52 24 50 18 50 12Z" fill="url(#goldGrad1_r)"/>
+                                                            <path d="M56 14C60 10 64 8 64 4" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>
+                                                            <path d="M58 18C62 18 64 22 64 26" stroke="#EC4899" stroke-width="3" stroke-linecap="round"/>
+                                                            <path d="M54 22C56 26 58 30 56 34" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>
+                                                        </g>
+                                                        <defs>
+                                                            <linearGradient id="goldGrad1_r" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                                                                <stop stop-color="#FCD34D"/>
+                                                                <stop offset="0.5" stop-color="#F59E0B"/>
+                                                                <stop offset="1" stop-color="#B45309"/>
+                                                            </linearGradient>
+                                                            <linearGradient id="goldGrad2_r" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                                                                <stop stop-color="#FEF08A"/>
+                                                                <stop offset="0.5" stop-color="#FBBF24"/>
+                                                                <stop offset="1" stop-color="#D97706"/>
+                                                            </linearGradient>
+                                                        </defs>
+                                                    </svg>
                                                 </div>
                                             </div>
 
-                                            {{-- Right Party Trumpet --}}
-                                            <div class="trumpet-wrapper trumpet-right">
-                                                <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="trumpet-svg">
-                                                    <g transform="scale(-1, 1) translate(-64, 0)">
-                                                        <path d="M12 40L28 28L38 34L22 46L12 40Z" fill="url(#goldGrad1_r)"/>
-                                                        <path d="M28 28L50 12L56 16L38 34L28 28Z" fill="url(#goldGrad2_r)"/>
-                                                        <path d="M50 12C54 9 60 10 62 14C64 18 61 24 56 24C52 24 50 18 50 12Z" fill="url(#goldGrad1_r)"/>
-                                                        <path d="M56 14C60 10 64 8 64 4" stroke="#FDE047" stroke-width="3" stroke-linecap="round"/>
-                                                        <path d="M58 18C62 18 64 22 64 26" stroke="#EC4899" stroke-width="3" stroke-linecap="round"/>
-                                                        <path d="M54 22C56 26 58 30 56 34" stroke="#10B981" stroke-width="3" stroke-linecap="round"/>
-                                                    </g>
-                                                    <defs>
-                                                        <linearGradient id="goldGrad1_r" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-                                                            <stop stop-color="#FCD34D"/>
-                                                            <stop offset="0.5" stop-color="#F59E0B"/>
-                                                            <stop offset="1" stop-color="#B45309"/>
-                                                        </linearGradient>
-                                                        <linearGradient id="goldGrad2_r" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-                                                            <stop stop-color="#FEF08A"/>
-                                                            <stop offset="0.5" stop-color="#FBBF24"/>
-                                                            <stop offset="1" stop-color="#D97706"/>
-                                                        </linearGradient>
-                                                    </defs>
-                                                </svg>
+                                            <div class="lulus-ribbon-banner mt-3">
+                                                <span class="lulus-text">LULUS</span>
                                             </div>
 
+                                            <p class="mt-3 mb-0 text-white-50 extra-small fw-semibold">
+                                                <i class="bi bi-patch-check-fill text-warning me-1"></i> Klik untuk merayakan dengan pita & confetti 🎉
+                                            </p>
                                         </div>
-
-                                        {{-- 3D Ribbon Banner LULUS --}}
-                                        <div class="lulus-ribbon-banner mt-3">
-                                            <span class="lulus-text">LULUS</span>
+                                    </div>
+                                @else
+                                    <div class="p-4 rounded-4 bg-amber-gradient text-white text-center mb-4 shadow-sm position-relative overflow-hidden">
+                                        <div class="d-flex align-items-center justify-content-center mb-2">
+                                            <div class="bg-white bg-opacity-20 rounded-circle p-3">
+                                                <i class="bi bi-hourglass-split fs-2 text-warning"></i>
+                                            </div>
                                         </div>
+                                        <span class="fw-bold text-uppercase fs-4 d-block tracking-wider">TIDAK LULUS</span>
+                                        <span class="extra-small text-white-50">Nilai akhir berada di bawah ambang batas kelulusan</span>
+                                    </div>
+                                @endif
 
-                                        <p class="mt-3 mb-0 text-white-50 extra-small fw-semibold">
-                                            <i class="bi bi-patch-check-fill text-warning me-1"></i> Klik untuk merayakan dengan pita & confetti 🎉
-                                        </p>
-
+                                <div class="text-start border-top pt-4">
+                                    <h6 class="extra-small fw-bold text-uppercase text-muted mb-3">Rincian Komponen Nilai</h6>
+                                    <div class="d-flex justify-content-between mb-2 small">
+                                        <span class="text-secondary"><i class="bi bi-journals me-2 text-info"></i> Test & Tugas</span>
+                                        <span class="fw-bold">{{ (float) number_format($scoreTestsRaw, 1) }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2 small">
+                                        <span class="text-secondary"><i class="bi bi-person-check me-2 text-success"></i> Kehadiran </span>
+                                        <span class="fw-bold">{{ (float) number_format($scoreAbsRaw, 1) }}</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-0 small">
+                                        <span class="text-secondary"><i class="bi bi-shield-check me-2 text-primary"></i> Kedisiplinan</span>
+                                        <span class="fw-bold">{{ (float) number_format($scoreDisRaw, 1) }}</span>
                                     </div>
                                 </div>
                             @else
-                                {{-- DALAM PROSES BADGE --}}
-                                <div class="p-4 rounded-4 bg-amber-gradient text-white text-center mb-4 shadow-sm position-relative overflow-hidden">
-                                    <div class="d-flex align-items-center justify-content-center mb-2">
-                                        <div class="bg-white bg-opacity-20 rounded-circle p-3">
-                                            <i class="bi bi-hourglass-split fs-2 text-warning"></i>
-                                        </div>
+                                {{-- CARD KELENGKAPAN TAMPIL JIKA SALAH SATU BELUM LENGKAP --}}
+                                <div class="p-3 mb-3 bg-light rounded-4 border text-start">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <i class="bi bi-info-circle-fill text-warning fs-5"></i>
+                                        <h6 class="fw-bold mb-0 text-dark small">Status Kelulusan Belum Diterbitkan</h6>
                                     </div>
-                                    <span class="fw-bold text-uppercase fs-4 d-block tracking-wider">DALAM PROSES</span>
-                                    <span class="extra-small text-white-50">Nilai sedang diaudit oleh sistem</span>
+                                    <p class="extra-small text-muted mb-0">Status kelulusan Anda akan ditampilkan di sini secara otomatis setelah seluruh komponen penilaian & evaluasi diisi lengkap.</p>
+                                </div>
+
+                                <div class="text-start border-top pt-3">
+                                    <h6 class="extra-small fw-bold text-uppercase text-muted mb-3"><i class="bi bi-list-check me-1 text-primary"></i> Checklist Kelengkapan Anda:</h6>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mb-2 small">
+                                        <span><i class="bi bi-calendar-check me-2 {{ $absComplete ? 'text-success' : 'text-muted' }}"></i> Absensi Kehadiran</span>
+                                        <span class="badge {{ $absComplete ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-2 py-1" style="font-size: 0.75rem;">
+                                            {{ $absSessionCount }}/6 Sesi {!! $absComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2 small">
+                                        <span><i class="bi bi-shield-check me-2 {{ $disComplete ? 'text-success' : 'text-muted' }}"></i> Penilaian Kedisiplinan</span>
+                                        <span class="badge {{ $disComplete ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-2 py-1" style="font-size: 0.75rem;">
+                                            {{ $disDayCount }}/3 Hari {!! $disComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2 small">
+                                        <span><i class="bi bi-pencil-square me-2 {{ $pretestComplete ? 'text-success' : 'text-muted' }}"></i> Ujian Pre-Test</span>
+                                        <span class="badge {{ $pretestComplete ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-2 py-1" style="font-size: 0.75rem;">
+                                            {{ $pretestCountUser }}/4 Tes {!! $pretestComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2 small">
+                                        <span><i class="bi bi-file-earmark-check me-2 {{ $posttestComplete ? 'text-success' : 'text-muted' }}"></i> Ujian Post-Test</span>
+                                        <span class="badge {{ $posttestComplete ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-2 py-1" style="font-size: 0.75rem;">
+                                            {{ $posttestCountUser }}/4 Tes {!! $posttestComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-2 small">
+                                        <span><i class="bi bi-journal-text me-2 {{ $tugasComplete ? 'text-success' : 'text-muted' }}"></i> Tugas Kelompok</span>
+                                        <span class="badge {{ $tugasComplete ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-2 py-1" style="font-size: 0.75rem;">
+                                            {{ $tugasCountUser }}/1 Tugas {!! $tugasComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
+                                        </span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-0 small">
+                                        <span><i class="bi bi-clipboard2-check me-2 {{ $evaluasiComplete ? 'text-success' : 'text-muted' }}"></i> Evaluasi Penyampaian Materi</span>
+                                        <span class="badge {{ $evaluasiComplete ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-2 py-1" style="font-size: 0.75rem;">
+                                            {{ $completedEvaluasiTotal }}/{{ $requiredEvaluasiTotal }} Evaluasi {!! $evaluasiComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
+                                        </span>
+                                    </div>
                                 </div>
                             @endif
-
-                            <div class="text-start border-top pt-4">
-                                <h6 class="extra-small fw-bold text-uppercase text-muted mb-3">Rincian Komponen Nilai</h6>
-                                <div class="d-flex justify-content-between mb-2 small">
-                                    <span class="text-secondary"><i class="bi bi-journals me-2 text-info"></i> Test &
-                                        Tugas
-                                    </span>
-                                    <span class="fw-bold">{{ (float) number_format($scoreTestsRaw, 1) }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2 small">
-                                    <span class="text-secondary"><i class="bi bi-person-check me-2 text-success"></i>
-                                        Kehadiran </span>
-                                    <span class="fw-bold">{{ (float) number_format($scoreAbsRaw, 1) }}</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-0 small">
-                                    <span class="text-secondary"><i class="bi bi-shield-check me-2 text-primary"></i>
-                                        Kedisiplinan</span>
-                                    <span class="fw-bold">{{ (float) number_format($scoreDisRaw, 1) }}</span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 @endif

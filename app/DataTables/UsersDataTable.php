@@ -102,6 +102,8 @@ class UsersDataTable extends DataTable
                 ->title('ID Pendaftar'),
             Column::make('email')
                 ->title('Email'),
+            Column::make('no_wa')
+                ->title('No. WhatsApp'),
             Column::make('fakultas')
                 ->title('Fakultas'),
             Column::make('program_studi')

@@ -26,21 +26,24 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $loginField = filter_var($request->input('login'), FILTER_VALIDATE_EMAIL) ? 'email' : 'id_pendaftar';
+        $input = trim($request->input('login'));
+        $waInput = str_starts_with($input, '08') ? '628' . substr($input, 2) : $input;
 
-        $credentials = [
-            $loginField => $request->input('login'),
-            'password' => $request->input('password'),
-        ];
+        $user = \App\Models\User::query()
+            ->where('email', $input)
+            ->orWhere('id_pendaftar', $input)
+            ->orWhere('no_wa', $input)
+            ->orWhere('no_wa', $waInput)
+            ->first();
 
-        if (Auth::attempt($credentials)) {
-            if (!Auth::user()->is_active) {
-                Auth::logout();
+        if ($user && \Illuminate\Support\Facades\Hash::check($request->input('password'), $user->password)) {
+            if (!$user->is_active) {
                 return back()->withErrors([
                     'login' => 'Akun Anda sedang dinonaktifkan. Silakan hubungi admin.',
                 ])->onlyInput('login');
             }
 
+            Auth::login($user);
             $request->session()->regenerate();
             Alert::success('Login Berhasil', 'Selamat datang di Dashboard')
                 ->toToast()
@@ -49,7 +52,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'login' => 'Login gagal, silakan periksa kembali email/ID pendaftar dan password Anda.',
+            'login' => 'Login gagal, silakan periksa kembali Email / ID Pendaftar / No. WhatsApp dan Password Anda.',
         ])->onlyInput('login');
     }
 }

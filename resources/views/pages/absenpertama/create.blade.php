@@ -48,26 +48,38 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label for="hadir_pagi" class="col-sm-2 col-form-label">Hadir Pagi</label>
-                                <div class="col-sm-10">
-                                    <select name="hadir_pagi" id="hadir_pagi" class="form-select">
-                                        <option value="" disabled selected>Pilih Hadir Pagi...</option>
-                                        <option value="Hadir">Hadir</option>
-                                        <option value="Izin">Izin</option>
-                                        <option value="Tidak Hadir">Tidak Hadir</option>
-                                    </select>
+                                <label class="col-sm-2 col-form-label">Hadir Pagi</label>
+                                <div class="col-sm-10 d-flex align-items-center">
+                                    <div class="form-check form-check-inline me-4">
+                                        <input class="form-check-input" type="radio" name="hadir_pagi" id="pagi_hadir" value="Hadir" {{ old('hadir_pagi', 'Hadir') == 'Hadir' ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-semibold" for="pagi_hadir">Hadir</label>
+                                    </div>
+                                    <div class="form-check form-check-inline me-4">
+                                        <input class="form-check-input" type="radio" name="hadir_pagi" id="pagi_izin" value="Izin" {{ old('hadir_pagi') == 'Izin' ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-semibold" for="pagi_izin">Izin</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="hadir_pagi" id="pagi_tidak" value="Tidak Hadir" {{ old('hadir_pagi') == 'Tidak Hadir' ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-semibold" for="pagi_tidak">Tidak Hadir</label>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label for="hadir_sore" class="col-sm-2 col-form-label">Hadir Sore</label>
-                                <div class="col-sm-10">
-                                    <select name="hadir_sore" id="hadir_sore" class="form-select">
-                                        <option value="" disabled selected>Pilih Hadir Sore...</option>
-                                        <option value="Hadir">Hadir</option>
-                                        <option value="Izin">Izin</option>
-                                        <option value="Tidak Hadir">Tidak Hadir</option>
-                                    </select>
+                                <label class="col-sm-2 col-form-label">Hadir Sore</label>
+                                <div class="col-sm-10 d-flex align-items-center">
+                                    <div class="form-check form-check-inline me-4">
+                                        <input class="form-check-input" type="radio" name="hadir_sore" id="sore_hadir" value="Hadir" {{ old('hadir_sore', 'Hadir') == 'Hadir' ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-semibold" for="sore_hadir">Hadir</label>
+                                    </div>
+                                    <div class="form-check form-check-inline me-4">
+                                        <input class="form-check-input" type="radio" name="hadir_sore" id="sore_izin" value="Izin" {{ old('hadir_sore') == 'Izin' ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-semibold" for="sore_izin">Izin</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="hadir_sore" id="sore_tidak" value="Tidak Hadir" {{ old('hadir_sore') == 'Tidak Hadir' ? 'checked' : '' }}>
+                                        <label class="form-check-label fw-semibold" for="sore_tidak">Tidak Hadir</label>
+                                    </div>
                                 </div>
                             </div>
 

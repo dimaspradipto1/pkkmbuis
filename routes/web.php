@@ -27,6 +27,7 @@ use App\Http\Controllers\SoalTugasKelompokController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\KelompokController;
 use App\Http\Controllers\RekapKeseluruhanController;
+use App\Http\Controllers\RekapEvaluasiController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EvaluasiPengenalanWawasanIbnuSinaController;
 use App\Http\Controllers\EvaluasiPelayananKemahasiswaanPusatPrestasiController;
@@ -64,6 +65,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::get('profile/password', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
     Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::get('rekap-keseluruhan', [RekapKeseluruhanController::class, 'index'])->name('rekapkeseluruhan.index');
+    Route::get('rekap-evaluasi', [RekapEvaluasiController::class, 'index'])->name('rekapevaluasi.index');
     Route::get('hasiltest/export', [HasilTestController::class, 'export'])->name('hasiltest.export');
     Route::post('hasiltest/bulk-reset', [HasilTestController::class, 'bulkReset'])->name('hasiltest.bulkReset');
     Route::post('hasiltest/user-reset/{user}', [HasilTestController::class, 'resetByUser'])->name('hasiltest.resetByUser');
@@ -222,6 +224,19 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');
     Route::post('evaluasimenu/{id}/toggle', [\App\Http\Controllers\EvaluasiMenuController::class, 'toggle'])->name('evaluasimenu.toggle');
+
+    Route::get('chatbot-faq', [\App\Http\Controllers\ChatbotFaqController::class, 'index'])->name('chatbot-faq.index');
+    Route::post('chatbot-faq', [\App\Http\Controllers\ChatbotFaqController::class, 'store'])->name('chatbot-faq.store');
+    Route::put('chatbot-faq/{id}', [\App\Http\Controllers\ChatbotFaqController::class, 'update'])->name('chatbot-faq.update');
+    Route::delete('chatbot-faq/{id}', [\App\Http\Controllers\ChatbotFaqController::class, 'destroy'])->name('chatbot-faq.destroy');
+    Route::post('chatbot-faq/{id}/toggle', [\App\Http\Controllers\ChatbotFaqController::class, 'toggle'])->name('chatbot-faq.toggle');
+    Route::post('chatbot-faq/update-wa', [\App\Http\Controllers\ChatbotFaqController::class, 'updateWaGroup'])->name('chatbot-faq.update-wa');
+
+    Route::get('chat', [\App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+    Route::get('chat/messages/{userId}', [\App\Http\Controllers\ChatController::class, 'fetchMessages'])->name('chat.fetch');
+    Route::post('chat/send', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::get('chat/unread-total', [\App\Http\Controllers\ChatController::class, 'getUnreadTotal'])->name('chat.unread-total');
+    Route::get('chat/unread-details', [\App\Http\Controllers\ChatController::class, 'getUnreadDetails'])->name('chat.unread-details');
 });
 
 

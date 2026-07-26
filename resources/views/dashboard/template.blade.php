@@ -39,17 +39,56 @@
 
     <style>
         :root {
-            --uis-green: #00A551;
-            --uis-green-dark: #087C39;
-            --uis-yellow: #FFF742;
+            --uis-green: #046B26;
+            --uis-green-dark: #024B1A;
+            --uis-yellow: #FED802;
             --bg-light: #f6f9ff;
-            --card-edge: rgba(0, 165, 81, 0.1);
+            --card-edge: rgba(4, 107, 38, 0.1);
         }
 
         body {
             background-color: var(--bg-light) !important;
             color: #444444;
             font-family: 'Poppins', sans-serif;
+        }
+
+        /* Global DataTables & Standard Table Font Size Optimization */
+        table.dataTable, 
+        .table-responsive table, 
+        .table {
+            font-size: 0.8rem !important;
+        }
+
+        table.dataTable th, 
+        .table-responsive table th, 
+        .table th {
+            font-size: 0.76rem !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.4px !important;
+            vertical-align: middle !important;
+            padding: 9px 10px !important;
+        }
+
+        table.dataTable td, 
+        .table-responsive table td, 
+        .table td {
+            font-size: 0.8rem !important;
+            vertical-align: middle !important;
+            padding: 8px 10px !important;
+        }
+
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate,
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            font-size: 0.8rem !important;
+        }
+
+        .table .btn,
+        table.dataTable .btn {
+            padding: 4px 8px !important;
+            font-size: 0.75rem !important;
         }
 
         /* Sidebar: Professional Light Style */
@@ -224,6 +263,7 @@
     </main><!-- End #main -->
 
     @include('dashboard.footer')
+    @include('dashboard.chatbot')
 
 
 
@@ -503,6 +543,76 @@
             });
         </script>
     @endif
+
+    <script>
+        function checkUnreadChatNotifications() {
+            fetch('{{ route("chat.unread-details") }}', {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    const count = data.unread_count || 0;
+
+                    // Update Header Badge
+                    const headerBadge = document.getElementById('chatHeaderUnreadBadge');
+                    if (headerBadge) {
+                        if (count > 0) {
+                            headerBadge.innerText = count > 99 ? '99+' : count;
+                            headerBadge.style.display = 'inline-block';
+                        } else {
+                            headerBadge.style.display = 'none';
+                        }
+                    }
+
+                    // Update Sidebar Badge
+                    const sidebarBadge = document.getElementById('sidebarChatUnreadBadge');
+                    if (sidebarBadge) {
+                        if (count > 0) {
+                            sidebarBadge.innerText = count > 99 ? '99+' : count;
+                            sidebarBadge.style.display = 'inline-block';
+                        } else {
+                            sidebarBadge.style.display = 'none';
+                        }
+                    }
+
+                    // Update Header Dropdown Items
+                    const dropdownItemsContainer = document.getElementById('chatDropdownItems');
+                    if (dropdownItemsContainer && data.unread_messages) {
+                        if (data.unread_messages.length > 0) {
+                            let html = '';
+                            data.unread_messages.forEach(msg => {
+                                html += `
+                                    <li class="message-item p-2 border-bottom">
+                                        <a href="/chat?user_id=${msg.sender_id}" class="d-flex align-items-center text-decoration-none">
+                                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-2 flex-shrink-0" style="width: 32px; height: 32px; font-weight: bold; font-size: 0.8rem;">
+                                                ${msg.sender_name.charAt(0).toUpperCase()}
+                                            </div>
+                                            <div style="flex: 1; min-width: 0;">
+                                                <div class="fw-bold text-dark extra-small text-truncate">${msg.sender_name}</div>
+                                                <div class="text-muted extra-small text-truncate">${msg.message}</div>
+                                                <div class="text-secondary" style="font-size: 0.65rem;">${msg.time}</div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                `;
+                            });
+                            dropdownItemsContainer.innerHTML = html;
+                        } else {
+                            dropdownItemsContainer.innerHTML = '<li class="p-3 text-center text-muted extra-small">Tidak ada pesan belum dibaca</li>';
+                        }
+                    }
+                })
+                .catch(err => console.error('Error fetching unread chat status:', err));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkUnreadChatNotifications();
+            setInterval(checkUnreadChatNotifications, 3000);
+        });
+    </script>
 
     @stack('scripts')
 

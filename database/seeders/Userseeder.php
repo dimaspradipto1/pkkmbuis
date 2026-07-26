@@ -19,6 +19,7 @@ class Userseeder extends Seeder
                 'name' => 'Admin',
                 'id_pendaftar' => '12345',
                 'email' => 'admin@uis.ac.id',
+                'no_wa' => '6281234567890',
                 'password' => Hash::make('password'),
                 'role' => 'admin',
                 'fakultas' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)',
@@ -29,6 +30,7 @@ class Userseeder extends Seeder
                 'name' => 'Staf BAAK',
                 'id_pendaftar' => '123456',
                 'email' => 'baak@usi.ac.id',
+                'no_wa' => '6281234567891',
                 'password' => Hash::make('password'),
                 'role' => 'stafbaak',
                 'fakultas' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)',
@@ -39,6 +41,7 @@ class Userseeder extends Seeder
                 'name' => 'Pimpinan',
                 'id_pendaftar' => '1234567',
                 'email' => 'pimpinan@uis.ac.id',
+                'no_wa' => '6281234567892',
                 'password' => Hash::make('password'),
                 'role' => 'pimpinan',
                 'fakultas' => 'FAKULTAS ILMU KESEHATAN (FIKes)',
@@ -51,6 +54,7 @@ class Userseeder extends Seeder
                 'name' => 'Kakak Leting 1 (Budi Santoso)',
                 'id_pendaftar' => 'KL2026001',
                 'email' => 'kakakleting@uis.ac.id',
+                'no_wa' => '6281234567893',
                 'password' => Hash::make('password'),
                 'role' => 'kakakleting',
                 'fakultas' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)',
@@ -61,6 +65,7 @@ class Userseeder extends Seeder
                 'name' => 'Kakak Leting 2 (Siti Rahma)',
                 'id_pendaftar' => 'KL2026002',
                 'email' => 'kakakleting2@uis.ac.id',
+                'no_wa' => '6281234567894',
                 'password' => Hash::make('password'),
                 'role' => 'kakakleting',
                 'fakultas' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)',
@@ -71,6 +76,7 @@ class Userseeder extends Seeder
                 'name' => 'Kakak Leting 3 (Ahmad Rizky)',
                 'id_pendaftar' => 'KL2026003',
                 'email' => 'kakakleting3@uis.ac.id',
+                'no_wa' => '6281234567895',
                 'password' => Hash::make('password'),
                 'role' => 'kakakleting',
                 'fakultas' => 'FAKULTAS ILMU KESEHATAN (FIKes)',
@@ -119,11 +125,13 @@ class Userseeder extends Seeder
         for ($i = 0; $i < 15; $i++) {
             $idPendaftar = ($i == 0) ? '010420206' : '0104202' . str_pad($i + 10, 2, '0', STR_PAD_LEFT);
             $email = ($i == 0) ? 'mahasiswa@uis.ac.id' : 'mahasiswa' . ($i + 1) . '@uis.ac.id';
+            $noWa = '628' . str_pad(812345670 + $i, 10, '0', STR_PAD_LEFT);
 
             $users[] = [
                 'name' => $names[$i],
                 'id_pendaftar' => $idPendaftar,
                 'email' => $email,
+                'no_wa' => $noWa,
                 'password' => Hash::make('password'),
                 'role' => 'mahasiswa',
                 'fakultas' => $fakultasProdiList[$i][0],

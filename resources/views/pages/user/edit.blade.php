@@ -52,6 +52,13 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
+                                <label for="no_wa" class="col-sm-2 col-form-label">No. WhatsApp</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="no_wa" class="form-control" id="no_wa" value="{{ old('no_wa', $user->no_wa) }}" placeholder="Contoh: 6281234567890">
+                                    <small class="text-muted" style="font-size: 0.75rem;">Gunakan format 628... tanpa spasi atau tanda hubung.</small>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
                                 <label for="role" class="col-sm-2 col-form-label">Role</label>
                                 <div class="col-sm-10">
                                     <select name="role" class="form-select" id="role" required>

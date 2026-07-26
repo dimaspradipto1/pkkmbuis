@@ -160,71 +160,27 @@
 
         </li><!-- End Notification Nav -->
 
-        {{-- <li class="nav-item dropdown">
-
-          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-chat-left-text"></i>
-            <span class="badge bg-success badge-number">3</span>
+        <li class="nav-item dropdown me-2">
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown" title="Pesan Chat Masuk">
+            <i class="bi bi-chat-square-text-fill text-success fs-5"></i>
+            <span class="badge bg-danger badge-number" id="chatHeaderUnreadBadge" style="display: none; font-size: 0.65rem;">0</span>
           </a><!-- End Messages Icon -->
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
-            <li class="dropdown-header">
-              You have 3 new messages
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages p-2" style="width: 290px;">
+            <li class="dropdown-header d-flex justify-content-between align-items-center">
+              <span class="fw-bold text-dark">Pesan Chat Masuk</span>
+              <a href="{{ route('chat.index') }}"><span class="badge bg-success px-2 py-1">Lihat Semua</span></a>
             </li>
-            <li>
-              <hr class="dropdown-divider">
+            <li><hr class="dropdown-divider"></li>
+            <div id="chatDropdownItems">
+              <li class="p-3 text-center text-muted extra-small">Tidak ada pesan belum dibaca</li>
+            </div>
+            <li><hr class="dropdown-divider"></li>
+            <li class="dropdown-footer text-center p-2">
+              <a href="{{ route('chat.index') }}" class="extra-small fw-bold text-success">Buka Direct Live Chat <i class="bi bi-arrow-right"></i></a>
             </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/messages-1.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Maria Hudson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>4 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/messages-2.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>Anna Nelson</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>6 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="message-item">
-              <a href="#">
-                <img src="assets/img/messages-3.jpg" alt="" class="rounded-circle">
-                <div>
-                  <h4>David Muldon</h4>
-                  <p>Velit asperiores et ducimus soluta repudiandae labore officia est ut...</p>
-                  <p>8 hrs. ago</p>
-                </div>
-              </a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="dropdown-footer">
-              <a href="#">Show all messages</a>
-            </li>
-
           </ul><!-- End Messages Dropdown Items -->
-
-        </li><!-- End Messages Nav --> --}}
+        </li><!-- End Messages Nav -->
 
         <li class="nav-item dropdown pe-3">
 

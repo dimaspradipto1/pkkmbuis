@@ -1,443 +1,478 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>PKKMB UIS - Login</title>
-    <meta content="" name="description">
-    <meta content="" name="keywords">
+    <title>PKKMB UIS - Portal Masuk Mahasiswa Baru</title>
+    <meta content="Portal Resmi PKKMB Universitas Ibnu Sina" name="description">
 
     <!-- Favicons -->
-    <link href="assets/img/logo_ibsi.png" rel="icon">
-    <link href="assets/img/logo_ibsi.png" rel="apple-touch-icon">
+    <link href="{{ asset('assets/img/logo_ibsi.png') }}" rel="icon">
+    <link href="{{ asset('assets/img/logo_ibsi.png') }}" rel="apple-touch-icon">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link
-        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
-        rel="stylesheet">
+    <!-- Google Fonts: Lora (Academic Serif) & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Vendor CSS Files -->
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/vendor/quill/quill.snow.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
-
-    <!-- Template Main CSS File -->
-    <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-
         :root {
-            --uis-green: #00A551;
-            --uis-green-dark: #087C39;
-            --uis-yellow: #FFF742;
-            --uis-glow: rgba(0, 165, 81, 0.4);
-            --void-navy: #020617;
-            --glass-core: rgba(15, 23, 42, 0.9);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --synergy-gradient: linear-gradient(45deg, #087C39, #FFF742);
+            --uis-green: #046B26;
+            --uis-green-dark: #024B1A;
+            --uis-yellow: #FED802;
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
         }
 
-        body {
+        html, body {
+            height: 100vh !important;
+            width: 100vw !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important; /* Prevents any scrolling */
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--void-navy) !important;
-            margin: 0;
-            min-height: 100vh;
+            background: var(--bg-light);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
-            overflow-y: auto;
-            color: #f8fafc;
         }
 
-        #synergy-canvas {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #064e3b 0%, #020617 100%);
-        }
-
-        .synergy-card {
-            width: 1050px;
-            max-width: 100%;
-            min-height: 680px;
-            height: auto;
-            display: flex;
-            background: var(--glass-core);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border-radius: 40px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 40px 100px -24px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 165, 81, 0.1);
-            overflow: hidden;
-            animation: cardSync 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            position: relative;
-            margin: auto;
-        }
-
-        @keyframes cardSync {
-            from {
-                opacity: 0;
-                transform: scale(0.97) translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .visual-synergy {
-            flex: 1.1;
-            background: url("{{ asset('assets/img/gedunguis.JPG') }}") center center no-repeat;
-            background-size: cover;
-            position: relative;
-            display: none;
-        }
-
-        .visual-synergy::after {
+        /* Subtle Background Radial Pattern */
+        body::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(8, 124, 57, 0.6), rgba(2, 6, 23, 0.4));
+            background: radial-gradient(circle at 50% 50%, rgba(4, 107, 38, 0.06) 0%, rgba(248, 250, 252, 1) 80%);
+            z-index: 0;
         }
 
-        .synergy-overlay {
+        /* Main Container Card (Fits 14-Inch Display Perfectly) */
+        .login-card {
+            position: relative;
+            z-index: 10;
+            width: 1040px;
+            max-width: 95%;
+            height: 560px; /* Fixed height for 14" laptop viewport */
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+            display: flex;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Left Side Banner (Campus Visual + Academic Identity) */
+        .login-visual {
+            flex: 1.25;
+            position: relative;
+            background: url("{{ asset('assets/img/gedunguis.JPG') }}") center center no-repeat;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2.2rem 2.4rem;
+            color: #ffffff;
+        }
+
+        .login-visual::before {
+            content: '';
             position: absolute;
-            bottom: 40px;
-            left: 40px;
-            right: 40px;
-            z-index: 5;
+            inset: 0;
+            background: linear-gradient(155deg, rgba(4, 107, 38, 0.94) 0%, rgba(2, 70, 26, 0.90) 100%);
+            z-index: 1;
         }
 
-        .synergy-overlay h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #fff;
-            line-height: 1.1;
-            margin-bottom: 8px;
-            text-transform: uppercase;
+        .visual-header {
+            position: relative;
+            z-index: 2;
         }
 
-        .synergy-overlay .tagline {
-            display: inline-block;
+        .uis-badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .uis-badge-pill img {
+            width: 18px;
+            height: 18px;
+        }
+
+        .visual-body {
+            position: relative;
+            z-index: 2;
+            margin-bottom: auto;
+            margin-top: 1.5rem;
+        }
+
+        .visual-title {
+            font-family: 'Lora', serif;
+            font-size: 2.1rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: #ffffff;
+            margin-bottom: 0;
+        }
+
+        .visual-accent-line {
+            width: 55px;
+            height: 4px;
             background: var(--uis-yellow);
-            color: #000;
-            padding: 4px 12px;
-            font-weight: 800;
-            font-size: 0.75rem;
             border-radius: 4px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
+            margin: 12px 0 14px 0;
         }
 
-        .form-synergy {
+        .visual-subtitle {
+            font-size: 0.84rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+            font-weight: 400;
+            max-width: 95%;
+        }
+
+        /* 3 Bottom Academic Cards */
+        .visual-cards-row {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .feature-box {
             flex: 1;
-            padding: 3rem 4rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 14px;
+            padding: 14px 10px;
+            text-align: center;
+            backdrop-filter: blur(6px);
+        }
+
+        .feature-box i {
+            font-size: 1.4rem;
+            color: var(--uis-yellow);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .feature-box h6 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            line-height: 1.2;
+        }
+
+        .feature-box p {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        /* Right Side Form (Clean Academic Form) */
+        .login-form-box {
+            flex: 1;
+            padding: 2.2rem 2.8rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            position: relative;
+            background: #ffffff;
         }
 
-        .synergy-logo-box {
-            margin-bottom: 2.5rem;
-            display: flex;
-            justify-content: center;
-        }
-
-        .synergy-logo {
-            width: 75px;
-            filter: drop-shadow(0 0 10px var(--uis-glow));
-            transition: transform 0.3s;
-        }
-
-        .synergy-logo:hover {
-            transform: scale(1.05);
-        }
-
-        .title-synergy {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: #fff;
-            margin-bottom: 8px;
+        .logo-container {
             text-align: center;
+            margin-bottom: 0.8rem;
         }
 
-        .subtitle-box {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 3rem;
-            opacity: 0.8;
+        .logo-img {
+            width: 72px;
+            height: auto;
         }
 
-        .accent-line {
-            width: 3px;
-            height: 18px;
-            background: var(--uis-yellow);
-            border-radius: 10px;
-        }
-
-        .subtitle-text {
-            color: #e2e8f0;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .synergy-group {
+        .form-heading {
+            text-align: center;
             margin-bottom: 1.5rem;
         }
 
-        .synergy-label {
-            display: block;
-            font-size: 0.7rem;
+        .form-heading h2 {
+            font-family: 'Lora', serif;
+            font-size: 1.65rem;
             font-weight: 700;
-            color: var(--uis-yellow);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 8px;
-            padding-left: 4px;
+            color: var(--uis-green);
+            margin-bottom: 4px;
         }
 
-        .synergy-input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 0.9rem 1.2rem;
-            color: white;
-            transition: all 0.3s;
+        .form-heading p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .form-group-custom {
+            margin-bottom: 1.1rem;
+        }
+
+        .form-label-custom {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--uis-green);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper-custom {
+            position: relative;
+        }
+
+        .input-icon-left {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
             font-size: 0.95rem;
         }
 
-        .synergy-input:focus {
-            outline: none;
-            background: rgba(255, 255, 255, 0.07);
-            border-color: var(--uis-green);
-            box-shadow: 0 0 20px rgba(0, 165, 81, 0.2);
-            transform: translateY(-1px);
-        }
-
-        .btn-synergy {
-            background: var(--synergy-gradient);
-            color: #000;
-            border: none;
-            padding: 1rem;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 1rem;
-            text-transform: uppercase;
+        .input-custom {
             width: 100%;
-            margin-top: 1.5rem;
-            transition: all 0.3s;
+            height: 44px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 0 14px 0 40px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.25s ease;
+        }
+
+        .input-custom:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: var(--uis-green);
+            box-shadow: 0 0 0 3px rgba(4, 107, 38, 0.15);
+        }
+
+        .toggle-pass-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
             cursor: pointer;
-            box-shadow: 0 10px 20px -10px rgba(0, 165, 81, 0.5);
-        }
-
-        .btn-synergy:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px -10px rgba(0, 165, 81, 0.7);
-        }
-
-        .action-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1.25rem;
-            font-size: 0.8rem;
-        }
-
-        .custom-check {
+            padding: 4px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            font-size: 1.05rem;
+        }
+
+        .toggle-pass-btn:hover {
+            color: var(--uis-green);
+        }
+
+        .forgot-pass-link {
+            color: var(--uis-green);
+            font-weight: 700;
+            font-size: 0.78rem;
+            text-decoration: none;
+        }
+
+        .forgot-pass-link:hover {
+            text-decoration: underline;
+        }
+
+        .btn-login-forest {
+            width: 100%;
+            height: 46px;
+            background: var(--uis-green);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
             cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-login-forest:hover {
+            background: var(--uis-green-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(4, 107, 38, 0.35);
+        }
+
+        .divider-line {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.2rem 0 0.8rem 0;
+            color: #cbd5e1;
+        }
+
+        .divider-line::before,
+        .divider-line::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .divider-line i {
+            padding: 0 10px;
+            font-size: 0.85rem;
             color: #94a3b8;
         }
 
-        .custom-check input {
-            accent-color: var(--uis-green);
-        }
-
-        .forgot-pass {
-            color: var(--uis-yellow);
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        .footer-synergy {
-            margin-top: 3.5rem;
+        .login-footer-text {
             text-align: center;
-            font-size: 0.7rem;
-            color: #475569;
-            font-weight: 700;
-            letter-spacing: 1px;
+            font-size: 0.72rem;
+            color: #94a3b8;
+            font-weight: 500;
         }
 
-        @media (min-width: 992px) {
-            .visual-synergy {
-                display: block;
+        @media (max-width: 900px) {
+            html, body {
+                overflow: auto !important;
             }
-        }
-
-        @media (max-width: 768px) {
-            .synergy-card {
-                border-radius: 0;
-                min-height: 100vh;
-                width: 100%;
-                max-width: 100%;
+            .login-visual {
+                display: none;
+            }
+            .login-card {
+                max-width: 420px;
                 height: auto;
+                border-radius: 20px;
             }
-
-            .form-synergy {
-                padding: 3rem 2rem;
+            .login-form-box {
+                padding: 2.2rem 1.8rem;
             }
         }
     </style>
 </head>
 
 <body>
-    <canvas id="synergy-canvas"></canvas>
 
-    <div class="synergy-card">
-        <div class="visual-synergy">
-            <div class="synergy-overlay">
-                <span class="tagline">Success Starts Here</span>
-                <h1>PORTAL<br>PKKMB UIS</h1>
-                <p class="opacity-75 uppercase tracking-widest small">Universitas Ibnu Sina {{ date('Y') }}</p>
+    <div class="login-card">
+        {{-- Left Side: Academic Banner Visual --}}
+        <div class="login-visual">
+            <div class="visual-header">
+                <div class="uis-badge-pill">
+                    <img src="{{ asset('assets/img/logo_ibsi.png') }}" alt="UIS Badge">
+                    <span>PKKMB UIS {{ date('Y') }}</span>
+                </div>
+            </div>
+
+            <div class="visual-body">
+                <h1 class="visual-title">Selamat Datang<br>CAMABA UIS {{ date('Y') }}</h1>
+                <div class="visual-accent-line"></div>
+                <p class="visual-subtitle">Siapkan diri Anda menjadi bagian dari Civitas Akademika Universitas Ibnu Sina yang berprestasi dan berkarakter.</p>
+            </div>
+
+            <div class="visual-cards-row">
+                <div class="feature-box">
+                    <i class="bi bi-mortarboard-fill"></i>
+                    <h6>Generasi Rabbani</h6>
+                    <p>Unggul, berintegritas, profesional & berakhlak mulia.</p>
+                </div>
+                <div class="feature-box">
+                    <i class="bi bi-people-fill"></i>
+                    <h6>Bersama Membangun Masa Depan</h6>
+                    <p>Berintelektual untuk inovasi dan kemajuan umat.</p>
+                </div>
+                <div class="feature-box">
+                    <i class="bi bi-shield-check"></i>
+                    <h6>Keamanan Data</h6>
+                    <p>Keamanan data Anda terjamin dengan sistem autentikasi resmi UIS.</p>
+                </div>
             </div>
         </div>
 
-        <div class="form-synergy">
-            <div class="synergy-logo-box">
-                <img src="{{ asset('assets/img/logo_ibsi.png') }}" alt="UIS" class="synergy-logo">
+        {{-- Right Side: Clean Form --}}
+        <div class="login-form-box">
+            <div class="logo-container">
+                <img src="{{ asset('assets/img/logo_ibsi.png') }}" alt="Logo UIS" class="logo-img">
             </div>
 
-            <h2 class="title-synergy">Halo, Selamat Datang!</h2>
-            <div class="subtitle-box">
-                <div class="accent-line"></div>
-                <span class="subtitle-text">Silahkan masuk ke akun anda</span>
-                <div class="accent-line"></div>
+            <div class="form-heading">
+                <h2>Portal Masuk PKKMB</h2>
+                <p>Silakan masukkan kredensial akun Anda</p>
             </div>
 
             @error('login')
-            <div class="alert border-0 small rounded-4 p-4 mb-5 d-flex align-items-center" 
-                 style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3) !important; border-left: 5px solid #ef4444 !important;">
-                <div class="flex-shrink-0 me-3">
-                    <div class="d-flex align-items-center justify-content-center bg-danger rounded-circle" style="width: 32px; height: 32px;">
-                        <i class="bi bi-shield-fill-x text-white"></i>
+                <div class="alert border-0 rounded-3 p-3 mb-3 d-flex align-items-center bg-danger bg-opacity-10 text-danger" style="border-left: 4px solid #ef4444 !important;">
+                    <i class="bi bi-exclamation-triangle-fill fs-5 me-2"></i>
+                    <div style="font-size: 0.8rem; font-weight: 600;">
+                        {{ $message }}
                     </div>
                 </div>
-                <div>
-                    <h6 class="text-white fw-bold mb-1" style="font-size: 0.85rem">Akses Ditolak</h6>
-                    <p class="text-white opacity-90 mb-0" style="font-size: 0.8rem">{{ $message }}</p>
-                </div>
-            </div>
             @enderror
 
             <form action="{{ route('login.post') }}" method="POST">
                 @csrf
-                <div class="synergy-group">
-                    <label class="synergy-label">ID Pendaftar / Email</label>
-                    <input type="text" name="login" class="synergy-input" value="{{ old('login') }}"
-                        placeholder="Contoh: 20240101" required>
+                <div class="form-group-custom">
+                    <label class="form-label-custom">ID Pendaftar / Email / No. WhatsApp (628...)</label>
+                    <div class="input-wrapper-custom">
+                        <i class="bi bi-person-fill input-icon-left"></i>
+                        <input type="text" name="login" class="input-custom" value="{{ old('login') }}" placeholder="Contoh: 628123456789 atau 20240101" required autofocus>
+                    </div>
                 </div>
 
-                <div class="synergy-group">
-                    <label class="synergy-label">Password</label>
-                    <div style="position: relative;">
-                        <input type="password" name="password" id="passInput" class="synergy-input" style="padding-right: 3rem;" placeholder="••••••••" required>
-                        <button type="button" id="togglePassBtn" style="position: absolute; right: 1.2rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 0; outline: none; display: flex; align-items: center;">
-                            <i class="bi bi-eye-slash" id="togglePassIcon" style="font-size: 1.2rem;"></i>
+                <div class="form-group-custom mb-4">
+                    <label class="form-label-custom">Password</label>
+                    <div class="input-wrapper-custom">
+                        <i class="bi bi-lock-fill input-icon-left"></i>
+                        <input type="password" name="password" id="passInput" class="input-custom" style="padding-right: 40px;" placeholder="Masukkan password" required>
+                        <button type="button" id="togglePassBtn" class="toggle-pass-btn" title="Tampilkan/Sembunyikan Password">
+                            <i class="bi bi-eye-slash" id="togglePassIcon"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="action-flex" style="justify-content: flex-end;">
-                    <a href="#" class="forgot-pass">Lupa Password?</a>
-                </div>
-
-                <button type="submit" class="btn-synergy">Masuk Sekarang</button>
+                <button type="submit" class="btn-login-forest">
+                    <span>MASUK SEKARANG</span>
+                    <i class="bi bi-arrow-right"></i>
+                </button>
             </form>
 
-            <div class="footer-synergy">
-                &copy; {{ date('Y') }} Panitia PKKMB Universitas Ibnu Sina
+            <div class="divider-line">
+                <i class="bi bi-shield-check"></i>
+            </div>
+
+            <div class="login-footer-text">
+                &copy; {{ date('Y') }} Panitia PKKMB Universitas Ibnu Sina Batam
             </div>
         </div>
     </div>
 
+    <!-- Toggle Password Visibility Script -->
     <script>
-        const canvas = document.getElementById('synergy-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        const particleCount = 60;
-
-        class Particle {
-            constructor() {
-                this.init();
-            }
-            init() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.4;
-                this.vy = (Math.random() - 0.5) * 0.4;
-                this.radius = Math.random() * 2 + 1;
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-            }
-        }
-
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
-            for (let i = 0; i < particleCount; i++) particles.push(new Particle());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#00A551';
-                ctx.fill();
-                particles.forEach(p2 => {
-                    const dx = p.x - p2.x;
-                    const dy = p.y - p2.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 150) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(255, 247, 66, ${0.1 * (1 - dist / 150)})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.stroke();
-                    }
-                });
-            });
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', resize);
-        resize();
-        animate();
-
-        document.getElementById('togglePassBtn').addEventListener('click', function() {
+        document.getElementById('togglePassBtn').addEventListener('click', function () {
             const passInput = document.getElementById('passInput');
             const icon = document.getElementById('togglePassIcon');
             if (passInput.type === 'password') {

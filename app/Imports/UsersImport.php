@@ -23,10 +23,16 @@ class UsersImport implements ToModel, WithHeadingRow, SkipsEmptyRows
     */
     public function model(array $row)
     {
-        // Headers expected: name, email, password, id_pendaftar, role, fakultas, program_studi
+        $rawWa = isset($row['no_wa']) ? (string)$row['no_wa'] : null;
+        if ($rawWa && str_starts_with($rawWa, '08')) {
+            $rawWa = '628' . substr($rawWa, 2);
+        }
+
+        // Headers expected: name, email, no_wa, password, id_pendaftar, role, fakultas, program_studi
         $user = User::create([
             'name'             => $row['name'],
             'email'            => $row['email'],
+            'no_wa'            => $rawWa,
             'password'         => Hash::make($row['password'] ?? 'password123'),
             'id_pendaftar'     => $row['id_pendaftar'],
             'role'             => $row['role'] ?? 'mahasiswa',
