@@ -11,27 +11,27 @@
 <style>
     /* Floating Chatbot Widget CSS */
     .chatbot-floating-btn {
-        position: fixed;
-        bottom: 15px;
-        right: 75px;
-        z-index: 1060;
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #00A551 0%, #007A3B 100%);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 8px 24px rgba(0, 165, 81, 0.4);
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        border: 2px solid #ffffff;
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 75px !important;
+        z-index: 99999 !important;
+        width: 54px !important;
+        height: 54px !important;
+        border-radius: 50% !important;
+        background: linear-gradient(135deg, #00A551 0%, #007A3B 100%) !important;
+        color: #ffffff !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 8px 24px rgba(0, 165, 81, 0.5) !important;
+        cursor: pointer !important;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        border: 2px solid #ffffff !important;
     }
 
     .chatbot-floating-btn:hover {
-        transform: scale(1.1) rotate(5deg);
-        box-shadow: 0 12px 30px rgba(0, 165, 81, 0.55);
+        transform: scale(1.1) rotate(5deg) !important;
+        box-shadow: 0 12px 30px rgba(0, 165, 81, 0.65) !important;
     }
 
     .chatbot-pulse-ring {
@@ -201,7 +201,7 @@
 {{-- Floating Toggle Button --}}
 <div class="chatbot-floating-btn position-relative" id="chatbotToggleBtn" onclick="toggleChatbotDrawer()" title="Bantuan & FAQ Asisten PKKMB">
     <div class="chatbot-pulse-ring"></div>
-    <i class="bi bi-whatsapp fs-3" id="chatbotIcon"></i>
+    <i class="bi bi-whatsapp fs-2 text-white" id="chatbotIcon"></i>
     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm" id="chatbotToggleBadge" style="display: none; font-size: 0.72rem; border: 2px solid #ffffff; padding: 4px 7px;">0</span>
 </div>
 
@@ -318,15 +318,12 @@
 
         if (drawer.style.display === 'flex') {
             drawer.style.display = 'none';
-            icon.className = 'bi bi-whatsapp fs-3';
+            icon.className = 'bi bi-whatsapp fs-2 text-white';
         } else {
             drawer.style.display = 'flex';
-            icon.className = 'bi bi-x-lg fs-3';
+            icon.className = 'bi bi-x-lg fs-2 text-white';
             if (badge) badge.style.display = 'none';
             if (toast) toast.style.display = 'none';
-            if (typeof loadHistoryInDrawer === 'function' && !hasLoadedHistory) {
-                loadHistoryInDrawer();
-            }
             scrollToChatBottom();
         }
     }
@@ -456,10 +453,18 @@
     const currentUserRole = @json(Auth::user()->role ?? 'mahasiswa');
     let drawerChatInterval = null;
     let lastFetchedMsgCount = 0;
-    let hasLoadedHistory = false;
+    let isHistoryLoaded = false;
 
-    function loadHistoryInDrawer() {
-        if (!adminUserId || currentUserRole === 'admin' || currentUserRole === 'stafbaak' || hasLoadedHistory) return;
+    function renderDrawerMessage(msg, adminName) {
+        if (msg.is_me) {
+            appendUserMessage(msg.message);
+        } else {
+            appendBotMessage(`<div class="fw-bold text-success extra-small mb-1"><i class="bi bi-person-fill me-1"></i> Admin (${adminName})</div><div>${msg.message}</div>`);
+        }
+    }
+
+    function fetchDrawerMessages() {
+        if (!adminUserId || currentUserRole === 'admin' || currentUserRole === 'stafbaak') return;
 
         fetch(`/chat/messages/${adminUserId}`, {
             headers: {
@@ -469,87 +474,81 @@
         })
         .then(res => res.json())
         .then(data => {
-            if (data.success && data.messages.length > 0) {
-                const body = document.getElementById('chatbotBody');
+            if (!data.success) return;
 
-                const divider = document.createElement('div');
-                divider.className = 'text-center my-3';
-                divider.innerHTML = `<span class="badge bg-light text-muted border extra-small px-3 py-1">Riwayat Percakapan Sebelumnya</span>`;
-                body.appendChild(divider);
+            const messages = data.messages || [];
+            const adminName = (data.user && data.user.name) ? data.user.name : 'Admin';
 
-                data.messages.forEach(msg => {
-                    if (msg.is_me) {
-                        appendUserMessage(msg.message);
-                    } else {
-                        appendBotMessage(`<div class="fw-bold text-success extra-small mb-1"><i class="bi bi-person-fill me-1"></i> Admin (${data.user.name})</div><div>${msg.message}</div>`);
+            // First time load: render all past messages
+            if (!isHistoryLoaded) {
+                isHistoryLoaded = true;
+                lastFetchedMsgCount = messages.length;
+
+                if (messages.length > 0) {
+                    const body = document.getElementById('chatbotBody');
+                    const divider = document.createElement('div');
+                    divider.className = 'text-center my-3';
+                    divider.innerHTML = `<span class="badge bg-light text-muted border extra-small px-3 py-1">Riwayat Percakapan</span>`;
+                    body.appendChild(divider);
+
+                    messages.forEach(msg => {
+                        renderDrawerMessage(msg, adminName);
+                    });
+                    scrollToChatBottom();
+                }
+                return;
+            }
+
+            // Real-time poll for new incoming messages
+            if (messages.length > lastFetchedMsgCount) {
+                const newMsgs = messages.slice(lastFetchedMsgCount);
+                lastFetchedMsgCount = messages.length;
+
+                let hasNewAdminReply = false;
+                let lastAdminReplyText = '';
+
+                newMsgs.forEach(msg => {
+                    renderDrawerMessage(msg, adminName);
+                    if (!msg.is_me) {
+                        hasNewAdminReply = true;
+                        lastAdminReplyText = msg.message;
                     }
                 });
 
-                lastFetchedMsgCount = data.messages.length;
-                hasLoadedHistory = true;
                 scrollToChatBottom();
+
+                if (hasNewAdminReply) {
+                    const drawer = document.getElementById('chatbotDrawer');
+                    if (drawer && drawer.style.display !== 'flex') {
+                        const badge = document.getElementById('chatbotToggleBadge');
+                        const toast = document.getElementById('chatbotFloatingToast');
+                        const toastText = document.getElementById('chatbotToastText');
+                        if (badge) {
+                            badge.innerText = '1';
+                            badge.style.display = 'inline-block';
+                        }
+                        if (toast && toastText) {
+                            toastText.innerText = lastAdminReplyText;
+                            toast.style.display = 'block';
+                        }
+                    }
+                }
             }
-            startDrawerChatPolling();
         })
-        .catch(err => console.error('Error loading history in drawer:', err));
+        .catch(err => console.error('Error fetching drawer chat messages:', err));
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        if (currentUserRole !== 'admin' && currentUserRole !== 'stafbaak') {
-            loadHistoryInDrawer();
+        if (currentUserRole !== 'admin' && currentUserRole !== 'stafbaak' && adminUserId) {
+            fetchDrawerMessages();
+            if (drawerChatInterval) clearInterval(drawerChatInterval);
+            drawerChatInterval = setInterval(fetchDrawerMessages, 2500);
         }
     });
 
     function openDrawerLiveChat() {
         appendUserMessage("💬 Chat Personal Admin (Live Chat)");
         appendBotMessage("<div class='fw-bold text-success mb-1'><i class='bi bi-headset me-1'></i> Terhubung dengan Admin</div><div class='extra-small text-secondary'>Silakan ketik pertanyaan Anda pada kolom di bawah ini. Pesan Anda akan langsung diterima oleh Admin.</div>");
-        startDrawerChatPolling();
-    }
-
-    function startDrawerChatPolling() {
-        if (!adminUserId) return;
-        if (drawerChatInterval) clearInterval(drawerChatInterval);
-
-        fetchDrawerMessages();
-        drawerChatInterval = setInterval(fetchDrawerMessages, 2500);
-    }
-
-    function fetchDrawerMessages() {
-        if (!adminUserId) return;
-        fetch(`/chat/messages/${adminUserId}`, {
-            headers: {
-                'Accept': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success && data.messages.length > lastFetchedMsgCount) {
-                    const newMessages = data.messages.slice(lastFetchedMsgCount);
-                    newMessages.forEach(msg => {
-                        if (!msg.is_me) {
-                            appendBotMessage(`<div class="fw-bold text-success extra-small mb-1"><i class="bi bi-person-fill me-1"></i> Admin (${data.user.name})</div><div>${msg.message}</div>`);
-
-                            const drawer = document.getElementById('chatbotDrawer');
-                            if (drawer.style.display !== 'flex') {
-                                const badge = document.getElementById('chatbotToggleBadge');
-                                const toast = document.getElementById('chatbotFloatingToast');
-                                const toastText = document.getElementById('chatbotToastText');
-                                if (badge) {
-                                    badge.innerText = '1';
-                                    badge.style.display = 'inline-block';
-                                }
-                                if (toast && toastText) {
-                                    toastText.innerText = msg.message;
-                                    toast.style.display = 'block';
-                                }
-                            }
-                        }
-                    });
-                    lastFetchedMsgCount = data.messages.length;
-                }
-            })
-            .catch(err => console.error('Error fetching drawer chat messages:', err));
     }
 
     function sendChatbotInput() {
