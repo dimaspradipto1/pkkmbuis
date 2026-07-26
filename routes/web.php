@@ -42,6 +42,9 @@ use App\Http\Controllers\EvaluasiKewirausahaanController;
 use App\Http\Controllers\EvaluasiPencarianBakatMahasiswaController;
 use App\Http\Controllers\EvaluasiMotivasiWaliKotaBatamController;
 use App\Http\Controllers\EvaluasiMotivasiGubernurKepulauanRiauController;
+use App\Http\Controllers\EvaluasiFikesController;
+use App\Http\Controllers\EvaluasiFstController;
+use App\Http\Controllers\EvaluasiFebController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -203,6 +206,18 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::resource('evaluasimotivasigubernurkepulauanriau', EvaluasiMotivasiGubernurKepulauanRiauController::class)->parameters([
         'evaluasimotivasigubernurkepulauanriau' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasifikes', EvaluasiFikesController::class)->parameters([
+        'evaluasifikes' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasifst', EvaluasiFstController::class)->parameters([
+        'evaluasifst' => 'evaluasi'
+    ]);
+
+    Route::resource('evaluasifeb', EvaluasiFebController::class)->parameters([
+        'evaluasifeb' => 'evaluasi'
     ]);
 
     Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');

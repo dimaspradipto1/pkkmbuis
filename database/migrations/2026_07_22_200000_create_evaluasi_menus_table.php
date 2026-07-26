@@ -37,9 +37,9 @@ return new class extends Migration
             ['nomor' => 12, 'nama' => '12. Pencarian Bakat Mahasiswa UIS (Survei minat UKM) dan Sosialiasi BEI', 'route_name' => 'evaluasipencarianbakatmahasiswa.index', 'is_active' => true],
             ['nomor' => 13, 'nama' => '13. Motivasi Wali Kota Batam', 'route_name' => 'evaluasimotivasiwalikotabatam.index', 'is_active' => true],
             ['nomor' => 14, 'nama' => '14. Motivasi Gubernur Kepulauan Riau', 'route_name' => 'evaluasimotivasigubernurkepulauanriau.index', 'is_active' => true],
-            ['nomor' => 15, 'nama' => '15. (FIKes) (FAKULTAS ILMU KESEHATAN)', 'route_name' => null, 'is_active' => false],
-            ['nomor' => 16, 'nama' => '16. (FST) (FAKULTAS SAINS & TEKNOLOGI)', 'route_name' => null, 'is_active' => false],
-            ['nomor' => 17, 'nama' => '17. (FEB) (FAKULTAS EKONOMI DAN BISNIS)', 'route_name' => null, 'is_active' => false],
+            ['nomor' => 15, 'nama' => '15. (FIKes) (FAKULTAS ILMU KESEHATAN)', 'route_name' => 'evaluasifikes.index', 'is_active' => true],
+            ['nomor' => 16, 'nama' => '16. (FST) (FAKULTAS SAINS & TEKNOLOGI)', 'route_name' => 'evaluasifst.index', 'is_active' => true],
+            ['nomor' => 17, 'nama' => '17. (FEB) (FAKULTAS EKONOMI DAN BISNIS)', 'route_name' => 'evaluasifeb.index', 'is_active' => true],
         ];
 
         $now = now();
