@@ -17,7 +17,8 @@ class AbsenPertamaController extends Controller
     public function index(AbsenPertamaDataTable $dataTable)
     {
         $attachments = \App\Models\AbsenAttachment::where('category', 'absenpertama')->latest()->get();
-        return $dataTable->render('pages.absenpertama.index', compact('attachments'));
+        $notes = \App\Models\AbsenNote::where('category', 'absenpertama')->latest()->get();
+        return $dataTable->render('pages.absenpertama.index', compact('attachments', 'notes'));
     }
 
     /**

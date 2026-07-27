@@ -17,8 +17,9 @@ class KedisiplinanKetigaController extends Controller
     public function index(KedisiplinanKetigaDataTable $dataTable)
     {
         $attachments = \App\Models\KedisiplinanAttachment::where('category', 'kedisiplinanketiga')->latest()->get();
+        $notes = \App\Models\KedisiplinanNote::where('category', 'kedisiplinanketiga')->latest()->get();
 
-        return $dataTable->render('pages.kedisiplinanketiga.index', compact('attachments'));
+        return $dataTable->render('pages.kedisiplinanketiga.index', compact('attachments', 'notes'));
     }
 
     /**

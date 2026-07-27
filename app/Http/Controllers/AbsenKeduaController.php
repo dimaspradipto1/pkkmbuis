@@ -17,7 +17,8 @@ class AbsenKeduaController extends Controller
     public function index(AbsenKeduaDataTable $dataTable)
     {
         $attachments = \App\Models\AbsenAttachment::where('category', 'absenkedua')->latest()->get();
-        return $dataTable->render('pages.absenkedua.index', compact('attachments'));
+        $notes = \App\Models\AbsenNote::where('category', 'absenkedua')->latest()->get();
+        return $dataTable->render('pages.absenkedua.index', compact('attachments', 'notes'));
     }
 
     /**

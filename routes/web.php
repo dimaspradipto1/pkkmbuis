@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AbsenAttachmentController;
+use App\Http\Controllers\AbsenNoteController;
 use App\Http\Controllers\AbsenKeduaController;
 use App\Http\Controllers\AbsenKeduaScanController;
 use App\Http\Controllers\AbsenKetigaController;
@@ -11,12 +12,16 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HasilTestController;
 use App\Http\Controllers\KedisiplinanAttachmentController;
+use App\Http\Controllers\KedisiplinanNoteController;
 use App\Http\Controllers\KedisiplinanKeduaController;
 use App\Http\Controllers\KedisiplinanKetigaController;
 use App\Http\Controllers\KedisiplinanPertamaController;
 use App\Http\Controllers\MateriModulController;
 use App\Http\Controllers\DokumenController;
+use App\Http\Controllers\LpjController;
 use App\Http\Controllers\ModulPostTestController;
+use App\Http\Controllers\ObservasiAcaraController;
+use App\Http\Controllers\ObservasiAcara2Controller;
 use App\Http\Controllers\SoalPostTestKeduaController;
 use App\Http\Controllers\SoalPostTestKeempatController;
 use App\Http\Controllers\SoalPostTestKetigaController;
@@ -28,6 +33,7 @@ use App\Http\Controllers\SoalPretestPertamaController;
 use App\Http\Controllers\SoalTugasKelompokController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\KelompokController;
+use App\Http\Controllers\KelompokNoteController;
 use App\Http\Controllers\RekapKeseluruhanController;
 use App\Http\Controllers\RekapEvaluasiController;
 use App\Http\Controllers\ProfileController;
@@ -84,6 +90,8 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::resource('absenketiga', AbsenKetigaController::class);
     Route::post('absen-attachments', [AbsenAttachmentController::class, 'store'])->name('absen-attachments.store');
     Route::delete('absen-attachments/{id}', [AbsenAttachmentController::class, 'destroy'])->name('absen-attachments.destroy');
+    Route::post('absen-notes', [AbsenNoteController::class, 'store'])->name('absen-notes.store');
+    Route::delete('absen-notes/{id}', [AbsenNoteController::class, 'destroy'])->name('absen-notes.destroy');
     Route::get('absen-scan', [AbsenScanController::class, 'index'])->name('absen-scan.index');
     Route::get('absen-scan/get-token/{session}', [AbsenScanController::class, 'getDynamicToken'])->name('absen-scan.get-token');
     Route::post('absen-scan/update-setting', [AbsenScanController::class, 'updateSetting'])->name('absen-scan.update-setting');
@@ -104,6 +112,8 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::post('kedisiplinan-attachments', [KedisiplinanAttachmentController::class, 'store'])->name('kedisiplinan-attachments.store');
     Route::delete('kedisiplinan-attachments/{id}', [KedisiplinanAttachmentController::class, 'destroy'])->name('kedisiplinan-attachments.destroy');
+    Route::post('kedisiplinan-notes', [KedisiplinanNoteController::class, 'store'])->name('kedisiplinan-notes.store');
+    Route::delete('kedisiplinan-notes/{id}', [KedisiplinanNoteController::class, 'destroy'])->name('kedisiplinan-notes.destroy');
 
     Route::get('soalpretestpertama/template', [SoalPretestPertamaController::class, 'downloadTemplate'])->name('soalpretestpertama.template');
     Route::post('soalpretestpertama/import', [SoalPretestPertamaController::class, 'import'])->name('soalpretestpertama.import');
@@ -154,12 +164,20 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::get('materimodul/{id}/view/{modul}', [MateriModulController::class, 'viewFile'])->name('materimodul.view');
     Route::resource('materimodul', MateriModulController::class);
 
+    Route::resource('observasiacara', ObservasiAcaraController::class);
+
+    Route::resource('observasiacara2', ObservasiAcara2Controller::class);
+
+    Route::resource('lpj', LpjController::class);
+
     Route::get('kelompok/template', [KelompokController::class, 'downloadTemplate'])->name('kelompok.template');
     Route::post('kelompok/import', [KelompokController::class, 'import'])->name('kelompok.import');
     Route::get('kelompok/{slug}/template-member', [KelompokController::class, 'downloadMemberTemplate'])->name('kelompok.template-member');
     Route::post('kelompok/{slug}/import-member', [KelompokController::class, 'importMembers'])->name('kelompok.import-member');
     Route::post('kelompok/{id}/add-member', [KelompokController::class, 'addMember'])->name('kelompok.add-member');
     Route::delete('kelompok/{kelompokId}/remove-member/{userId}', [KelompokController::class, 'removeMember'])->name('kelompok.remove-member');
+    Route::post('kelompok/{slug}/notes', [KelompokNoteController::class, 'store'])->name('kelompok.notes.store');
+    Route::delete('kelompok/{slug}/notes/{id}', [KelompokNoteController::class, 'destroy'])->name('kelompok.notes.destroy');
     Route::resource('kelompok', KelompokController::class);
 
     Route::resource('evaluasipengenalanwawasanibnusina', EvaluasiPengenalanWawasanIbnuSinaController::class)->parameters([

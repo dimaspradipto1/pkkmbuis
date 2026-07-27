@@ -22,16 +22,21 @@ class KelompokController extends Controller
 
         if ($user->role == 'mahasiswa') {
             // Mahasiswa views their own group
-            $myKelompok = $user->kelompok ? $user->kelompok->load(['pendamping', 'anggota']) : null;
+            $myKelompok = $user->kelompok ? $user->kelompok->load(['pendamping', 'dosenPendampings', 'anggota']) : null;
 
             return view('pages.kelompok.student', compact('myKelompok'));
         }
 
-        $query = Kelompok::with(['pendamping'])->withCount('anggota');
+        $query = Kelompok::with(['pendamping', 'dosenPendampings'])->withCount('anggota');
 
         if ($user->role == 'kakakpendamping') {
             // Kakak pendamping only sees groups where they are assigned as pendamping
             $query->where('pendamping_id', $user->id);
+        } elseif ($user->role == 'dosenpendamping') {
+            // Dosen pendamping only sees groups where they are assigned as dosen pendamping
+            $query->whereHas('dosenPendampings', function ($q) use ($user) {
+                $q->where('users.id', $user->id);
+            });
         }
 
         $kelompoks = $query->latest()->get();
@@ -44,7 +49,7 @@ class KelompokController extends Controller
     public function create()
     {
         $user = Auth::user();
-        if ($user->role == 'kakakpendamping') {
+        if (in_array($user->role, ['kakakpendamping', 'dosenpendamping'])) {
             Alert::error('Anda tidak memiliki akses untuk membuat kelompok.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(3000);
@@ -52,7 +57,8 @@ class KelompokController extends Controller
         }
 
         $pendampings = User::whereIn('role', ['kakakpendamping', 'dosenpendamping', 'stafbaak', 'admin', 'pimpinan'])->orderBy('name')->get();
-        return view('pages.kelompok.create', compact('pendampings'));
+        $dosenPendampingOptions = User::whereIn('role', ['dosenpendamping', 'admin', 'pimpinan'])->orderBy('name')->get();
+        return view('pages.kelompok.create', compact('pendampings', 'dosenPendampingOptions'));
     }
 
     /**
@@ -61,7 +67,7 @@ class KelompokController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        if ($user->role == 'kakakpendamping') {
+        if (in_array($user->role, ['kakakpendamping', 'dosenpendamping'])) {
             Alert::error('Anda tidak memiliki akses untuk membuat kelompok.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(3000);
@@ -71,12 +77,15 @@ class KelompokController extends Controller
         $request->validate([
             'nama_kelompok' => 'required|string|max:255|unique:kelompoks,nama_kelompok',
             'pendamping_id' => 'nullable|exists:users,id',
+            'dosen_pendamping_ids' => 'nullable|array',
+            'dosen_pendamping_ids.*' => 'exists:users,id',
             'keterangan' => 'nullable|string',
         ], [
             'nama_kelompok.unique' => 'Nama kelompok sudah ada.',
         ]);
 
-        Kelompok::create($request->only(['nama_kelompok', 'pendamping_id', 'keterangan']));
+        $kelompok = Kelompok::create($request->only(['nama_kelompok', 'pendamping_id', 'keterangan']));
+        $kelompok->dosenPendampings()->sync($request->input('dosen_pendamping_ids', []));
 
         Alert::success('Kelompok berhasil dibuat.', 'Success')
             ->toToast()
@@ -91,9 +100,13 @@ class KelompokController extends Controller
     public function show(string $slug)
     {
         $user = Auth::user();
-        $kelompok = Kelompok::with(['pendamping', 'anggota'])->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
+        $kelompok = Kelompok::with(['pendamping', 'dosenPendampings', 'anggota', 'notes.user'])->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
 
-        if (($user->role == 'kakakpendamping' && $kelompok->pendamping_id != $user->id) || ($user->role == 'mahasiswa' && $user->kelompok_id != $kelompok->id)) {
+        $isKakakDenied = $user->role == 'kakakpendamping' && $kelompok->pendamping_id != $user->id;
+        $isDosenDenied = $user->role == 'dosenpendamping' && !$kelompok->dosenPendampings->contains('id', $user->id);
+        $isMahasiswaDenied = $user->role == 'mahasiswa' && $user->kelompok_id != $kelompok->id;
+
+        if ($isKakakDenied || $isDosenDenied || $isMahasiswaDenied) {
             Alert::error('Anda tidak memiliki akses ke kelompok ini.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(4000);
@@ -115,17 +128,18 @@ class KelompokController extends Controller
     public function edit(string $slug)
     {
         $user = Auth::user();
-        if ($user->role == 'kakakpendamping') {
+        if (in_array($user->role, ['kakakpendamping', 'dosenpendamping'])) {
             Alert::error('Anda tidak memiliki akses untuk mengubah kelompok.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(3000);
             return redirect()->route('kelompok.index');
         }
 
-        $kelompok = Kelompok::where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
+        $kelompok = Kelompok::with('dosenPendampings')->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
         $pendampings = User::whereIn('role', ['kakakpendamping', 'dosenpendamping', 'stafbaak', 'admin', 'pimpinan'])->orderBy('name')->get();
+        $dosenPendampingOptions = User::whereIn('role', ['dosenpendamping', 'admin', 'pimpinan'])->orderBy('name')->get();
 
-        return view('pages.kelompok.edit', compact('kelompok', 'pendampings'));
+        return view('pages.kelompok.edit', compact('kelompok', 'pendampings', 'dosenPendampingOptions'));
     }
 
     /**
@@ -134,7 +148,7 @@ class KelompokController extends Controller
     public function update(Request $request, string $slug)
     {
         $user = Auth::user();
-        if ($user->role == 'kakakpendamping') {
+        if (in_array($user->role, ['kakakpendamping', 'dosenpendamping'])) {
             Alert::error('Anda tidak memiliki akses untuk mengubah kelompok.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(3000);
@@ -146,10 +160,13 @@ class KelompokController extends Controller
         $request->validate([
             'nama_kelompok' => 'required|string|max:255|unique:kelompoks,nama_kelompok,' . $kelompok->id,
             'pendamping_id' => 'nullable|exists:users,id',
+            'dosen_pendamping_ids' => 'nullable|array',
+            'dosen_pendamping_ids.*' => 'exists:users,id',
             'keterangan' => 'nullable|string',
         ]);
 
         $kelompok->update($request->only(['nama_kelompok', 'pendamping_id', 'keterangan']));
+        $kelompok->dosenPendampings()->sync($request->input('dosen_pendamping_ids', []));
 
         Alert::success('Kelompok berhasil diperbarui.', 'Success')
             ->toToast()
@@ -164,7 +181,7 @@ class KelompokController extends Controller
     public function destroy(string $slug)
     {
         $user = Auth::user();
-        if ($user->role == 'kakakpendamping') {
+        if (in_array($user->role, ['kakakpendamping', 'dosenpendamping'])) {
             Alert::error('Anda tidak memiliki akses untuk menghapus kelompok.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(3000);
@@ -190,7 +207,15 @@ class KelompokController extends Controller
      */
     public function addMember(Request $request, string $slug)
     {
-        $kelompok = Kelompok::where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
+        $user = Auth::user();
+        $kelompok = Kelompok::with('dosenPendampings')->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
+
+        $isKakakDenied = $user->role == 'kakakpendamping' && $kelompok->pendamping_id != $user->id;
+        $isDosenDenied = $user->role == 'dosenpendamping' && !$kelompok->dosenPendampings->contains('id', $user->id);
+
+        if ($isKakakDenied || $isDosenDenied) {
+            abort(403);
+        }
 
         $request->validate([
             'user_ids' => 'required|array',
@@ -211,11 +236,18 @@ class KelompokController extends Controller
      */
     public function removeMember(string $kelompokSlug, string $userId)
     {
-        if (in_array(Auth::user()->role, ['mahasiswa', 'kakakpendamping'])) {
+        $authUser = Auth::user();
+
+        if (in_array($authUser->role, ['mahasiswa', 'kakakpendamping'])) {
             abort(403);
         }
 
-        $kelompok = Kelompok::where('slug', $kelompokSlug)->orWhere('id', $kelompokSlug)->firstOrFail();
+        $kelompok = Kelompok::with('dosenPendampings')->where('slug', $kelompokSlug)->orWhere('id', $kelompokSlug)->firstOrFail();
+
+        if ($authUser->role == 'dosenpendamping' && !$kelompok->dosenPendampings->contains('id', $authUser->id)) {
+            abort(403);
+        }
+
         $user = User::where('id', $userId)->where('kelompok_id', $kelompok->id)->firstOrFail();
         $user->update(['kelompok_id' => null]);
 
@@ -251,9 +283,9 @@ class KelompokController extends Controller
 
     public function downloadTemplate()
     {
-        $headers = ['id_pendaftar', 'nama_kelompok', 'name', 'fakultas', 'program_studi', 'email'];
+        $headers = ['id_pendaftar', 'nama_kelompok', 'name', 'fakultas', 'program_studi', 'email', 'kakak_pendamping', 'dosen_pendamping'];
         $data = [
-            ['010420206', 'Kelompok 1 - Ibnu Sina', 'Mahasiswa Contoh', 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'S1 SISTEM INFORMASI', 'mahasiswa@uis.ac.id'],
+            ['010420206', 'Kelompok 1 - Ibnu Sina', 'Mahasiswa Contoh', 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'S1 SISTEM INFORMASI', 'mahasiswa@uis.ac.id', 'kakak.pendamping@uis.ac.id', 'dosen1.pendamping@uis.ac.id, dosen2.pendamping@uis.ac.id'],
         ];
 
         return Excel::download(new class($headers, $data) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {

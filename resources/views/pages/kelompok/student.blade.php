@@ -22,6 +22,7 @@
                                 $pRaw = $myKelompok->pendamping->name ?? 'Belum Ditentukan';
                                 // Clean up repetitive "Kakak Pendamping" prefix if present
                                 $pClean = preg_replace('/^Kakak Pendamping\s*/i', '', $pRaw);
+                                $dClean = $myKelompok->dosenPendampings->pluck('name')->implode(', ') ?: 'Belum Ditentukan';
                             @endphp
                             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                                 <div>
@@ -30,6 +31,10 @@
                                     <p class="mb-0 text-white opacity-90 small">
                                         <i class="bi bi-person-badge me-1"></i> Kakak Pendamping:
                                         <strong class="text-white fw-bold">{{ $pClean }}</strong>
+                                    </p>
+                                    <p class="mb-0 text-white opacity-90 small">
+                                        <i class="bi bi-mortarboard me-1"></i> Dosen Pendamping:
+                                        <strong class="text-white fw-bold">{{ $dClean }}</strong>
                                     </p>
                                 </div>
                                 <div class="text-start text-sm-end text-white bg-white bg-opacity-10 p-3 rounded-3 border border-white border-opacity-10">

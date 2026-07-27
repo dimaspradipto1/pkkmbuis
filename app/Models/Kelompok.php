@@ -56,8 +56,18 @@ class Kelompok extends Model
         return $this->belongsTo(User::class, 'pendamping_id');
     }
 
+    public function dosenPendampings()
+    {
+        return $this->belongsToMany(User::class, 'kelompok_dosen_pendamping')->withTimestamps();
+    }
+
     public function anggota()
     {
         return $this->hasMany(User::class, 'kelompok_id');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(KelompokNote::class);
     }
 }

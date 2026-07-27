@@ -24,6 +24,25 @@ class KelompokImport implements ToCollection, WithHeadingRow, SkipsEmptyRows
                     'nama_kelompok' => trim($namaKelompok),
                 ]);
 
+                // Assign Kakak Pendamping by email, if provided
+                $kakakPendampingEmail = $row['kakak_pendamping'] ?? $row['kakakpendamping'] ?? null;
+                if (!empty($kakakPendampingEmail)) {
+                    $kakak = User::where('email', trim($kakakPendampingEmail))->first();
+                    if ($kakak) {
+                        $kelompok->update(['pendamping_id' => $kakak->id]);
+                    }
+                }
+
+                // Assign Dosen Pendamping(s) by email, comma/semicolon separated for multiple
+                $dosenPendampingRaw = $row['dosen_pendamping'] ?? $row['dosenpendamping'] ?? null;
+                if (!empty($dosenPendampingRaw)) {
+                    $dosenEmails = array_filter(array_map('trim', preg_split('/[,;]/', $dosenPendampingRaw)));
+                    $dosenIds = User::whereIn('email', $dosenEmails)->pluck('id')->all();
+                    if (!empty($dosenIds)) {
+                        $kelompok->dosenPendampings()->syncWithoutDetaching($dosenIds);
+                    }
+                }
+
                 // Find student by id_pendaftar or email
                 $user = User::where('id_pendaftar', trim($idPendaftar))
                     ->orWhere('email', trim($idPendaftar))

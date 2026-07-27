@@ -17,7 +17,8 @@ class AbsenKetigaController extends Controller
     public function index(AbsenKetigaDataTable $dataTable)
     {
         $attachments = \App\Models\AbsenAttachment::where('category', 'absenketiga')->latest()->get();
-        return $dataTable->render('pages.absenketiga.index', compact('attachments'));
+        $notes = \App\Models\AbsenNote::where('category', 'absenketiga')->latest()->get();
+        return $dataTable->render('pages.absenketiga.index', compact('attachments', 'notes'));
     }
 
     /**

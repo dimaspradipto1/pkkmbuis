@@ -34,6 +34,7 @@
                 </div>
 
                 @include('partials.kedisiplinan-attachments', ['category' => 'kedisiplinanketiga'])
+                @include('partials.kedisiplinan-notes', ['category' => 'kedisiplinanketiga'])
 
             </div>
         </div>

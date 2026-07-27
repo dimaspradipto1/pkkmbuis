@@ -37,6 +37,7 @@
                                         <th style="width: 50px;">NO</th>
                                         <th>Nama Kelompok</th>
                                         <th>Kakak Pendamping</th>
+                                        <th>Dosen Pendamping</th>
                                         <th class="text-center">Jumlah Anggota</th>
                                         <th>Keterangan</th>
                                         <th class="text-center" style="width: 180px;">Aksi</th>
@@ -55,6 +56,15 @@
                                                 @else
                                                     <span class="text-muted small">Belum Ditentukan</span>
                                                 @endif
+                                            </td>
+                                            <td>
+                                                @forelse($item->dosenPendampings as $dosen)
+                                                    <span class="badge bg-light text-success border border-success border-opacity-25 px-2 py-1 mb-1">
+                                                        <i class="bi bi-mortarboard me-1"></i>{{ $dosen->name }}
+                                                    </span>
+                                                @empty
+                                                    <span class="text-muted small">Belum Ditentukan</span>
+                                                @endforelse
                                             </td>
                                             <td class="text-center">
                                                 <span class="badge bg-info text-dark px-3 py-1 rounded-pill">
@@ -84,7 +94,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center py-4 text-muted">Belum ada kelompok yang dibuat.</td>
+                                            <td colspan="7" class="text-center py-4 text-muted">Belum ada kelompok yang dibuat.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -110,7 +120,9 @@
                         @csrf
                         <div class="modal-body p-4">
                             <div class="alert alert-info py-2 small mb-3">
-                                Format header: <strong>id_pendaftar</strong>, <strong>nama_kelompok</strong>, <strong>name</strong>, <strong>fakultas</strong>, <strong>program_studi</strong>, <strong>email</strong>.
+                                Format header: <strong>id_pendaftar</strong>, <strong>nama_kelompok</strong>, <strong>name</strong>, <strong>fakultas</strong>, <strong>program_studi</strong>, <strong>email</strong>, <strong>kakak_pendamping</strong>, <strong>dosen_pendamping</strong>.
+                                <br>
+                                <span class="text-muted">Kolom <strong>kakak_pendamping</strong> &amp; <strong>dosen_pendamping</strong> diisi dengan email akun pendamping yang sudah terdaftar (opsional). Untuk <strong>dosen_pendamping</strong> lebih dari satu, pisahkan dengan koma.</span>
                                 <br>
                                 <a href="{{ route('kelompok.template') }}" class="fw-bold"><i class="bi bi-cloud-download me-1"></i> Download Template Excel</a>
                             </div>

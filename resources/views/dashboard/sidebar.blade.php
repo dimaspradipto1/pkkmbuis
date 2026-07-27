@@ -14,51 +14,53 @@
 
           <li class="nav-heading">Pelaksanaan & Kegiatan</li>
 
-          <li class="nav-item">
-              <a class="nav-link {{ request()->routeIs('absen*') ? '' : 'collapsed' }}" data-bs-target="#absensi-nav" data-bs-toggle="collapse" href="#">
-                  <i class="bi bi-calendar-check-fill"></i><span>Absensi Kehadiran</span><i class="bi bi-chevron-down ms-auto"></i>
-              </a>
-              <ul id="absensi-nav" class="nav-content collapse {{ request()->routeIs('absen*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                  <li>
-                      <a href="{{ route('absenpertama.index') }}" class="{{ request()->routeIs('absenpertama.*') ? 'active' : '' }}">
-                          <i class="bi bi-circle"></i><span>Absensi Hari I</span>
-                      </a>
-                  </li>
-                  <li>
-                      <a href="{{ route('absenkedua.index') }}" class="{{ request()->routeIs('absenkedua.*') ? 'active' : '' }}">
-                          <i class="bi bi-circle"></i><span>Absensi Hari II</span>
-                      </a>
-                  </li>
-                  <li>
-                      <a href="{{ route('absenketiga.index') }}" class="{{ request()->routeIs('absenketiga.*') ? 'active' : '' }}">
-                          <i class="bi bi-circle"></i><span>Absensi Hari III</span>
-                      </a>
-                  </li>
-              </ul>
-          </li>
+          @if (Auth::user()->role != 'timevaluasi')
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('absen*') ? '' : 'collapsed' }}" data-bs-target="#absensi-nav" data-bs-toggle="collapse" href="#">
+                      <i class="bi bi-calendar-check-fill"></i><span>Absensi Kehadiran</span><i class="bi bi-chevron-down ms-auto"></i>
+                  </a>
+                  <ul id="absensi-nav" class="nav-content collapse {{ request()->routeIs('absen*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                      <li>
+                          <a href="{{ route('absenpertama.index') }}" class="{{ request()->routeIs('absenpertama.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Absensi Hari I</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('absenkedua.index') }}" class="{{ request()->routeIs('absenkedua.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Absensi Hari II</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('absenketiga.index') }}" class="{{ request()->routeIs('absenketiga.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Absensi Hari III</span>
+                          </a>
+                      </li>
+                  </ul>
+              </li>
 
-          <li class="nav-item">
-              <a class="nav-link {{ request()->routeIs('kedisiplinan*') ? '' : 'collapsed' }}" data-bs-target="#kedisiplinan-nav" data-bs-toggle="collapse" href="#">
-                  <i class="bi bi-shield-check"></i><span>Kedisiplinan</span><i class="bi bi-chevron-down ms-auto"></i>
-              </a>
-              <ul id="kedisiplinan-nav" class="nav-content collapse {{ request()->routeIs('kedisiplinan*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                  <li>
-                      <a href="{{ route('kedisiplinanpertama.index') }}" class="{{ request()->routeIs('kedisiplinanpertama.*') ? 'active' : '' }}">
-                          <i class="bi bi-circle"></i><span>Kedisiplinan Hari I</span>
-                      </a>
-                  </li>
-                  <li>
-                      <a href="{{ route('kedisiplinankedua.index') }}" class="{{ request()->routeIs('kedisiplinankedua.*') ? 'active' : '' }}">
-                          <i class="bi bi-circle"></i><span>Kedisiplinan Hari II</span>
-                      </a>
-                  </li>
-                  <li>
-                      <a href="{{ route('kedisiplinanketiga.index') }}" class="{{ request()->routeIs('kedisiplinanketiga.*') ? 'active' : '' }}">
-                          <i class="bi bi-circle"></i><span>Kedisiplinan Hari III</span>
-                      </a>
-                  </li>
-              </ul>
-          </li>
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('kedisiplinan*') ? '' : 'collapsed' }}" data-bs-target="#kedisiplinan-nav" data-bs-toggle="collapse" href="#">
+                      <i class="bi bi-shield-check"></i><span>Kedisiplinan</span><i class="bi bi-chevron-down ms-auto"></i>
+                  </a>
+                  <ul id="kedisiplinan-nav" class="nav-content collapse {{ request()->routeIs('kedisiplinan*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                      <li>
+                          <a href="{{ route('kedisiplinanpertama.index') }}" class="{{ request()->routeIs('kedisiplinanpertama.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Kedisiplinan Hari I</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('kedisiplinankedua.index') }}" class="{{ request()->routeIs('kedisiplinankedua.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Kedisiplinan Hari II</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('kedisiplinanketiga.index') }}" class="{{ request()->routeIs('kedisiplinanketiga.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Kedisiplinan Hari III</span>
+                          </a>
+                      </li>
+                  </ul>
+              </li>
+          @endif
 
           @if (Auth::user()->role == 'mahasiswa' || Auth::user()->role == 'admin')
               <li class="nav-item">
@@ -69,14 +71,16 @@
               </li>
           @endif
 
-          <li class="nav-item">
-              <a class="nav-link {{ request()->routeIs('kelompok.*') ? '' : 'collapsed' }}" href="{{ route('kelompok.index') }}">
-                  <i class="bi bi-people-fill"></i>
-                  <span>Manajemen Kelompok</span>
-              </a>
-          </li>
+          @if (Auth::user()->role != 'timevaluasi')
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('kelompok.*') ? '' : 'collapsed' }}" href="{{ route('kelompok.index') }}">
+                      <i class="bi bi-people-fill"></i>
+                      <span>Manajemen Kelompok</span>
+                  </a>
+              </li>
+          @endif
 
-          @if (!in_array(Auth::user()->role, ['mahasiswa', 'dosenpendamping']))
+          @if (!in_array(Auth::user()->role, ['mahasiswa', 'dosenpendamping', 'kakakpendamping', 'timevaluasi']))
               <li class="nav-item">
                   <a class="nav-link {{ request()->routeIs('dokumen.*') ? '' : 'collapsed' }}" href="{{ route('dokumen.index') }}">
                       <i class="bi bi-file-earmark-text-fill"></i>
@@ -85,7 +89,7 @@
               </li>
           @endif
 
-          @if (Auth::user()->role != 'kakakpendamping')
+          @if (!in_array(Auth::user()->role, ['kakakpendamping', 'dosenpendamping', 'timevaluasi']))
               <li class="nav-heading">Evaluasi Materi</li>
 
               @php
@@ -124,6 +128,29 @@
                           </li>
                       @endif
                   </ul>
+              </li>
+          @endif
+
+          @if (Auth::user()->role == 'admin' || Auth::user()->role == 'timevaluasi')
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('observasiacara.*') ? '' : 'collapsed' }}" href="{{ route('observasiacara.index') }}">
+                      <i class="bi bi-eye-fill"></i>
+                      <span>Observasi Acara</span>
+                  </a>
+              </li>
+
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('observasiacara2.*') ? '' : 'collapsed' }}" href="{{ route('observasiacara2.index') }}">
+                      <i class="bi bi-eye-fill"></i>
+                      <span>Observasi Acara 2</span>
+                  </a>
+              </li>
+
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('lpj.*') ? '' : 'collapsed' }}" href="{{ route('lpj.index') }}">
+                      <i class="bi bi-file-earmark-text"></i>
+                      <span>LPJ</span>
+                  </a>
               </li>
           @endif
 

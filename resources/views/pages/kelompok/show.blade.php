@@ -22,11 +22,19 @@
                             <div>
                                 <h4 class="fw-bold text-primary mb-1">{{ $kelompok->nama_kelompok }}</h4>
                                 <p class="text-muted mb-0">
-                                    <i class="bi bi-person-badge me-1 text-secondary"></i> Pendamping:
+                                    <i class="bi bi-person-badge me-1 text-secondary"></i> Kakak Pendamping:
                                     <span class="fw-bold text-dark">{{ $kelompok->pendamping->name ?? 'Belum Ditentukan' }}</span>
                                     @if($kelompok->pendamping)
                                         <span class="badge bg-light text-secondary border ms-1">{{ strtoupper($kelompok->pendamping->role) }}</span>
                                     @endif
+                                </p>
+                                <p class="text-muted mb-0">
+                                    <i class="bi bi-mortarboard me-1 text-secondary"></i> Dosen Pendamping:
+                                    @forelse($kelompok->dosenPendampings as $dosen)
+                                        <span class="fw-bold text-dark">{{ $dosen->name }}</span>@if(!$loop->last), @endif
+                                    @empty
+                                        <span class="fw-bold text-dark">Belum Ditentukan</span>
+                                    @endforelse
                                 </p>
                                 @if($kelompok->keterangan)
                                     <small class="text-muted d-block mt-1"><i class="bi bi-info-circle me-1"></i> {{ $kelompok->keterangan }}</small>
@@ -105,6 +113,9 @@
                     </div>
                 </div>
             </div>
+
+            @include('partials.kelompok-notes')
+
         </div>
     </section>
 

@@ -43,6 +43,21 @@
                                 </select>
                             </div>
 
+                            <div class="mb-3">
+                                <label for="dosen_pendamping_ids" class="form-label fw-bold small">Dosen Pendamping</label>
+                                @php
+                                    $selectedDosenIds = old('dosen_pendamping_ids', $kelompok->dosenPendampings->pluck('id')->all());
+                                @endphp
+                                <select name="dosen_pendamping_ids[]" id="dosen_pendamping_ids" class="form-select" multiple>
+                                    @foreach($dosenPendampingOptions as $d)
+                                        <option value="{{ $d->id }}" {{ collect($selectedDosenIds)->contains($d->id) ? 'selected' : '' }}>
+                                            {{ $d->name }} ({{ strtoupper($d->role) }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted">Bisa memilih lebih dari satu dosen pendamping.</small>
+                            </div>
+
                             <div class="mb-4">
                                 <label for="keterangan" class="form-label fw-bold small">Keterangan / Catatan</label>
                                 <textarea name="keterangan" id="keterangan" class="form-control" rows="3">{{ old('keterangan', $kelompok->keterangan) }}</textarea>
@@ -59,3 +74,21 @@
         </div>
     </section>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#pendamping_id').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Cari / Pilih Kakak Pendamping...',
+                allowClear: true,
+                width: '100%'
+            });
+            $('#dosen_pendamping_ids').select2({
+                theme: 'bootstrap-5',
+                placeholder: 'Cari / Pilih Dosen Pendamping...',
+                width: '100%'
+            });
+        });
+    </script>
+@endpush

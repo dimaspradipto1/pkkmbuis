@@ -61,6 +61,7 @@
                 </div>
 
                 @include('partials.absen-attachments', ['category' => 'absenkedua'])
+                @include('partials.absen-notes', ['category' => 'absenkedua'])
 
             </div>
         </div>
