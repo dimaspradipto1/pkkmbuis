@@ -58,7 +58,7 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label for="link" class="col-sm-2 col-form-label">Link Eksternal</label>
+                                <label for="link" class="col-sm-2 col-form-label">Link Eksternal(optional)</label>
                                 <div class="col-sm-10">
                                     <input type="text" name="link" id="link" class="form-control" placeholder="https://..." value="{{ old('link') }}">
                                 </div>
