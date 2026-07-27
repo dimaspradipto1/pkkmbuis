@@ -10,6 +10,7 @@ use App\Http\Controllers\AbsenScanController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HasilTestController;
+use App\Http\Controllers\KedisiplinanAttachmentController;
 use App\Http\Controllers\KedisiplinanKeduaController;
 use App\Http\Controllers\KedisiplinanKetigaController;
 use App\Http\Controllers\KedisiplinanPertamaController;
@@ -100,6 +101,9 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::post('kedisiplinanketiga/bulk-update', [KedisiplinanKetigaController::class, 'bulkUpdate'])->name('kedisiplinanketiga.bulk-update');
     Route::resource('kedisiplinanketiga', KedisiplinanKetigaController::class);
+
+    Route::post('kedisiplinan-attachments', [KedisiplinanAttachmentController::class, 'store'])->name('kedisiplinan-attachments.store');
+    Route::delete('kedisiplinan-attachments/{id}', [KedisiplinanAttachmentController::class, 'destroy'])->name('kedisiplinan-attachments.destroy');
 
     Route::get('soalpretestpertama/template', [SoalPretestPertamaController::class, 'downloadTemplate'])->name('soalpretestpertama.template');
     Route::post('soalpretestpertama/import', [SoalPretestPertamaController::class, 'import'])->name('soalpretestpertama.import');

@@ -33,6 +33,8 @@
                     </div>
                 </div>
 
+                @include('partials.kedisiplinan-attachments', ['category' => 'kedisiplinankedua'])
+
             </div>
         </div>
     </section>

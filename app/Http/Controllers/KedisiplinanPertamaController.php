@@ -16,7 +16,9 @@ class KedisiplinanPertamaController extends Controller
      */
     public function index(KedisiplinanPertamaDataTable $dataTable)
     {
-        return $dataTable->render('pages.kedisiplinanpertama.index');
+        $attachments = \App\Models\KedisiplinanAttachment::where('category', 'kedisiplinanpertama')->latest()->get();
+
+        return $dataTable->render('pages.kedisiplinanpertama.index', compact('attachments'));
     }
 
     /**
