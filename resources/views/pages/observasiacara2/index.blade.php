@@ -30,14 +30,38 @@
                 </div>
 
                 <div class="card shadow-sm border-0 mt-4 rounded-3">
+                    <div class="card-header bg-white border-0 pt-3 pb-0">
+                        <h5 class="card-title mb-0 text-dark fw-bold">
+                            <i class="bi bi-info-circle-fill me-2 text-primary"></i> Petunjuk Penggunaan
+                        </h5>
+                    </div>
                     <div class="card-body">
-                        <h6 class="fw-bold mb-3"><i class="bi bi-info-circle-fill text-primary me-1"></i> Petunjuk Penggunaan:</h6>
-                        <ul class="mb-0 ps-3">
-                            <li class="mb-2"><strong>Waktu (Realisasi):</strong> Isi dengan waktu mulai dan selesai kegiatan yang sebenarnya untuk mengukur ketepatan waktu.</li>
-                            <li class="mb-2"><strong>Skala Penilaian:</strong> Gunakan skala 1 hingga 5 untuk menilai setiap aspek. (1: Sangat Kurang, 2: Kurang, 3: Cukup, 4: Baik, 5: Sangat Baik).</li>
-                            <li class="mb-2"><strong>Catatan/Keterangan:</strong> Tuliskan temuan spesifik, kendala yang terjadi, hal-hal positif yang menonjol, atau rekomendasi perbaikan.</li>
-                            <li class="mb-0"><strong>Dokumentasi:</strong> Lampirkan link foto/video dokumentasi observasi jika diperlukan.</li>
-                        </ul>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded-3 border h-100">
+                                    <div class="fw-bold text-dark mb-1"><i class="bi bi-clock-history text-primary me-1"></i> Waktu (Realisasi)</div>
+                                    <div class="text-muted small mb-0">Isi dengan waktu mulai dan selesai kegiatan yang sebenarnya untuk mengukur ketepatan waktu.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded-3 border h-100">
+                                    <div class="fw-bold text-dark mb-1"><i class="bi bi-star-fill text-primary me-1"></i> Skala Penilaian</div>
+                                    <div class="text-muted small mb-0">Gunakan skala 1 hingga 5 untuk menilai setiap aspek. (1: Sangat Kurang, 2: Kurang, 3: Cukup, 4: Baik, 5: Sangat Baik).</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded-3 border h-100">
+                                    <div class="fw-bold text-dark mb-1"><i class="bi bi-journal-text text-primary me-1"></i> Catatan/Keterangan</div>
+                                    <div class="text-muted small mb-0">Tuliskan temuan spesifik, kendala yang terjadi, hal-hal positif yang menonjol, atau rekomendasi perbaikan.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 bg-light rounded-3 border h-100">
+                                    <div class="fw-bold text-dark mb-1"><i class="bi bi-link-45deg text-primary me-1"></i> Dokumentasi</div>
+                                    <div class="text-muted small mb-0">Lampirkan link foto/video dokumentasi observasi jika diperlukan.</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

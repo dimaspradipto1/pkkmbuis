@@ -18,10 +18,14 @@ use App\Http\Controllers\KedisiplinanKetigaController;
 use App\Http\Controllers\KedisiplinanPertamaController;
 use App\Http\Controllers\MateriModulController;
 use App\Http\Controllers\DokumenController;
+use App\Http\Controllers\LpjAttachmentController;
 use App\Http\Controllers\LpjController;
 use App\Http\Controllers\ModulPostTestController;
 use App\Http\Controllers\ObservasiAcaraController;
 use App\Http\Controllers\ObservasiAcara2Controller;
+use App\Http\Controllers\ObservasiAcaraFebController;
+use App\Http\Controllers\ObservasiAcaraFstController;
+use App\Http\Controllers\ObservasiAcaraFikesController;
 use App\Http\Controllers\SoalPostTestKeduaController;
 use App\Http\Controllers\SoalPostTestKeempatController;
 use App\Http\Controllers\SoalPostTestKetigaController;
@@ -168,7 +172,17 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::resource('observasiacara2', ObservasiAcara2Controller::class);
 
+    Route::resource('observasiacarafeb', ObservasiAcaraFebController::class);
+
+    Route::resource('observasiacarafst', ObservasiAcaraFstController::class);
+
+    Route::resource('observasiacarafikes', ObservasiAcaraFikesController::class);
+
     Route::resource('lpj', LpjController::class);
+    Route::post('lpj-attachments', [LpjAttachmentController::class, 'store'])->name('lpj-attachments.store');
+    Route::get('lpj-attachments/{id}/edit', [LpjAttachmentController::class, 'edit'])->name('lpj-attachments.edit');
+    Route::put('lpj-attachments/{id}', [LpjAttachmentController::class, 'update'])->name('lpj-attachments.update');
+    Route::delete('lpj-attachments/{id}', [LpjAttachmentController::class, 'destroy'])->name('lpj-attachments.destroy');
 
     Route::get('kelompok/template', [KelompokController::class, 'downloadTemplate'])->name('kelompok.template');
     Route::post('kelompok/import', [KelompokController::class, 'import'])->name('kelompok.import');

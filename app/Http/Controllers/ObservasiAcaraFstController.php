@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\DataTables\ObservasiAcaraFebDataTable;
-use App\Http\Requests\ObservasiAcaraFebRequest;
-use App\Models\ObservasiAcaraFeb;
+use App\DataTables\ObservasiAcaraFstDataTable;
+use App\Http\Requests\ObservasiAcaraFstRequest;
+use App\Models\ObservasiAcaraFst;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
-class ObservasiAcaraFebController extends Controller
+class ObservasiAcaraFstController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(ObservasiAcaraFebDataTable $dataTable)
+    public function index(ObservasiAcaraFstDataTable $dataTable)
     {
         if (Auth::user()->role != 'admin' && Auth::user()->role != 'timevaluasi') {
             abort(403);
         }
 
-        return $dataTable->render('pages.observasiacarafeb.index');
+        return $dataTable->render('pages.observasiacarafst.index');
     }
 
     /**
@@ -31,13 +31,13 @@ class ObservasiAcaraFebController extends Controller
             abort(403);
         }
 
-        return view('pages.observasiacarafeb.create');
+        return view('pages.observasiacarafst.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ObservasiAcaraFebRequest $request)
+    public function store(ObservasiAcaraFstRequest $request)
     {
         if (Auth::user()->role != 'admin' && Auth::user()->role != 'timevaluasi') {
             abort(403);
@@ -47,13 +47,13 @@ class ObservasiAcaraFebController extends Controller
         $data['aspek_observasi'] = $this->formatAspekObservasi($data['aspek_observasi'] ?? []);
         $data['link_dokumen'] = $this->formatLinkDokumen($data['link_dokumen'] ?? []);
 
-        ObservasiAcaraFeb::create($data);
+        ObservasiAcaraFst::create($data);
 
         Alert::success('Observasi acara berhasil ditambahkan.', 'Success')
             ->toToast()
             ->autoClose(3000);
 
-        return redirect()->route('observasiacarafeb.index');
+        return redirect()->route('observasiacarafst.index');
     }
 
     /**
@@ -65,32 +65,32 @@ class ObservasiAcaraFebController extends Controller
             abort(403);
         }
 
-        $observasiAcaraFeb = ObservasiAcaraFeb::findOrFail($id);
-        return view('pages.observasiacarafeb.edit', compact('observasiAcaraFeb'));
+        $observasiAcaraFst = ObservasiAcaraFst::findOrFail($id);
+        return view('pages.observasiacarafst.edit', compact('observasiAcaraFst'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(ObservasiAcaraFebRequest $request, string $id)
+    public function update(ObservasiAcaraFstRequest $request, string $id)
     {
         if (Auth::user()->role != 'admin' && Auth::user()->role != 'timevaluasi') {
             abort(403);
         }
 
-        $observasiAcaraFeb = ObservasiAcaraFeb::findOrFail($id);
+        $observasiAcaraFst = ObservasiAcaraFst::findOrFail($id);
 
         $data = $request->validated();
         $data['aspek_observasi'] = $this->formatAspekObservasi($data['aspek_observasi'] ?? []);
         $data['link_dokumen'] = $this->formatLinkDokumen($data['link_dokumen'] ?? []);
 
-        $observasiAcaraFeb->update($data);
+        $observasiAcaraFst->update($data);
 
         Alert::success('Observasi acara berhasil diperbarui.', 'Success')
             ->toToast()
             ->autoClose(3000);
 
-        return redirect()->route('observasiacarafeb.index');
+        return redirect()->route('observasiacarafst.index');
     }
 
     /**
@@ -102,14 +102,14 @@ class ObservasiAcaraFebController extends Controller
             abort(403);
         }
 
-        $observasiAcaraFeb = ObservasiAcaraFeb::findOrFail($id);
-        $observasiAcaraFeb->delete();
+        $observasiAcaraFst = ObservasiAcaraFst::findOrFail($id);
+        $observasiAcaraFst->delete();
 
         Alert::success('Observasi acara berhasil dihapus.', 'Deleted')
             ->toToast()
             ->autoClose(3000);
 
-        return redirect()->route('observasiacarafeb.index');
+        return redirect()->route('observasiacarafst.index');
     }
 
     /**

@@ -18,7 +18,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title">List LPJ</h5>
+                            <h5 class="card-title">Daftar Lampiran LPJ</h5>
                             <a href="{{ route('lpj.create') }}" class="btn btn-primary btn-sm shadow-sm px-3 text-white">
                                 <i class="bi bi-plus-circle me-1"></i> Tambah LPJ
                             </a>

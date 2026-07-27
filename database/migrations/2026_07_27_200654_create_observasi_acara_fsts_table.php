@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('observasi_acara_febs', function (Blueprint $table) {
+        Schema::create('observasi_acara_fsts', function (Blueprint $table) {
             $table->id();
             $table->string('waktu_runddown')->nullable();
             $table->string('waktu_realisasi')->nullable();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('observasi_acara_febs');
+        Schema::dropIfExists('observasi_acara_fsts');
     }
 };

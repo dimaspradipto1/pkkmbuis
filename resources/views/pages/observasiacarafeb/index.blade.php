@@ -2,11 +2,11 @@
 
 @section('content')
     <div class="pagetitle">
-        <h1>Observasi Acara</h1>
+        <h1>Observasi Acara Feb</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item">Observasi Acara</li>
+                <li class="breadcrumb-item">Observasi Acara Feb</li>
             </ol>
         </nav>
     </div>
@@ -18,8 +18,8 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title">List Observasi Acara</h5>
-                            <a href="{{ route('observasiacara.create') }}" class="btn btn-primary btn-sm shadow-sm px-3 text-white">
+                            <h5 class="card-title">List Observasi Acara Feb</h5>
+                            <a href="{{ route('observasiacarafeb.create') }}" class="btn btn-primary btn-sm shadow-sm px-3 text-white">
                                 <i class="bi bi-plus-circle me-1"></i> Tambah Observasi
                             </a>
                         </div>

@@ -133,19 +133,40 @@
 
           @if (Auth::user()->role == 'admin' || Auth::user()->role == 'timevaluasi')
               <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('observasiacara.*') ? '' : 'collapsed' }}" href="{{ route('observasiacara.index') }}">
-                      <i class="bi bi-eye-fill"></i>
-                      <span>Observasi Acara</span>
+                  <a class="nav-link {{ request()->routeIs('observasiacara*') ? '' : 'collapsed' }}" data-bs-target="#observasi-acara-nav" data-bs-toggle="collapse" href="#">
+                      <i class="bi bi-eye-fill"></i><span>Observasi Acara</span><i class="bi bi-chevron-down ms-auto"></i>
                   </a>
+                  <ul id="observasi-acara-nav" class="nav-content collapse {{ request()->routeIs('observasiacara*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                      <li>
+                          <a href="{{ route('observasiacara.index') }}" class="{{ request()->routeIs('observasiacara.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Observasi Acara 1</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('observasiacara2.index') }}" class="{{ request()->routeIs('observasiacara2.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Observasi Acara 2</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('observasiacarafeb.index') }}" class="{{ request()->routeIs('observasiacarafeb.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Observasi Acara Feb</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('observasiacarafst.index') }}" class="{{ request()->routeIs('observasiacarafst.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Observasi Acara Fst</span>
+                          </a>
+                      </li>
+                      <li>
+                          <a href="{{ route('observasiacarafikes.index') }}" class="{{ request()->routeIs('observasiacarafikes.*') ? 'active' : '' }}">
+                              <i class="bi bi-circle"></i><span>Observasi Acara Fikes</span>
+                          </a>
+                      </li>
+                  </ul>
               </li>
+          @endif
 
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('observasiacara2.*') ? '' : 'collapsed' }}" href="{{ route('observasiacara2.index') }}">
-                      <i class="bi bi-eye-fill"></i>
-                      <span>Observasi Acara 2</span>
-                  </a>
-              </li>
-
+          @if (Auth::user()->role == 'admin')
               <li class="nav-item">
                   <a class="nav-link {{ request()->routeIs('lpj.*') ? '' : 'collapsed' }}" href="{{ route('lpj.index') }}">
                       <i class="bi bi-file-earmark-text"></i>

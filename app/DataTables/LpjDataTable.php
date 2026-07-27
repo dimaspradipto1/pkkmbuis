@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\Lpj;
+use App\Models\LpjAttachment;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -15,39 +15,71 @@ class LpjDataTable extends DataTable
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder<Lpj> $query Results from query() method.
+     * @param QueryBuilder<LpjAttachment> $query Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
-            ->addColumn('lpj', function ($item) {
-                return e(\Illuminate\Support\Str::limit($item->lpj, 150));
+            ->addColumn('jenis', function ($item) {
+                $badges = [];
+                if (!empty($item->file)) {
+                    $badges[] = '<span class="badge bg-primary">File</span>';
+                }
+                if (!empty($item->link)) {
+                    $badges[] = '<span class="badge bg-success">Link</span>';
+                }
+                return implode(' ', $badges);
+            })
+            ->addColumn('konten', function ($item) {
+                $parts = [];
+                if (!empty($item->file)) {
+                    $parts[] = '<div><i class="bi bi-file-earmark-text me-1 text-primary"></i>' . e(basename($item->file)) . '</div>';
+                }
+                if (!empty($item->link)) {
+                    $parts[] = '<div><i class="bi bi-link-45deg me-1 text-success"></i>' . e(\Illuminate\Support\Str::limit($item->link, 80)) . '</div>';
+                }
+                return implode('', $parts);
+            })
+            ->addColumn('uploader', function ($item) {
+                $name = $item->user->name ?? '-';
+                $date = $item->created_at ? $item->created_at->format('d M Y H:i') : '-';
+
+                return '<div>' . e($name) . '</div><small class="text-muted">' . e($date) . '</small>';
             })
             ->addColumn('action', function ($item) {
-                return '
-                    <div class="d-flex justify-content-center gap-1">
-                        <a href="' . route('lpj.edit', $item->id) . '" class="btn btn-sm btn-warning text-white px-3 rounded"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <form action="' . route('lpj.destroy', $item->id) . '" method="POST" style="display: inline">
+                $buttons = '';
+
+                if (!empty($item->file)) {
+                    $fileUrl = asset('storage/' . $item->file);
+                    $buttons .= '<a href="' . e($fileUrl) . '" target="_blank" class="btn btn-sm btn-primary text-white px-3 rounded" title="Buka File"><i class="fa-solid fa-file"></i></a>';
+                }
+
+                if (!empty($item->link)) {
+                    $buttons .= '<a href="' . e($item->link) . '" target="_blank" class="btn btn-sm btn-success text-white px-3 rounded" title="Buka Link"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>';
+                }
+
+                $buttons .= '<a href="' . route('lpj-attachments.edit', $item->id) . '" class="btn btn-sm btn-warning text-white px-3 rounded" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>';
+                $buttons .= '<form action="' . route('lpj-attachments.destroy', $item->id) . '" method="POST" style="display: inline">
                             ' . csrf_field() . '
                             ' . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-sm btn-danger px-3 rounded" onclick="return confirm(\'Yakin ingin menghapus LPJ ini?\')"><i class="fa-solid fa-trash"></i></button>
-                        </form>
-                    </div>
-                ';
+                            <button type="submit" class="btn btn-sm btn-danger px-3 rounded" onclick="return confirm(\'Yakin ingin menghapus lampiran ini?\')" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                        </form>';
+
+                return '<div class="d-flex justify-content-center gap-1">' . $buttons . '</div>';
             })
-            ->rawColumns(['action', 'DT_RowIndex']);
+            ->rawColumns(['action', 'DT_RowIndex', 'jenis', 'konten', 'uploader']);
     }
 
     /**
      * Get the query source of dataTable.
      *
-     * @return QueryBuilder<Lpj>
+     * @return QueryBuilder<LpjAttachment>
      */
-    public function query(Lpj $model): QueryBuilder
+    public function query(LpjAttachment $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model->newQuery()->latest();
     }
 
     /**
@@ -83,13 +115,19 @@ class LpjDataTable extends DataTable
                 ->title('NO')
                 ->orderable(false)
                 ->searchable(false),
-            Column::make('lpj')
-                ->title('LPJ'),
+            Column::computed('jenis')
+                ->title('Jenis')
+                ->width(80)
+                ->addClass('text-center'),
+            Column::computed('konten')
+                ->title('Link / Nama File'),
+            Column::computed('uploader')
+                ->title('Diunggah Oleh'),
             Column::computed('action')
                 ->title('AKSI')
                 ->exportable(false)
                 ->printable(false)
-                ->width(120)
+                ->width(200)
                 ->addClass('text-center'),
         ];
     }

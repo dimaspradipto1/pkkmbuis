@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\DataTables\LpjDataTable;
 use App\Http\Requests\LpjRequest;
 use App\Models\Lpj;
+use App\Models\LpjAttachment;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -15,12 +17,8 @@ class LpjController extends Controller
      */
     public function index(LpjDataTable $dataTable)
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'timevaluasi') {
+        if (Auth::user()->role != 'admin') {
             abort(403);
-        }
-
-        if (Auth::user()->role == 'timevaluasi') {
-            return redirect()->route('lpj.create');
         }
 
         return $dataTable->render('pages.lpj.index');
@@ -31,11 +29,14 @@ class LpjController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'timevaluasi') {
+        if (Auth::user()->role != 'admin') {
             abort(403);
         }
 
-        return view('pages.lpj.create');
+        $attachments = LpjAttachment::latest()->get();
+        $users = User::where('role', 'timevaluasi')->orderBy('name')->get();
+
+        return view('pages.lpj.create', compact('attachments', 'users'));
     }
 
     /**
@@ -43,7 +44,7 @@ class LpjController extends Controller
      */
     public function store(LpjRequest $request)
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'timevaluasi') {
+        if (Auth::user()->role != 'admin') {
             abort(403);
         }
 
@@ -61,7 +62,7 @@ class LpjController extends Controller
      */
     public function edit(string $id)
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'timevaluasi') {
+        if (Auth::user()->role != 'admin') {
             abort(403);
         }
 
@@ -74,7 +75,7 @@ class LpjController extends Controller
      */
     public function update(LpjRequest $request, string $id)
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'timevaluasi') {
+        if (Auth::user()->role != 'admin') {
             abort(403);
         }
 
@@ -93,7 +94,7 @@ class LpjController extends Controller
      */
     public function destroy(string $id)
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'timevaluasi') {
+        if (Auth::user()->role != 'admin') {
             abort(403);
         }
 

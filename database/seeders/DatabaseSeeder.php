@@ -20,6 +20,9 @@ class DatabaseSeeder extends Seeder
             MateriModulSeeder::class,
             KelompokSeeder::class,
             ObservasiAcaraSeeder::class,
+            ObservasiAcaraFebSeeder::class,
+            ObservasiAcaraFstSeeder::class,
+            ObservasiAcaraFikesSeeder::class,
         ]);
     }
 }

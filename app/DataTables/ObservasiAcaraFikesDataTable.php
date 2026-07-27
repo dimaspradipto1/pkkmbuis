@@ -2,7 +2,7 @@
 
 namespace App\DataTables;
 
-use App\Models\ObservasiAcaraFeb;
+use App\Models\ObservasiAcaraFikes;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -10,12 +10,12 @@ use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
-class ObservasiAcaraFebDataTable extends DataTable
+class ObservasiAcaraFikesDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder<ObservasiAcaraFeb> $query Results from query() method.
+     * @param QueryBuilder<ObservasiAcaraFikes> $query Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
@@ -43,8 +43,8 @@ class ObservasiAcaraFebDataTable extends DataTable
             ->addColumn('action', function ($item) {
                 return '
                     <div class="d-flex justify-content-center gap-1">
-                        <a href="' . route('observasiacarafeb.edit', $item->id) . '" class="btn btn-sm btn-warning text-white px-3 rounded"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <form action="' . route('observasiacarafeb.destroy', $item->id) . '" method="POST" style="display: inline">
+                        <a href="' . route('observasiacarafikes.edit', $item->id) . '" class="btn btn-sm btn-warning text-white px-3 rounded"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <form action="' . route('observasiacarafikes.destroy', $item->id) . '" method="POST" style="display: inline">
                             ' . csrf_field() . '
                             ' . method_field('DELETE') . '
                             <button type="submit" class="btn btn-sm btn-danger px-3 rounded" onclick="return confirm(\'Yakin ingin menghapus data observasi ini?\')"><i class="fa-solid fa-trash"></i></button>
@@ -58,9 +58,9 @@ class ObservasiAcaraFebDataTable extends DataTable
     /**
      * Get the query source of dataTable.
      *
-     * @return QueryBuilder<ObservasiAcaraFeb>
+     * @return QueryBuilder<ObservasiAcaraFikes>
      */
-    public function query(ObservasiAcaraFeb $model): QueryBuilder
+    public function query(ObservasiAcaraFikes $model): QueryBuilder
     {
         return $model->newQuery()->orderBy('id', 'asc');
     }
@@ -71,7 +71,7 @@ class ObservasiAcaraFebDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('observasiacarafeb-table')
+                    ->setTableId('observasiacarafikes-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->ordering(false)
@@ -126,6 +126,6 @@ class ObservasiAcaraFebDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'ObservasiAcaraFeb_' . date('YmdHis');
+        return 'ObservasiAcaraFikes_' . date('YmdHis');
     }
 }
