@@ -12,27 +12,6 @@
               </a>
           </li>
 
-          @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
-              <li class="nav-heading">Layanan Pesan & Bantuan</li>
-
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('chat.*') ? '' : 'collapsed' }} d-flex align-items-center justify-content-between" href="{{ route('chat.index') }}">
-                      <div class="d-flex align-items-center">
-                          <i class="bi bi-chat-square-text-fill text-success me-2"></i>
-                          <span>Pesan / Live Chat</span>
-                      </div>
-                      <span class="badge bg-danger rounded-pill px-2 py-1 ms-auto" id="sidebarChatUnreadBadge" style="display: none; font-size: 0.68rem;">0</span>
-                  </a>
-              </li>
-
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('chatbot-faq.*') ? '' : 'collapsed' }}" href="{{ route('chatbot-faq.index') }}">
-                      <i class="bi bi-gear-fill text-primary"></i>
-                      <span>Pengaturan Chatbot & WA</span>
-                  </a>
-              </li>
-          @endif
-
           <li class="nav-heading">Pelaksanaan & Kegiatan</li>
 
           <li class="nav-item">
@@ -58,30 +37,28 @@
               </ul>
           </li>
 
-          @if (Auth::user()->role != 'mahasiswa')
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('kedisiplinan*') ? '' : 'collapsed' }}" data-bs-target="#kedisiplinan-nav" data-bs-toggle="collapse" href="#">
-                      <i class="bi bi-shield-check"></i><span>Kedisiplinan</span><i class="bi bi-chevron-down ms-auto"></i>
-                  </a>
-                  <ul id="kedisiplinan-nav" class="nav-content collapse {{ request()->routeIs('kedisiplinan*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                      <li>
-                          <a href="{{ route('kedisiplinanpertama.index') }}" class="{{ request()->routeIs('kedisiplinanpertama.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Kedisiplinan Hari I</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('kedisiplinankedua.index') }}" class="{{ request()->routeIs('kedisiplinankedua.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Kedisiplinan Hari II</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('kedisiplinanketiga.index') }}" class="{{ request()->routeIs('kedisiplinanketiga.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Kedisiplinan Hari III</span>
-                          </a>
-                      </li>
-                  </ul>
-              </li>
-          @endif
+          <li class="nav-item">
+              <a class="nav-link {{ request()->routeIs('kedisiplinan*') ? '' : 'collapsed' }}" data-bs-target="#kedisiplinan-nav" data-bs-toggle="collapse" href="#">
+                  <i class="bi bi-shield-check"></i><span>Kedisiplinan</span><i class="bi bi-chevron-down ms-auto"></i>
+              </a>
+              <ul id="kedisiplinan-nav" class="nav-content collapse {{ request()->routeIs('kedisiplinan*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                  <li>
+                      <a href="{{ route('kedisiplinanpertama.index') }}" class="{{ request()->routeIs('kedisiplinanpertama.*') ? 'active' : '' }}">
+                          <i class="bi bi-circle"></i><span>Kedisiplinan Hari I</span>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="{{ route('kedisiplinankedua.index') }}" class="{{ request()->routeIs('kedisiplinankedua.*') ? 'active' : '' }}">
+                          <i class="bi bi-circle"></i><span>Kedisiplinan Hari II</span>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="{{ route('kedisiplinanketiga.index') }}" class="{{ request()->routeIs('kedisiplinanketiga.*') ? 'active' : '' }}">
+                          <i class="bi bi-circle"></i><span>Kedisiplinan Hari III</span>
+                      </a>
+                  </li>
+              </ul>
+          </li>
 
           @if (Auth::user()->role == 'mahasiswa' || Auth::user()->role == 'admin')
               <li class="nav-item">
@@ -99,7 +76,7 @@
               </a>
           </li>
 
-          @if (Auth::user()->role != 'mahasiswa')
+          @if (!in_array(Auth::user()->role, ['mahasiswa', 'dosenpendamping']))
               <li class="nav-item">
                   <a class="nav-link {{ request()->routeIs('dokumen.*') ? '' : 'collapsed' }}" href="{{ route('dokumen.index') }}">
                       <i class="bi bi-file-earmark-text-fill"></i>
@@ -108,7 +85,68 @@
               </li>
           @endif
 
+          @if (Auth::user()->role != 'kakakpendamping')
+              <li class="nav-heading">Evaluasi Materi</li>
+
+              @php
+                  $evaluasiMenus = \App\Models\EvaluasiMenu::orderBy('nomor')->get();
+              @endphp
+
+              <li class="nav-item">
+                  <a class="nav-link {{ (request()->routeIs('evaluasi*') || request()->routeIs('perpustakaan*')) ? '' : 'collapsed' }}" data-bs-target="#evaluasi" data-bs-toggle="collapse" href="#">
+                      <i class="bi bi-clipboard2-check-fill"></i><span>Evaluasi Penyampaian Materi</span><i class="bi bi-chevron-down ms-auto"></i>
+                  </a>
+                  <ul id="evaluasi" class="nav-content collapse {{ (request()->routeIs('evaluasi*') || request()->routeIs('perpustakaan*')) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                      @foreach ($evaluasiMenus as $menu)
+                          @if (Auth::user()->role != 'mahasiswa' || $menu->is_active)
+                              <li>
+                                  @if ($menu->is_active && $menu->route_name && Route::has($menu->route_name))
+                                      <a href="{{ route($menu->route_name) }}" class="{{ request()->routeIs($menu->route_name . '*') ? 'active' : '' }}">
+                                          <i class="bi bi-circle"></i><span>{{ $menu->nama }}</span>
+                                      </a>
+                                  @else
+                                      <a href="javascript:void(0)" class="text-muted" style="{{ !$menu->is_active ? 'opacity: 0.6;' : '' }}">
+                                          <i class="bi bi-circle"></i><span>{{ $menu->nama }}</span>
+                                          @if (Auth::user()->role != 'mahasiswa' && !$menu->is_active)
+                                              <span class="badge bg-secondary ms-1" style="font-size: 0.65rem;">Non-aktif</span>
+                                          @endif
+                                      </a>
+                                  @endif
+                              </li>
+                          @endif
+                      @endforeach
+
+                      @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
+                          <li class="mt-2 pt-2 border-top">
+                              <a href="{{ route('evaluasimenu.index') }}" class="{{ request()->routeIs('evaluasimenu.*') ? 'active' : '' }}">
+                                  <i class="bi bi-gear-fill me-1 text-primary"></i><span class="fw-bold">Pengaturan Status Menu</span>
+                              </a>
+                          </li>
+                      @endif
+                  </ul>
+              </li>
+          @endif
+
           @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
+              <li class="nav-heading">Layanan & Pesan</li>
+
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('chat.*') ? '' : 'collapsed' }} d-flex align-items-center justify-content-between" href="{{ route('chat.index') }}">
+                      <div class="d-flex align-items-center">
+                          <i class="bi bi-chat-square-text-fill text-success me-2"></i>
+                          <span>Pesan / Live Chat</span>
+                      </div>
+                      <span class="badge bg-danger rounded-pill px-2 py-1 ms-auto" id="sidebarChatUnreadBadge" style="display: none; font-size: 0.68rem;">0</span>
+                  </a>
+              </li>
+
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('chatbot-faq.*') ? '' : 'collapsed' }}" href="{{ route('chatbot-faq.index') }}">
+                      <i class="bi bi-chat-dots-fill text-primary"></i>
+                      <span>Pengaturan Chatbot & WA</span>
+                  </a>
+              </li>
+
               <li class="nav-heading">Kelola Modul & Test</li>
 
               <li class="nav-item">
@@ -214,54 +252,7 @@
                       <span>Data Pengguna</span>
                   </a>
               </li>
-
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('chatbot-faq.*') ? '' : 'collapsed' }}" href="{{ route('chatbot-faq.index') }}">
-                      <i class="bi bi-chat-dots-fill text-success"></i>
-                      <span>Pengaturan Chatbot & WA</span>
-                  </a>
-              </li>
           @endif
-
-          <li class="nav-heading">Evaluasi Penyampaian Materi</li>
-
-          @php
-              $evaluasiMenus = \App\Models\EvaluasiMenu::orderBy('nomor')->get();
-          @endphp
-
-          <li class="nav-item">
-              <a class="nav-link {{ (request()->routeIs('evaluasi*') || request()->routeIs('perpustakaan*')) ? '' : 'collapsed' }}" data-bs-target="#evaluasi" data-bs-toggle="collapse" href="#">
-                  <i class="bi bi-clipboard2-check-fill"></i><span>Evaluasi Penyampaian Materi</span><i class="bi bi-chevron-down ms-auto"></i>
-              </a>
-              <ul id="evaluasi" class="nav-content collapse {{ (request()->routeIs('evaluasi*') || request()->routeIs('perpustakaan*')) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                  @foreach ($evaluasiMenus as $menu)
-                      @if (Auth::user()->role != 'mahasiswa' || $menu->is_active)
-                          <li>
-                              @if ($menu->is_active && $menu->route_name && Route::has($menu->route_name))
-                                  <a href="{{ route($menu->route_name) }}" class="{{ request()->routeIs($menu->route_name . '*') ? 'active' : '' }}">
-                                      <i class="bi bi-circle"></i><span>{{ $menu->nama }}</span>
-                                  </a>
-                              @else
-                                  <a href="javascript:void(0)" class="text-muted" style="{{ !$menu->is_active ? 'opacity: 0.6;' : '' }}">
-                                      <i class="bi bi-circle"></i><span>{{ $menu->nama }}</span>
-                                      @if (Auth::user()->role != 'mahasiswa' && !$menu->is_active)
-                                          <span class="badge bg-secondary ms-1" style="font-size: 0.65rem;">Non-aktif</span>
-                                      @endif
-                                  </a>
-                              @endif
-                          </li>
-                      @endif
-                  @endforeach
-
-                  @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
-                      <li class="mt-2 pt-2 border-top">
-                          <a href="{{ route('evaluasimenu.index') }}" class="{{ request()->routeIs('evaluasimenu.*') ? 'active' : '' }}">
-                              <i class="bi bi-gear-fill me-1 text-primary"></i><span class="fw-bold">Pengaturan Status Menu</span>
-                          </a>
-                      </li>
-                  @endif
-              </ul>
-          </li>
 
       </ul>
 

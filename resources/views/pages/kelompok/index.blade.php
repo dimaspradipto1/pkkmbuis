@@ -36,7 +36,7 @@
                                     <tr>
                                         <th style="width: 50px;">NO</th>
                                         <th>Nama Kelompok</th>
-                                        <th>Pendamping / Kakak Leting</th>
+                                        <th>Kakak Pendamping</th>
                                         <th class="text-center">Jumlah Anggota</th>
                                         <th>Keterangan</th>
                                         <th class="text-center" style="width: 180px;">Aksi</th>

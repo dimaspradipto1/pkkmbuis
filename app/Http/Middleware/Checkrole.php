@@ -19,7 +19,9 @@ class Checkrole
         if (
             Auth::user()->role == 'admin' || 
             Auth::user()-> role == 'mahasiswa' || 
-            Auth::user()-> role == 'kakakleting' ||
+            Auth::user()->role == 'kakakpendamping' ||
+            Auth::user()->role == 'dosenpendamping' ||
+            Auth::user()->role == 'timevaluasi' ||
             Auth::user()-> role == 'stafbaak' ||
             Auth::user()->role == 'pimpinan'  
         ) {

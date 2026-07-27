@@ -17,20 +17,40 @@
 
                 <div class="card">
                     <div class="card-body">
+                        @php
+                            $sPagi = \App\Models\AbsenSetting::where('session_code', 'ABSEN_3_PAGI')->first();
+                            $sSore = \App\Models\AbsenSetting::where('session_code', 'ABSEN_3_SORE')->first();
+                            $isVisible = ($sPagi->is_visible ?? true) || ($sSore->is_visible ?? true);
+                            $isActive = ($sPagi ? $sPagi->checkIsActive() : false) || ($sSore ? $sSore->checkIsActive() : false);
+                        @endphp
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="card-title">List Absensi Hari III</h5>
                             <div class="d-flex gap-2">
                                 @if (Auth::user()->role != 'mahasiswa')
-                                    <button type="button" class="btn btn-outline-dark" onclick="showAttendanceQR(3)">
-                                        <i class="bi bi-qr-code me-1"></i> QR Absensi
-                                    </button>
+                                    @if ($isVisible)
+                                        @if ($isActive)
+                                            <button type="button" class="btn btn-outline-dark fw-bold" onclick="showAttendanceQR(3)">
+                                                <i class="bi bi-qr-code me-1"></i> QR Absensi
+                                            </button>
+                                        @else
+                                            <button type="button" class="btn btn-secondary disabled" disabled>
+                                                <i class="bi bi-clock me-1"></i> QR Non-aktif (Lewat 30m)
+                                            </button>
+                                        @endif
+                                    @endif
                                     <a href="{{ route('absenketiga.create') }}" class="btn btn-primary text-white">
                                         <i class="bi bi-plus-circle me-1"></i> Tambah
                                     </a>
                                 @else
-                                    <a href="{{ route('absen-scan.index') }}" class="btn btn-success">
-                                        <i class="bi bi-qr-code-scan me-1"></i> Scan Absensi
-                                    </a>
+                                    @if ($isVisible && $isActive)
+                                        <a href="{{ route('absen-scan.index') }}" class="btn btn-success">
+                                            <i class="bi bi-qr-code-scan me-1"></i> Scan Absensi
+                                        </a>
+                                    @else
+                                        <button class="btn btn-secondary disabled" disabled>
+                                            <i class="bi bi-dash-circle me-1"></i> Absensi Non-aktif
+                                        </button>
+                                    @endif
                                 @endif
                             </div>
                         </div>
@@ -39,6 +59,8 @@
                         </div>
                     </div>
                 </div>
+
+                @include('partials.absen-attachments', ['category' => 'absenketiga'])
 
             </div>
         </div>

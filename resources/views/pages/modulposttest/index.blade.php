@@ -135,6 +135,14 @@
                                 <div class="tab-pane fade {{ (session('active_tab') == 'pretest' || !session('active_tab')) ? 'show active' : '' }}" id="pretest" role="tabpanel"
                                     aria-labelledby="pretest-tab">
                                     <div class="py-2">
+                                        <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center mb-3">
+                                            <i class="bi bi-info-circle-fill fs-4 me-3 text-danger"></i>
+                                            <div>
+                                                <strong class="d-block text-danger">Catatan:</strong>
+                                                <span class="small text-danger">Pretest sudah dapat dikerjakan sehari sebelum pelaksanaan acara (H-1) dan diharapkan selesai sebelum acara dimulai.</span>
+                                            </div>
+                                        </div>
+
                                         @if($hasil_pre)
                                             <div class="alert alert-info border-0 shadow-sm d-flex align-items-center mb-4">
                                                 <i class="bi bi-check-circle-fill fs-4 me-3"></i>

@@ -183,6 +183,30 @@
     <section class="section dashboard">
 
         {{-- Top Banner: Portal Absensi --}}
+        @php
+            $absenSettings = \App\Models\AbsenSetting::all()->keyBy('session_code');
+            
+            // Sesi Hari 1
+            $s1Pagi = $absenSettings->get('ABSEN_1_PAGI');
+            $s1Sore = $absenSettings->get('ABSEN_1_SORE');
+            $h1Visible = ($s1Pagi->is_visible ?? true) || ($s1Sore->is_visible ?? true);
+            $h1Active = ($s1Pagi ? $s1Pagi->checkIsActive() : false) || ($s1Sore ? $s1Sore->checkIsActive() : false);
+
+            // Sesi Hari 2
+            $s2Pagi = $absenSettings->get('ABSEN_2_PAGI');
+            $s2Sore = $absenSettings->get('ABSEN_2_SORE');
+            $h2Visible = ($s2Pagi->is_visible ?? true) || ($s2Sore->is_visible ?? true);
+            $h2Active = ($s2Pagi ? $s2Pagi->checkIsActive() : false) || ($s2Sore ? $s2Sore->checkIsActive() : false);
+
+            // Sesi Hari 3
+            $s3Pagi = $absenSettings->get('ABSEN_3_PAGI');
+            $s3Sore = $absenSettings->get('ABSEN_3_SORE');
+            $h3Visible = ($s3Pagi->is_visible ?? true) || ($s3Sore->is_visible ?? true);
+            $h3Active = ($s3Pagi ? $s3Pagi->checkIsActive() : false) || ($s3Sore ? $s3Sore->checkIsActive() : false);
+
+            $anyActive = $h1Active || $h2Active || $h3Active;
+        @endphp
+
         <div class="row mb-4">
             <div class="col-12">
                 <div class="card border-0 shadow-sm" style="background: linear-gradient(45deg, #087C39, #FFF742) !important;">
@@ -197,46 +221,411 @@
                                     {{ Auth::user()->role == 'mahasiswa' ? 'Silahkan scan QR Panitia untuk mencatat kehadiran Anda.' : 'Pilih sesi berikut untuk menampilkan QR Code kepada mahasiswa.' }}
                                 </p>
                             </div>
+
+                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
+                                <button class="btn btn-warning fw-bold px-3 py-2 rounded-pill shadow-sm d-flex align-items-center gap-2" type="button" data-bs-toggle="collapse" data-bs-target="#pengaturanBarcodeCollapse" style="font-size: 0.85rem; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #1a1a1a !important; white-space: nowrap;">
+                                    <i class="bi bi-gear-fill fs-6"></i>
+                                    <span class="d-none d-sm-inline">Pengaturan Barcode Absensi</span>
+                                    <span class="d-inline d-sm-none">Setting</span>
+                                    <i class="bi bi-chevron-down extra-small opacity-75"></i>
+                                </button>
+                            @endif
                         </div>
 
-                        @if (Auth::user()->role != 'mahasiswa')
-                            <div class="row g-2 g-md-3">
-                                <div class="col-12 col-sm-6 col-md-4">
-                                    <div class="p-2 p-md-3 bg-white bg-opacity-25 rounded-3 border border-white border-opacity-10 h-100 text-center">
-                                        <p class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.7rem;">Hari Pertama</p>
-                                        <button class="btn btn-light btn-sm w-100 fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showAttendanceQR(1)">
-                                            <i class="bi bi-qr-code me-1"></i> QR Absensi
-                                        </button>
+                        {{-- Panel Pengaturan Barcode Absensi (Admin / Staf BAAK) --}}
+                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
+                            <div class="collapse mb-3" id="pengaturanBarcodeCollapse">
+                                <div class="bg-white rounded-3 shadow-sm text-dark p-3 mt-2">
+                                    <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                                        <i class="bi bi-sliders2 text-success fs-5"></i>
+                                        <span class="fw-bold text-dark">Form Pengaturan Barcode & Waktu Absensi</span>
                                     </div>
-                                </div>
-                                <div class="col-12 col-sm-6 col-md-4">
-                                    <div class="p-2 p-md-3 bg-white bg-opacity-25 rounded-3 border border-white border-opacity-10 h-100 text-center">
-                                        <p class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.7rem;">Hari Kedua</p>
-                                        <button class="btn btn-light btn-sm w-100 fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showAttendanceQR(2)">
-                                            <i class="bi bi-qr-code me-1"></i> QR Absensi
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-sm-6 col-md-4 offset-sm-3 offset-md-0">
-                                    <div class="p-2 p-md-3 bg-white bg-opacity-25 rounded-3 border border-white border-opacity-10 h-100 text-center">
-                                        <p class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.7rem;">Hari Ketiga</p>
-                                        <button class="btn btn-light btn-sm w-100 fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showAttendanceQR(3)">
-                                            <i class="bi bi-qr-code me-1"></i> QR Absensi
-                                        </button>
+                                    <div class="row g-3">
+                                        @foreach ([1 => 'Hari Pertama', 2 => 'Hari Kedua', 3 => 'Hari Ketiga'] as $dayNum => $dayName)
+                                            @php
+                                                $codePagi = "ABSEN_{$dayNum}_PAGI";
+                                                $setKey = $absenSettings->get($codePagi);
+                                                $isAlwaysActive = $setKey->is_always_active ?? false;
+                                                $isActive = $setKey->is_active ?? false;
+                                                $isVisible = $setKey->is_visible ?? true;
+                                                $aktifNow = $setKey ? $setKey->checkIsActive() : false;
+                                            @endphp
+                                            <div class="col-12 col-md-4">
+                                                {{-- Card per hari --}}
+                                                <div class="border rounded-3 overflow-hidden h-100" style="border-color: {{ $aktifNow ? '#22c55e' : '#e2e8f0' }} !important;">
+                                                    {{-- Card Header --}}
+                                                    <div class="px-3 py-2 d-flex justify-content-between align-items-center"
+                                                         style="background: {{ $isAlwaysActive ? 'linear-gradient(135deg,#22c55e,#16a34a)' : ($aktifNow ? 'linear-gradient(135deg,#3b82f6,#2563eb)' : '#f8fafc') }};">
+                                                        <span class="fw-bold small {{ ($isAlwaysActive || $aktifNow) ? 'text-white' : 'text-dark' }}">
+                                                            <i class="bi bi-calendar-check me-1"></i>{{ $dayName }}
+                                                        </span>
+                                                        <span class="badge rounded-pill px-2 py-1 fw-bold"
+                                                              style="font-size:0.68rem; background:{{ $isAlwaysActive ? 'rgba(255,255,255,0.25)' : ($aktifNow ? 'rgba(255,255,255,0.25)' : '#e2e8f0') }}; color:{{ ($isAlwaysActive || $aktifNow) ? '#fff' : '#64748b' }};">
+                                                            @if($isAlwaysActive) ⚡ Selalu Aktif
+                                                            @elseif($aktifNow) ● Aktif
+                                                            @else ○ Non-aktif
+                                                            @endif
+                                                        </span>
+                                                    </div>
+
+                                                    {{-- Card Body --}}
+                                                    <div class="p-3 bg-white">
+
+                                                        {{-- Toggle Row: Tampil & Aktif --}}
+                                                        <div class="d-flex gap-2 mb-3">
+                                                            {{-- Tampil --}}
+                                                            <div class="flex-fill p-2 rounded-2 border d-flex align-items-center gap-2" style="background:#f8fafc;">
+                                                                <div class="form-check form-switch mb-0">
+                                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                                           id="visDay{{ $dayNum }}" style="width:2rem;height:1rem;"
+                                                                           {{ $isVisible ? 'checked' : '' }}>
+                                                                </div>
+                                                                <div>
+                                                                    <div class="fw-semibold" style="font-size:0.72rem;line-height:1.2;">Tampil</div>
+                                                                    <div class="text-muted" style="font-size:0.65rem;">di halaman</div>
+                                                                </div>
+                                                            </div>
+                                                            {{-- Aktif --}}
+                                                            <div class="flex-fill p-2 rounded-2 border d-flex align-items-center gap-2" style="background:#f8fafc;">
+                                                                <div class="form-check form-switch mb-0">
+                                                                    <input class="form-check-input" type="checkbox" role="switch"
+                                                                           id="actDay{{ $dayNum }}" style="width:2rem;height:1rem;"
+                                                                           {{ $isActive ? 'checked' : '' }}>
+                                                                </div>
+                                                                <div>
+                                                                    <div class="fw-semibold" style="font-size:0.72rem;line-height:1.2;">Aktif</div>
+                                                                    <div class="text-muted" style="font-size:0.65rem;">bisa scan</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {{-- Toggle: Selalu Aktif (highlighted) --}}
+                                                        <div class="rounded-2 p-2 mb-3 d-flex align-items-center gap-2 cursor-pointer"
+                                                             style="background: {{ $isAlwaysActive ? '#dcfce7' : '#fefce8' }}; border: 1.5px solid {{ $isAlwaysActive ? '#86efac' : '#fde68a' }};">
+                                                            <div class="form-check form-switch mb-0">
+                                                                <input class="form-check-input" type="checkbox" role="switch"
+                                                                       id="alwaysDay{{ $dayNum }}" style="width:2.2rem;height:1.1rem;"
+                                                                       onchange="toggleAlwaysActive({{ $dayNum }})"
+                                                                       {{ $isAlwaysActive ? 'checked' : '' }}>
+                                                            </div>
+                                                            <div>
+                                                                <div class="fw-bold" style="font-size:0.75rem; color:{{ $isAlwaysActive ? '#15803d' : '#92400e' }};">
+                                                                    ⚡ Selalu Aktif
+                                                                </div>
+                                                                <div style="font-size:0.65rem; color:{{ $isAlwaysActive ? '#16a34a' : '#a16207' }};">
+                                                                    Tanpa batas waktu, tidak perlu set jam
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {{-- Time settings (hidden when always active) --}}
+                                                        <div id="timeWrapDay{{ $dayNum }}" class="{{ $isAlwaysActive ? 'd-none' : '' }}">
+                                                            <div class="mb-2">
+                                                                <label class="fw-semibold text-muted mb-1 d-block" style="font-size:0.7rem;">
+                                                                    <i class="bi bi-clock me-1"></i>Waktu Mulai:
+                                                                </label>
+                                                                <input type="datetime-local" class="form-control form-control-sm"
+                                                                       style="font-size:0.75rem;"
+                                                                       id="timeDay{{ $dayNum }}"
+                                                                       value="{{ $setKey && $setKey->start_time ? $setKey->start_time->format('Y-m-d\TH:i') : '' }}">
+                                                            </div>
+                                                            <div class="mb-2">
+                                                                <label class="fw-semibold text-muted mb-1 d-block" style="font-size:0.7rem;">
+                                                                    <i class="bi bi-hourglass-split me-1"></i>Durasi (menit):
+                                                                </label>
+                                                                <input type="number" class="form-control form-control-sm"
+                                                                       style="font-size:0.75rem;"
+                                                                       id="durDay{{ $dayNum }}"
+                                                                       value="{{ $setKey->duration_minutes ?? 30 }}" min="1">
+                                                            </div>
+                                                        </div>
+
+                                                        <input type="hidden" id="durDayHidden{{ $dayNum }}" value="{{ $setKey->duration_minutes ?? 30 }}">
+
+                                                        {{-- Save Button --}}
+                                                        <button type="button"
+                                                                class="btn btn-sm w-100 fw-bold mt-1"
+                                                                style="background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-size:0.78rem;border:none;border-radius:8px;"
+                                                                onclick="saveDayBarcodeSetting({{ $dayNum }})">
+                                                            <i class="bi bi-floppy me-1"></i> Simpan Hari {{ $dayNum }}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>
+                        @endif
+
+                        <script>
+                            // Run on every toggle change
+                            function toggleAlwaysActive(dayNum) {
+                                const checkbox = document.getElementById('alwaysDay' + dayNum);
+                                const timeWrap = document.getElementById('timeWrapDay' + dayNum);
+                                const actToggle = document.getElementById('actDay' + dayNum);
+
+                                if (!checkbox || !timeWrap) return;
+
+                                if (checkbox.checked) {
+                                    // Selalu Aktif ON → sembunyikan time/dur fields
+                                    timeWrap.style.display = 'none';
+                                    if (actToggle) actToggle.checked = true;
+                                } else {
+                                    // Selalu Aktif OFF → tampilkan time/dur fields
+                                    timeWrap.style.display = '';
+                                    timeWrap.classList.remove('d-none');
+                                }
+                            }
+
+                            // Init on page load: apply correct show/hide state for each day
+                            document.addEventListener('DOMContentLoaded', function () {
+                                [1, 2, 3].forEach(function(dayNum) {
+                                    const checkbox = document.getElementById('alwaysDay' + dayNum);
+                                    const timeWrap = document.getElementById('timeWrapDay' + dayNum);
+                                    if (!checkbox || !timeWrap) return;
+                                    if (checkbox.checked) {
+                                        timeWrap.style.display = 'none';
+                                    } else {
+                                        timeWrap.classList.remove('d-none');
+                                        timeWrap.style.display = '';
+                                    }
+                                });
+                            });
+
+                            async function saveDayBarcodeSetting(dayNum) {
+                                const vis = document.getElementById('visDay' + dayNum).checked;
+                                const act = document.getElementById('actDay' + dayNum).checked;
+                                const alwaysActive = document.getElementById('alwaysDay' + dayNum).checked;
+                                const timeEl = document.getElementById('timeDay' + dayNum);
+                                const durEl = document.getElementById('durDay' + dayNum);
+                                const hiddenDur = document.getElementById('durDayHidden' + dayNum);
+                                const timeVal = (!alwaysActive && timeEl) ? timeEl.value : null;
+                                const durVal = durEl ? (parseInt(durEl.value) || 30) : parseInt(hiddenDur?.value || 30);
+
+                                const codePagi = 'ABSEN_' + dayNum + '_PAGI';
+                                const codeSore = 'ABSEN_' + dayNum + '_SORE';
+                                const payload = (code) => ({
+                                    session_code: code,
+                                    is_visible: vis,
+                                    is_active: act,
+                                    is_always_active: alwaysActive,
+                                    start_time: timeVal || null,
+                                    duration_minutes: durVal
+                                });
+
+                                try {
+                                    const [resPagi, resSore] = await Promise.all([
+                                        fetch('/absen-scan/update-setting', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                                            body: JSON.stringify(payload(codePagi))
+                                        }),
+                                        fetch('/absen-scan/update-setting', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                                            body: JSON.stringify(payload(codeSore))
+                                        })
+                                    ]);
+                                    const dataPagi = await resPagi.json();
+                                    if (resPagi.ok && resSore.ok) {
+                                        if (typeof Swal !== 'undefined') {
+                                            Swal.fire({
+                                                icon: 'success', title: 'Berhasil Disimpan!',
+                                                html: `<div class="text-start small"><b>Hari ${dayNum}</b><br>
+                                                    &bull; Tampil: <b>${vis ? 'ON ✅' : 'OFF ❌'}</b><br>
+                                                    &bull; Aktif: <b>${act ? 'Aktif ✅' : 'Non-aktif ❌'}</b><br>
+                                                    &bull; Selalu Aktif: <b>${alwaysActive ? '⚡ ON' : 'OFF'}</b>
+                                                    ${!alwaysActive ? `<br>&bull; Waktu: <b>${timeVal || '-'}</b> | Durasi: <b>${durVal}m</b>` : ''}</div>`,
+                                                timer: 2500, showConfirmButton: true, confirmButtonText: 'OK'
+                                            }).then(() => window.location.reload());
+                                        } else { window.location.reload(); }
+                                    } else {
+                                        const errMsg = dataPagi.message || 'Terjadi kesalahan.';
+                                        if (typeof Swal !== 'undefined') Swal.fire({ icon: 'error', title: 'Gagal', text: errMsg });
+                                        else alert('Gagal: ' + errMsg);
+                                    }
+                                } catch (err) {
+                                    if (typeof Swal !== 'undefined') Swal.fire({ icon: 'error', title: 'Error Koneksi', text: err.message });
+                                    else alert('Error: ' + err.message);
+                                }
+                            }
+                        </script>
+
+                        @if (Auth::user()->role != 'mahasiswa')
+                            <div class="row g-2 g-md-3">
+                                {{-- Hari Pertama --}}
+                                @if ($h1Visible)
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="p-2 p-md-3 bg-white bg-opacity-25 rounded-3 border border-white border-opacity-10 h-100 text-center">
+                                            <p class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.7rem;">Hari Pertama</p>
+                                            @if ($h1Active)
+                                                <button class="btn btn-light btn-sm w-100 fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showAttendanceQR(1)">
+                                                    <i class="bi bi-qr-code me-1"></i> QR Absensi (Aktif)
+                                                </button>
+                                            @else
+                                                <button class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm extra-small py-2 opacity-75" disabled>
+                                                    <i class="bi bi-clock me-1"></i> Non-aktif (Lewat 30m)
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Hari Kedua --}}
+                                @if ($h2Visible)
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="p-2 p-md-3 bg-white bg-opacity-25 rounded-3 border border-white border-opacity-10 h-100 text-center">
+                                            <p class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.7rem;">Hari Kedua</p>
+                                            @if ($h2Active)
+                                                <button class="btn btn-light btn-sm w-100 fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showAttendanceQR(2)">
+                                                    <i class="bi bi-qr-code me-1"></i> QR Absensi (Aktif)
+                                                </button>
+                                            @else
+                                                <button class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm extra-small py-2 opacity-75" disabled>
+                                                    <i class="bi bi-clock me-1"></i> Non-aktif (Lewat 30m)
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Hari Ketiga --}}
+                                @if ($h3Visible)
+                                    <div class="col-12 col-sm-6 col-md-4">
+                                        <div class="p-2 p-md-3 bg-white bg-opacity-25 rounded-3 border border-white border-opacity-10 h-100 text-center">
+                                            <p class="text-white fw-bold mb-2 small text-uppercase" style="font-size: 0.7rem;">Hari Ketiga</p>
+                                            @if ($h3Active)
+                                                <button class="btn btn-light btn-sm w-100 fw-bold shadow-sm extra-small py-2" style="color: #087C39;" onclick="showAttendanceQR(3)">
+                                                    <i class="bi bi-qr-code me-1"></i> QR Absensi (Aktif)
+                                                </button>
+                                            @else
+                                                <button class="btn btn-secondary btn-sm w-100 fw-bold shadow-sm extra-small py-2 opacity-75" disabled>
+                                                    <i class="bi bi-clock me-1"></i> Non-aktif (Lewat 30m)
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
                         @else
                             <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start mt-2">
-                                <a href="{{ route('absen-scan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm btn-sm" style="color: #087C39;">
-                                    <i class="bi bi-qr-code-scan me-1"></i> Scan QR Kehadiran
-                                </a>
+                                @if ($anyActive)
+                                    <a href="{{ route('absen-scan.index') }}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm btn-sm" style="color: #087C39;">
+                                        <i class="bi bi-qr-code-scan me-1"></i> Scan QR Kehadiran (Sesi Aktif)
+                                    </a>
+                                @else
+                                    <button class="btn btn-light rounded-pill px-4 fw-bold shadow-sm btn-sm opacity-75 text-muted" disabled>
+                                        <i class="bi bi-dash-circle me-1"></i> Sesi Absensi Belum Aktif / Kadaluwarsa
+                                    </button>
+                                @endif
                             </div>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
+
+        <script>
+            function toggleAlwaysActive(dayNum) {
+                const isAlways = document.getElementById('alwaysDay' + dayNum).checked;
+                const timeInput = document.getElementById('timeDay' + dayNum);
+                const durInput = document.getElementById('durDay' + dayNum);
+                const timeWrap = document.getElementById('timeWrapDay' + dayNum);
+                const durWrap = document.getElementById('durWrapDay' + dayNum);
+
+                timeInput.disabled = isAlways;
+                durInput.disabled = isAlways;
+
+                // Auto check/uncheck is_active toggle accordingly
+                if (isAlways) {
+                    document.getElementById('actDay' + dayNum).checked = true;
+                    timeWrap.style.opacity = '0.4';
+                    durWrap.style.opacity = '0.4';
+                } else {
+                    timeWrap.style.opacity = '1';
+                    durWrap.style.opacity = '1';
+                }
+            }
+
+            async function saveDayBarcodeSetting(dayNum) {
+                const vis = document.getElementById('visDay' + dayNum).checked;
+                const act = document.getElementById('actDay' + dayNum).checked;
+                const alwaysActive = document.getElementById('alwaysDay' + dayNum).checked;
+                const timeVal = document.getElementById('timeDay' + dayNum).value;
+                const durVal = parseInt(document.getElementById('durDay' + dayNum).value) || 30;
+
+                const codePagi = 'ABSEN_' + dayNum + '_PAGI';
+                const codeSore = 'ABSEN_' + dayNum + '_SORE';
+
+                const payload = (code) => ({
+                    session_code: code,
+                    is_visible: vis,
+                    is_active: act,
+                    is_always_active: alwaysActive,
+                    start_time: (!alwaysActive && timeVal) ? timeVal : null,
+                    duration_minutes: durVal
+                });
+
+                try {
+                    const [resPagi, resSore] = await Promise.all([
+                        fetch('/absen-scan/update-setting', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify(payload(codePagi))
+                        }),
+                        fetch('/absen-scan/update-setting', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify(payload(codeSore))
+                        })
+                    ]);
+
+                    const dataPagi = await resPagi.json();
+                    const dataSore = await resSore.json();
+
+                    if (resPagi.ok && resSore.ok) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil Disimpan!',
+                                html: `<div class="text-start small">
+                                    <b>Hari ${dayNum}</b><br>
+                                    &bull; Tombol Tampil: <b>${vis ? 'ON ✅' : 'OFF ❌'}</b><br>
+                                    &bull; Status Aktif: <b>${act ? 'Aktif ✅' : 'Non-aktif ❌'}</b><br>
+                                    &bull; Selalu Aktif: <b>${alwaysActive ? '⚡ ON (Tanpa Batas Waktu)' : 'OFF'}</b><br>
+                                    ${!alwaysActive ? `&bull; Waktu Mulai: <b>${timeVal ? timeVal : '-'}</b><br>&bull; Durasi: <b>${durVal} menit</b>` : ''}
+                                </div>`,
+                                timer: 2500,
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK'
+                            }).then(() => window.location.reload());
+                        } else {
+                            window.location.reload();
+                        }
+                    } else {
+                        const errMsg = dataPagi.message || dataSore.message || 'Terjadi kesalahan.';
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ icon: 'error', title: 'Gagal', text: errMsg });
+                        } else {
+                            alert('Gagal: ' + errMsg);
+                        }
+                    }
+                } catch (err) {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({ icon: 'error', title: 'Error', text: 'Koneksi gagal: ' + err.message });
+                    } else {
+                        alert('Koneksi error: ' + err.message);
+                    }
+                }
+            }
+        </script>
 
         {{-- Top Banner: Modul Post Test --}}
         @if (Auth::user()->role == 'mahasiswa')
@@ -250,8 +639,11 @@
                                         <i class="bi bi-book-half text-white fs-3"></i>
                                     </div>
                                     <div>
-                                        <h5 class="fw-bold text-dark mb-1 mb-md-0">Modul, Pritest dan Postes Mahasiswa</h5>
-                                        <p class="text-muted small mb-0 d-none d-md-block">Akses materi pembelajaran dan kerjakan evaluasi modul Anda di sini.</p>
+                                        <h5 class="fw-bold text-dark mb-1">Modul, Pritest dan Postes Mahasiswa</h5>
+                                        <p class="text-muted small mb-1">Akses materi pembelajaran dan kerjakan evaluasi modul Anda di sini.</p>
+                                        <p class="text-danger small fw-semibold mb-0">
+                                            <i class="bi bi-info-circle-fill me-1 text-danger"></i> <strong>Catatan:</strong> Pretest sudah dapat dikerjakan sehari sebelum pelaksanaan acara (H-1) dan diharapkan selesai sebelum acara dimulai.
+                                        </p>
                                     </div>
                                 </div>
                                 <a href="{{ route('modulposttest.index') }}" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm w-100 w-lg-auto mt-2 mt-lg-0">

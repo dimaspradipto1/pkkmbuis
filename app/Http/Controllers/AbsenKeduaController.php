@@ -16,7 +16,8 @@ class AbsenKeduaController extends Controller
      */
     public function index(AbsenKeduaDataTable $dataTable)
     {
-        return $dataTable->render('pages.absenkedua.index');
+        $attachments = \App\Models\AbsenAttachment::where('category', 'absenkedua')->latest()->get();
+        return $dataTable->render('pages.absenkedua.index', compact('attachments'));
     }
 
     /**
@@ -25,7 +26,7 @@ class AbsenKeduaController extends Controller
     public function create()
     {
         $authUser = Auth::user();
-        if ($authUser->role == 'kakakleting') {
+        if ($authUser->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
             $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
         } else {
@@ -61,7 +62,7 @@ class AbsenKeduaController extends Controller
     {
         $absenKedua = AbsenKedua::findOrFail($id);
         $authUser = Auth::user();
-        if ($authUser->role == 'kakakleting') {
+        if ($authUser->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
             $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
         } else {

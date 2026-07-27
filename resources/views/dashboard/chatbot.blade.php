@@ -12,7 +12,7 @@
     /* Floating Chatbot Widget CSS */
     .chatbot-floating-btn {
         position: fixed !important;
-        bottom: 20px !important;
+        bottom: 25px !important;
         right: 75px !important;
         z-index: 99999 !important;
         width: 54px !important;
@@ -27,6 +27,18 @@
         cursor: pointer !important;
         transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
         border: 2px solid #ffffff !important;
+    }
+
+    @media (max-width: 768px) {
+        .chatbot-floating-btn {
+            bottom: 75px !important;
+            right: 15px !important;
+            width: 48px !important;
+            height: 48px !important;
+        }
+        #main, .main {
+            padding-bottom: 75px !important;
+        }
     }
 
     .chatbot-floating-btn:hover {

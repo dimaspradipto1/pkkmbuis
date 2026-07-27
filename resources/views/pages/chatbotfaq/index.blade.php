@@ -15,15 +15,15 @@
         <div class="row">
             {{-- WhatsApp Group Link Card --}}
             <div class="col-12 mb-4">
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="background: linear-gradient(135deg, #059669 0%, #10B981 100%); color: #fff;">
-                    <div class="card-body p-4">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important; color: #ffffff !important;">
+                    <div class="card-body p-4 text-white">
                         <div class="d-flex align-items-center gap-3 mb-3">
-                            <div class="bg-white bg-opacity-20 p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
+                            <div class="bg-white bg-opacity-20 p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 54px; height: 54px; background-color: rgba(255,255,255,0.2) !important;">
                                 <i class="bi bi-whatsapp fs-2 text-white"></i>
                             </div>
                             <div>
-                                <h5 class="fw-bold mb-1 text-white">Pengaturan Kontak WhatsApp (Group & Personal)</h5>
-                                <p class="mb-0 text-white-50 extra-small">Pengaturan ini digunakan untuk fitur direct chat di Chatbot Mahasiswa (Group & Personal Admin).</p>
+                                <h5 class="fw-bold mb-1 text-white" style="color: #ffffff !important;">Pengaturan Kontak WhatsApp (Group & Personal)</h5>
+                                <p class="mb-0 extra-small" style="color: rgba(255,255,255,0.85) !important;">Pengaturan ini digunakan untuk fitur direct chat di Chatbot Mahasiswa (Group & Personal Admin).</p>
                             </div>
                         </div>
 
@@ -31,14 +31,14 @@
                             @csrf
                             <div class="row g-3 align-items-center">
                                 <div class="col-12 col-md-5">
-                                    <label class="form-label text-white extra-small fw-bold mb-1">Nomor WA / Link WA Group Panitia:</label>
+                                    <label class="form-label extra-small fw-bold mb-1" style="color: #ffffff !important;">Nomor WA / Link WA Group Panitia:</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-white border-0 text-success fw-bold"><i class="bi bi-people-fill"></i> WA Group</span>
                                         <input type="text" name="link_wa_group" class="form-control border-0 px-3 py-2 extra-small" placeholder="Contoh: 6281234567890 atau https://chat.whatsapp.com/xxx" value="{{ old('link_wa_group', $dokumen->link_wa_group ?? '') }}">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <label class="form-label text-white extra-small fw-bold mb-1">Nomor WA Personal Admin (Format 628xxx):</label>
+                                    <label class="form-label extra-small fw-bold mb-1" style="color: #ffffff !important;">Nomor WA Personal Admin (Format 628xxx):</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-white border-0 text-success fw-bold"><i class="bi bi-person-fill"></i> Personal</span>
                                         <input type="text" name="no_wa_admin" class="form-control border-0 px-3 py-2 extra-small" placeholder="Contoh: 6281234567890 atau 081234567890" value="{{ old('no_wa_admin', $dokumen->no_wa_admin ?? '') }}">

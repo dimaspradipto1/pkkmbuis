@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsenAttachmentController;
 use App\Http\Controllers\AbsenKeduaController;
 use App\Http\Controllers\AbsenKeduaScanController;
 use App\Http\Controllers\AbsenKetigaController;
@@ -80,8 +81,11 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::resource('absenpertama', AbsenPertamaController::class);
     Route::resource('absenkedua', AbsenKeduaController::class);
     Route::resource('absenketiga', AbsenKetigaController::class);
+    Route::post('absen-attachments', [AbsenAttachmentController::class, 'store'])->name('absen-attachments.store');
+    Route::delete('absen-attachments/{id}', [AbsenAttachmentController::class, 'destroy'])->name('absen-attachments.destroy');
     Route::get('absen-scan', [AbsenScanController::class, 'index'])->name('absen-scan.index');
     Route::get('absen-scan/get-token/{session}', [AbsenScanController::class, 'getDynamicToken'])->name('absen-scan.get-token');
+    Route::post('absen-scan/update-setting', [AbsenScanController::class, 'updateSetting'])->name('absen-scan.update-setting');
     Route::post('absen-scan', [AbsenScanController::class, 'process'])->name('absen-scan.process');
     Route::get('absenkedua-scan', [AbsenKeduaScanController::class, 'index'])->name('absenkedua-scan.index');
     Route::post('absenkedua-scan', [AbsenKeduaScanController::class, 'process'])->name('absenkedua-scan.process');

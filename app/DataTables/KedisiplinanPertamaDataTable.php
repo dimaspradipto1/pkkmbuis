@@ -64,7 +64,7 @@ class KedisiplinanPertamaDataTable extends DataTable
         
         if (Auth::user()->role == 'mahasiswa') {
             $query->where('user_id', Auth::id());
-        } elseif (Auth::user()->role == 'kakakleting') {
+        } elseif (Auth::user()->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())->pluck('id');
             $query->whereHas('user', function($q) use ($myKelompokIds) {
                 $q->whereIn('kelompok_id', $myKelompokIds);

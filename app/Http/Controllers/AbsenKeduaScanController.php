@@ -38,7 +38,7 @@ class AbsenKeduaScanController extends Controller
             ], 404);
         }
 
-        if (Auth::user()->role == 'kakakleting') {
+        if (Auth::user()->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())->pluck('id')->toArray();
             if (!in_array($user->kelompok_id, $myKelompokIds)) {
                 return response()->json([

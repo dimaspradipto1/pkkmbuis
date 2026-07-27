@@ -29,8 +29,8 @@ class KelompokController extends Controller
 
         $query = Kelompok::with(['pendamping'])->withCount('anggota');
 
-        if ($user->role == 'kakakleting') {
-            // Kakak leting only sees groups where they are assigned as pendamping
+        if ($user->role == 'kakakpendamping') {
+            // Kakak pendamping only sees groups where they are assigned as pendamping
             $query->where('pendamping_id', $user->id);
         }
 
@@ -44,14 +44,14 @@ class KelompokController extends Controller
     public function create()
     {
         $user = Auth::user();
-        if ($user->role == 'kakakleting') {
+        if ($user->role == 'kakakpendamping') {
             Alert::error('Anda tidak memiliki akses untuk membuat kelompok.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(3000);
             return redirect()->route('kelompok.index');
         }
 
-        $pendampings = User::whereIn('role', ['kakakleting', 'stafbaak', 'admin', 'pimpinan'])->orderBy('name')->get();
+        $pendampings = User::whereIn('role', ['kakakpendamping', 'dosenpendamping', 'stafbaak', 'admin', 'pimpinan'])->orderBy('name')->get();
         return view('pages.kelompok.create', compact('pendampings'));
     }
 
@@ -61,7 +61,7 @@ class KelompokController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        if ($user->role == 'kakakleting') {
+        if ($user->role == 'kakakpendamping') {
             Alert::error('Anda tidak memiliki akses untuk membuat kelompok.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(3000);
@@ -93,7 +93,7 @@ class KelompokController extends Controller
         $user = Auth::user();
         $kelompok = Kelompok::with(['pendamping', 'anggota'])->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
 
-        if (($user->role == 'kakakleting' && $kelompok->pendamping_id != $user->id) || ($user->role == 'mahasiswa' && $user->kelompok_id != $kelompok->id)) {
+        if (($user->role == 'kakakpendamping' && $kelompok->pendamping_id != $user->id) || ($user->role == 'mahasiswa' && $user->kelompok_id != $kelompok->id)) {
             Alert::error('Anda tidak memiliki akses ke kelompok ini.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(4000);
@@ -115,7 +115,7 @@ class KelompokController extends Controller
     public function edit(string $slug)
     {
         $user = Auth::user();
-        if ($user->role == 'kakakleting') {
+        if ($user->role == 'kakakpendamping') {
             Alert::error('Anda tidak memiliki akses untuk mengubah kelompok.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(3000);
@@ -123,7 +123,7 @@ class KelompokController extends Controller
         }
 
         $kelompok = Kelompok::where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
-        $pendampings = User::whereIn('role', ['kakakleting', 'stafbaak', 'admin', 'pimpinan'])->orderBy('name')->get();
+        $pendampings = User::whereIn('role', ['kakakpendamping', 'dosenpendamping', 'stafbaak', 'admin', 'pimpinan'])->orderBy('name')->get();
 
         return view('pages.kelompok.edit', compact('kelompok', 'pendampings'));
     }
@@ -134,7 +134,7 @@ class KelompokController extends Controller
     public function update(Request $request, string $slug)
     {
         $user = Auth::user();
-        if ($user->role == 'kakakleting') {
+        if ($user->role == 'kakakpendamping') {
             Alert::error('Anda tidak memiliki akses untuk mengubah kelompok.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(3000);
@@ -164,7 +164,7 @@ class KelompokController extends Controller
     public function destroy(string $slug)
     {
         $user = Auth::user();
-        if ($user->role == 'kakakleting') {
+        if ($user->role == 'kakakpendamping') {
             Alert::error('Anda tidak memiliki akses untuk menghapus kelompok.', 'Akses Ditolak')
                 ->toToast()
                 ->autoclose(3000);
@@ -211,6 +211,10 @@ class KelompokController extends Controller
      */
     public function removeMember(string $kelompokSlug, string $userId)
     {
+        if (in_array(Auth::user()->role, ['mahasiswa', 'kakakpendamping'])) {
+            abort(403);
+        }
+
         $kelompok = Kelompok::where('slug', $kelompokSlug)->orWhere('id', $kelompokSlug)->firstOrFail();
         $user = User::where('id', $userId)->where('kelompok_id', $kelompok->id)->firstOrFail();
         $user->update(['kelompok_id' => null]);

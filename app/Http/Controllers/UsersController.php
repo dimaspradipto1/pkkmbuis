@@ -47,7 +47,7 @@ class UsersController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email',
             'no_wa' => 'nullable|string|max:25|unique:users,no_wa',
             'password' => 'required|string|min:8',
-            'role' => 'required|in:admin,mahasiswa,stafbaak,pimpinan,kakakleting',
+            'role' => 'required|in:admin,mahasiswa,stafbaak,pimpinan,kakakpendamping,dosenpendamping,timevaluasi',
             'fakultas' => 'nullable|string|max:255',
             'program_studi' => 'nullable|string|max:255',
         ], [
@@ -155,7 +155,7 @@ class UsersController extends Controller
                 'max:25',
                 Rule::unique('users')->ignore($user->id),
             ],
-            'role' => 'required|in:admin,mahasiswa,stafbaak,pimpinan,kakakleting',
+            'role' => 'required|in:admin,mahasiswa,stafbaak,pimpinan,kakakpendamping,dosenpendamping,timevaluasi',
             'fakultas' => 'nullable|string|max:255',
             'program_studi' => 'nullable|string|max:255',
         ]);

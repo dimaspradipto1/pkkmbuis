@@ -25,7 +25,7 @@ class KedisiplinanKeduaController extends Controller
     public function create()
     {
         $authUser = Auth::user();
-        if ($authUser->role == 'kakakleting') {
+        if ($authUser->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
             $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
         } else {
@@ -63,7 +63,7 @@ class KedisiplinanKeduaController extends Controller
     {
         $kedisiplinanKedua = KedisiplinanKedua::findOrFail($id);
         $authUser = Auth::user();
-        if ($authUser->role == 'kakakleting') {
+        if ($authUser->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
             $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
         } else {

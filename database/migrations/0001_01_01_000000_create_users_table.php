@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('no_wa')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['admin', 'mahasiswa','kakakleting', 'stafbaak', 'pimpinan'])->default('mahasiswa');
+            $table->enum('role', ['admin', 'mahasiswa', 'kakakpendamping', 'dosenpendamping', 'timevaluasi', 'stafbaak', 'pimpinan'])->default('mahasiswa');
             $table->string('fakultas')->nullable();
             $table->string('program_studi')->nullable();
             $table->boolean('is_active')->default(true);

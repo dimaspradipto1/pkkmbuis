@@ -66,7 +66,7 @@
                                         <th>Fakultas</th>
                                         <th>Program Studi</th>
                                         <th>Email</th>
-                                        @if(Auth::user()->role != 'mahasiswa')
+                                        @if(!in_array(Auth::user()->role, ['mahasiswa', 'kakakpendamping']))
                                             <th class="text-center" style="width: 120px;">Aksi</th>
                                         @endif
                                     </tr>
@@ -80,7 +80,7 @@
                                             <td><small>{{ $mhs->fakultas ?? '-' }}</small></td>
                                             <td><small>{{ $mhs->program_studi ?? '-' }}</small></td>
                                             <td><small class="text-muted">{{ $mhs->email }}</small></td>
-                                            @if(Auth::user()->role != 'mahasiswa')
+                                            @if(!in_array(Auth::user()->role, ['mahasiswa', 'kakakpendamping']))
                                                 <td class="text-center">
                                                      <form action="{{ route('kelompok.remove-member', [$kelompok->slug, $mhs->id]) }}" method="POST" onsubmit="return confirm('Keluarkan mahasiswa ini dari kelompok?')">
                                                         @csrf
@@ -94,7 +94,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="{{ Auth::user()->role != 'mahasiswa' ? 7 : 6 }}" class="text-center py-4 text-muted">
+                                            <td colspan="{{ !in_array(Auth::user()->role, ['mahasiswa', 'kakakpendamping']) ? 7 : 6 }}" class="text-center py-4 text-muted">
                                                 Belum ada mahasiswa yang dimasukkan ke dalam kelompok ini.
                                             </td>
                                         </tr>

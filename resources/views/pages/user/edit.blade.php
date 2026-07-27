@@ -65,7 +65,9 @@
                                         <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                                         <option value="stafbaak" {{ old('role', $user->role) == 'stafbaak' ? 'selected' : '' }}>Staf BAAK</option>
                                         <option value="pimpinan" {{ old('role', $user->role) == 'pimpinan' ? 'selected' : '' }}>Pimpinan</option>
-                                        <option value="kakakleting" {{ old('role', $user->role) == 'kakakleting' ? 'selected' : '' }}>Kakak Leting</option>
+                                        <option value="kakakpendamping" {{ old('role', $user->role) == 'kakakpendamping' ? 'selected' : '' }}>Kakak Pendamping</option>
+                                        <option value="dosenpendamping" {{ old('role', $user->role) == 'dosenpendamping' ? 'selected' : '' }}>Dosen Pendamping</option>
+                                        <option value="timevaluasi" {{ old('role', $user->role) == 'timevaluasi' ? 'selected' : '' }}>Tim Evaluasi</option>
                                         <option value="mahasiswa" {{ old('role', $user->role) == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
                                     </select>
                                 </div>

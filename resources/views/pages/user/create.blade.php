@@ -78,7 +78,9 @@
                                         <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                                         <option value="stafbaak" {{ old('role') == 'stafbaak' ? 'selected' : '' }}>Staf BAAK</option>
                                         <option value="pimpinan" {{ old('role') == 'pimpinan' ? 'selected' : '' }}>Pimpinan</option>
-                                        <option value="kakakleting" {{ old('role') == 'kakakleting' ? 'selected' : '' }}>Kakak Leting</option>
+                                        <option value="kakakpendamping" {{ old('role') == 'kakakpendamping' ? 'selected' : '' }}>Kakak Pendamping</option>
+                                        <option value="dosenpendamping" {{ old('role') == 'dosenpendamping' ? 'selected' : '' }}>Dosen Pendamping</option>
+                                        <option value="timevaluasi" {{ old('role') == 'timevaluasi' ? 'selected' : '' }}>Tim Evaluasi</option>
                                         <option value="mahasiswa" {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
                                     </select>
                                 </div>

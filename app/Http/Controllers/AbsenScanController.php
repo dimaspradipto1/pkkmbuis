@@ -6,6 +6,7 @@ use App\DataTables\AbsenPertamaDataTable;
 use App\Models\AbsenPertama;
 use App\Models\AbsenKedua;
 use App\Models\AbsenKetiga;
+use App\Models\AbsenSetting;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,10 +23,7 @@ class AbsenScanController extends Controller
     }
 
     /**
-     * Process the scanned data.
-     */
-    /**
-     * Get dynamic token for a session.
+     * Get dynamic token and session settings for a session.
      */
     public function getDynamicToken($session)
     {
@@ -43,6 +41,13 @@ class AbsenScanController extends Controller
             return response()->json(['error' => 'Invalid session'], 400);
         }
 
+        $setting = AbsenSetting::firstOrCreate(
+            ['session_code' => $session],
+            ['start_time' => now(), 'duration_minutes' => 30, 'is_active' => true]
+        );
+
+        $isActive = $setting->checkIsActive();
+
         $timeStep = floor(time() / 60);
         $hash = md5($session . '_' . $timeStep . '_' . config('app.key'));
         $token = $session . ':' . $hash;
@@ -51,7 +56,84 @@ class AbsenScanController extends Controller
 
         return response()->json([
             'token' => $token,
-            'seconds_left' => $secondsLeft
+            'seconds_left' => $secondsLeft,
+            'is_active' => $isActive,
+            'is_always_active' => (bool) $setting->is_always_active,
+            'start_time' => $setting->start_time ? $setting->start_time->format('Y-m-d\TH:i') : null,
+            'formatted_start_time' => $setting->start_time ? $setting->start_time->format('d/m/Y H:i') : '-',
+            'duration_minutes' => $setting->duration_minutes,
+            'remaining_seconds' => $setting->remaining_seconds,
+        ]);
+    }
+
+    /**
+     * Update session attendance settings (start time, duration, is_active).
+     */
+    public function updateSetting(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'session_code' => 'required|string',
+            'start_time' => 'nullable|string',
+            'duration_minutes' => 'nullable|integer|min:1',
+            'is_active' => 'nullable|boolean',
+            'is_visible' => 'nullable|boolean',
+            'is_always_active' => 'nullable|boolean',
+        ]);
+
+        $setting = AbsenSetting::firstOrCreate(
+            ['session_code' => $request->session_code],
+            ['start_time' => null, 'duration_minutes' => 30, 'is_active' => false, 'is_visible' => true]
+        );
+
+        $data = [];
+
+        // Handle duration
+        if ($request->has('duration_minutes')) {
+            $data['duration_minutes'] = (int) $request->duration_minutes;
+        }
+
+        // Handle is_active toggle explicitly
+        if ($request->has('is_active')) {
+            $isActive = filter_var($request->is_active, FILTER_VALIDATE_BOOLEAN);
+            $data['is_active'] = $isActive;
+        }
+
+        // Handle is_visible toggle
+        if ($request->has('is_visible')) {
+            $data['is_visible'] = filter_var($request->is_visible, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        // Handle start_time: only update if explicitly provided
+        if ($request->filled('start_time')) {
+            try {
+                $data['start_time'] = \Carbon\Carbon::parse($request->start_time);
+            } catch (\Exception $e) {
+                // invalid date, ignore
+            }
+        }
+
+        // Handle is_always_active toggle
+        if ($request->has('is_always_active')) {
+            $data['is_always_active'] = filter_var($request->is_always_active, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        $setting->update($data);
+        $setting->refresh();
+
+        // Recheck active status after update (applies 30-min rule)
+        $isActiveNow = $setting->checkIsActive();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengaturan sesi absensi berhasil diperbarui.',
+            'is_active_now' => $isActiveNow,
+            'is_visible' => (bool) $setting->is_visible,
+            'setting' => $setting,
+            'remaining_seconds' => $setting->remaining_seconds
         ]);
     }
 
@@ -90,6 +172,15 @@ class AbsenScanController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'QR Code tidak valid atau bukan merupakan QR Absensi resmi.'
+                ], 422);
+            }
+
+            // Check if session is active and within 30-minute limit
+            $setting = AbsenSetting::where('session_code', $sessionCode)->first();
+            if ($setting && !$setting->checkIsActive()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Absensi Gagal! Sesi absensi ini telah ditutup / kadaluwarsa (berakhir 30 menit dari set waktu absensi).'
                 ], 422);
             }
 
@@ -147,7 +238,7 @@ class AbsenScanController extends Controller
                 ], 404);
             }
 
-            if (Auth::user()->role == 'kakakleting') {
+            if (Auth::user()->role == 'kakakpendamping') {
                 $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())->pluck('id')->toArray();
                 if (!in_array($targetUser->kelompok_id, $myKelompokIds)) {
                     return response()->json([

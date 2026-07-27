@@ -2,9 +2,9 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="{{ route('dashboard') }}" class="logo d-flex align-items-center">
-        <img src="{{ asset('assets/img/logopkkmb.png') }}" alt="" style="max-height: 35px;">
-        <span class="ms-1" style="font-size: 18px; font-weight: 700; color: #012970;">PKKMB UIS</span>
+      <a href="{{ route('dashboard') }}" class="logo d-flex align-items-center me-2">
+        <img src="{{ asset('assets/img/logopkkmb.png') }}" alt="" style="max-height: 30px; width: auto;">
+        <span class="ms-1 fw-bold text-dark d-none d-sm-inline" style="font-size: 16px; color: #012970 !important;">PKKMB UIS</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn ps-lg-3"></i>
     </div><!-- End Logo -->
@@ -185,7 +185,7 @@
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0d6efd&color=fff&size=40&rounded=true" alt="Profile" class="rounded-circle">
+            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0d6efd&color=fff&size=40&rounded=true" alt="Profile" class="rounded-circle flex-shrink-0" style="width: 36px; height: 36px; object-fit: cover;">
             <span class="d-none d-md-block dropdown-toggle ps-2">{{ Auth::user()->name }}</span>
           </a><!-- End Profile Iamge Icon -->
 

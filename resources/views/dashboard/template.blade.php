@@ -382,7 +382,7 @@
                     </div>
                     <div class="modal-body p-4">
                         <!-- Session Selector Toggle -->
-                        <div class="mb-4 d-flex justify-content-center gap-2">
+                        <div class="mb-3 d-flex justify-content-center gap-2">
                             <input type="radio" class="btn-check" name="qr_session" id="qr_pagi" value="PAGI" checked autocomplete="off">
                             <label class="btn btn-outline-success px-4 fw-bold" for="qr_pagi">
                                 <i class="bi bi-sun me-1"></i> Sesi Pagi
@@ -392,6 +392,12 @@
                             <label class="btn btn-outline-info px-4 fw-bold" for="qr_sore">
                                 <i class="bi bi-moon-stars me-1"></i> Sesi Sore
                             </label>
+                        </div>
+
+                        <!-- Session Expiration & Status Alert -->
+                        <div id="sessionStatusAlert" class="alert alert-success py-2 px-3 mb-3 small fw-bold d-flex align-items-center justify-content-between">
+                            <span><i class="bi bi-clock-history me-1"></i> <span id="sessionStatusText">Sesi Aktif</span></span>
+                            <span id="sessionTimerBadge" class="badge bg-light text-dark border">30:00</span>
                         </div>
 
                         <!-- QR Code Container -->
@@ -405,6 +411,7 @@
                             </div>
                             <p class="text-muted small mb-0" id="qrCountdownText">Menghubungkan...</p>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -417,8 +424,11 @@
         <script>
             let dynamicQrcodeObj = null;
             let qrCountdownInterval = null;
+            let sessionTimerInterval = null;
             let activeDay = 1; // 1, 2, or 3
             let secondsRemaining = 60;
+            let sessionSecondsLeft = 1800; // 30 mins
+            let isSessionActive = true;
 
             function getActiveSessionName() {
                 const checkedSession = document.querySelector('input[name="qr_session"]:checked');
@@ -442,14 +452,8 @@
                 activeDay = day;
                 initQrCodeObj();
 
-                // Set default session based on current hour
-                const now = new Date();
-                const hour = now.getHours();
-                if (hour >= 12) {
-                    document.getElementById('qr_sore').checked = true;
-                } else {
-                    document.getElementById('qr_pagi').checked = true;
-                }
+                // Set default session to Pagi
+                document.getElementById('qr_pagi').checked = true;
 
                 updateModalTitle();
                 fetchAndRenderQR();
@@ -478,40 +482,125 @@
                 const session = getActiveSessionName();
                 updateModalTitle();
 
-                // Fetch current dynamic token from server
                 fetch(`/absen-scan/get-token/${session}`)
                     .then(res => res.json())
                     .then(data => {
-                        if (data.token) {
+                        isSessionActive = data.is_active;
+                        const isAlwaysActive = data.is_always_active ?? false;
+                        sessionSecondsLeft = data.remaining_seconds ?? 0;
+
+                        // Fill settings inputs
+                        if (data.start_time) {
+                            const startInput = document.getElementById('sessionStartTimeInput');
+                            if (startInput) startInput.value = data.start_time;
+                        }
+                        if (data.duration_minutes) {
+                            const durInput = document.getElementById('sessionDurationInput');
+                            if (durInput) durInput.value = data.duration_minutes;
+                        }
+
+                        const toggle = document.getElementById('sessionActiveToggle');
+                        if (toggle) {
+                            toggle.checked = isSessionActive;
+                            const label = document.getElementById('sessionActiveToggleLabel');
+                            if (label) label.innerText = isSessionActive ? 'Aktif' : 'Non-aktif';
+                        }
+
+                        // Update session timer UI
+                        updateSessionTimerUI(isAlwaysActive);
+
+                        // Show QR if: session is active AND has token
+                        // For always active: skip sessionSecondsLeft check
+                        const canShowQr = isSessionActive && data.token &&
+                            (isAlwaysActive || sessionSecondsLeft > 0);
+
+                        if (canShowQr) {
                             dynamicQrcodeObj.clear();
                             dynamicQrcodeObj.makeCode(data.token);
+                            secondsRemaining = data.seconds_left || 60;
+                            startCountdown(isAlwaysActive);
 
-                            secondsRemaining = data.seconds_left;
-
-                            startCountdown();
+                            // Update progress bar label for always active
+                            if (isAlwaysActive) {
+                                const prog = document.getElementById('qrProgressBar');
+                                if (prog) { prog.style.width = '100%'; prog.classList.add('bg-success'); }
+                                document.getElementById('qrCountdownText').innerText = `⚡ Selalu Aktif — berganti dalam ${secondsRemaining} detik`;
+                            }
+                        } else {
+                            stopQrRotation();
+                            dynamicQrcodeObj.clear();
+                            document.getElementById('qrCountdownText').innerText = isSessionActive
+                                ? "Sesi absensi berakhir (waktu habis)"
+                                : "Absensi tidak aktif. Aktifkan terlebih dahulu.";
                         }
                     })
                     .catch(err => {
                         console.error('Error fetching dynamic QR token:', err);
-                        document.getElementById('qrCountdownText').innerText = "Gagal mengambil token. Mencoba lagi...";
+                        document.getElementById('qrCountdownText').innerText = "Gagal mengambil data. Mencoba lagi...";
+                        setTimeout(fetchAndRenderQR, 3000);
                     });
             }
 
-            function startCountdown() {
-                clearInterval(qrCountdownInterval);
+            function updateSessionTimerUI(isAlwaysActive) {
+                const alertEl = document.getElementById('sessionStatusAlert');
+                const textEl = document.getElementById('sessionStatusText');
+                const badgeEl = document.getElementById('sessionTimerBadge');
 
-                // Update UI immediately
+                if (isAlwaysActive && isSessionActive) {
+                    alertEl.className = "alert alert-success py-2 px-3 mb-3 small fw-bold d-flex align-items-center justify-content-between";
+                    textEl.innerText = "⚡ Selalu Aktif (Tanpa Batas Waktu)";
+                    badgeEl.innerText = "∞";
+                    badgeEl.className = "badge bg-white text-success border";
+                } else if (!isSessionActive || sessionSecondsLeft <= 0) {
+                    alertEl.className = "alert alert-danger py-2 px-3 mb-3 small fw-bold d-flex align-items-center justify-content-between";
+                    textEl.innerText = "SESI MATI / NON-AKTIF";
+                    badgeEl.innerText = "00:00";
+                    badgeEl.className = "badge bg-danger text-white border";
+                } else {
+                    alertEl.className = "alert alert-success py-2 px-3 mb-3 small fw-bold d-flex align-items-center justify-content-between";
+                    textEl.innerText = "Sesi Absensi Aktif";
+                    const m = Math.floor(sessionSecondsLeft / 60);
+                    const s = sessionSecondsLeft % 60;
+                    badgeEl.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                    badgeEl.className = "badge bg-white text-success border";
+                }
+            }
+
+            function startCountdown(isAlwaysActive) {
+                clearInterval(qrCountdownInterval);
+                clearInterval(sessionTimerInterval);
+
                 updateCountdownUI();
 
+                // Rotate QR every ~60 seconds
                 qrCountdownInterval = setInterval(() => {
                     secondsRemaining--;
                     if (secondsRemaining <= 0) {
                         clearInterval(qrCountdownInterval);
-                        fetchAndRenderQR(); // Get a new token when current one expires
+                        fetchAndRenderQR();
                     } else {
-                        updateCountdownUI();
+                        if (isAlwaysActive) {
+                            document.getElementById('qrCountdownText').innerText = `⚡ Selalu Aktif — berganti dalam ${secondsRemaining} detik`;
+                        } else {
+                            updateCountdownUI();
+                        }
                     }
                 }, 1000);
+
+                // Session countdown (skip for always active)
+                if (!isAlwaysActive) {
+                    sessionTimerInterval = setInterval(() => {
+                        if (sessionSecondsLeft > 0 && isSessionActive) {
+                            sessionSecondsLeft--;
+                            updateSessionTimerUI(false);
+                        } else {
+                            isSessionActive = false;
+                            updateSessionTimerUI(false);
+                            clearInterval(sessionTimerInterval);
+                            fetchAndRenderQR();
+                        }
+                    }, 1000);
+                }
             }
 
             function updateCountdownUI() {
@@ -531,6 +620,63 @@
 
             function stopQrRotation() {
                 clearInterval(qrCountdownInterval);
+                clearInterval(sessionTimerInterval);
+            }
+
+            function toggleSessionActiveStatus() {
+                const toggle = document.getElementById('sessionActiveToggle');
+                const session = getActiveSessionName();
+
+                fetch('/absen-scan/update-setting', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        session_code: session,
+                        is_active: toggle.checked
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    fetchAndRenderQR();
+                });
+            }
+
+            function saveSessionSettings() {
+                const session = getActiveSessionName();
+                const startTime = document.getElementById('sessionStartTimeInput').value;
+                const duration = document.getElementById('sessionDurationInput').value || 30;
+                const isActive = document.getElementById('sessionActiveToggle').checked;
+
+                fetch('/absen-scan/update-setting', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        session_code: session,
+                        start_time: startTime,
+                        reset_start_time: !startTime,
+                        duration_minutes: duration,
+                        is_active: isActive
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: data.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                    fetchAndRenderQR();
+                });
             }
 
             document.addEventListener('DOMContentLoaded', () => {

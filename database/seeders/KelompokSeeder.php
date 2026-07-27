@@ -11,9 +11,9 @@ class KelompokSeeder extends Seeder
 {
     public function run(): void
     {
-        $kl1 = User::where('email', 'kakakleting@uis.ac.id')->first();
-        $kl2 = User::where('email', 'kakakleting2@uis.ac.id')->first();
-        $kl3 = User::where('email', 'kakakleting3@uis.ac.id')->first();
+        $kl1 = User::where('email', 'kakakpendamping@uis.ac.id')->first();
+        $kl2 = User::where('email', 'kakakpendamping2@uis.ac.id')->first();
+        $kl3 = User::where('email', 'kakakpendamping3@uis.ac.id')->first();
         $admin = User::where('role', 'admin')->first();
 
         $k1 = Kelompok::create([

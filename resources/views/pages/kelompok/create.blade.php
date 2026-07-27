@@ -31,7 +31,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="pendamping_id" class="form-label fw-bold small">Pendamping / Kakak Leting</label>
+                                <label for="pendamping_id" class="form-label fw-bold small">Kakak Pendamping</label>
                                 <select name="pendamping_id" id="pendamping_id" class="form-select">
                                     <option value="">-- Pilih Pendamping (Opsional) --</option>
                                     @foreach($pendampings as $p)
