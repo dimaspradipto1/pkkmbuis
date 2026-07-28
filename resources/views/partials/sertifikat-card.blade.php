@@ -41,7 +41,7 @@
         gap: 3px;
     }
 
-    .sertifikat-logos img { height: 44px; width: auto; object-fit: contain; }
+    .sertifikat-logos img { height: 32px; width: auto; object-fit: contain; }
 
     /* Safe content zone: inset from the image's border line and clear of the
        ornamental corner artwork (heavier at top-right/bottom-left), and clear
@@ -93,7 +93,7 @@
     /* Fixed-height slot shared by both columns (QR or signature image) so the
        two names always land on the same baseline, regardless of which visual
        (and whatever its native size) each column happens to use. */
-    .sertifikat-ttd-visual { height: 44px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 4px; }
+    .sertifikat-ttd-visual { height: 56px; display: flex; align-items: flex-end; justify-content: center; margin-bottom: 4px; }
     .sertifikat-ttd-sign { max-height: 44px; width: auto; object-fit: contain; position: relative; z-index: 1; }
     .sertifikat-ttd-ketua { position: relative; }
     .sertifikat-ttd-stamp {
@@ -107,16 +107,20 @@
         z-index: 0;
         pointer-events: none;
     }
-    .sertifikat-ttd-qr-wrap { position: relative; width: 40px; height: 40px; }
-    .sertifikat-ttd-qr { width: 40px; height: 40px; }
+    /* Displayed at 56px, but generated at a much higher native pixel resolution
+       (see the QRCode() call below) — a real signed URL needs many QR modules,
+       and a camera/printed copy can't resolve them if the source image itself
+       was only ever rendered at ~40 native pixels. */
+    .sertifikat-ttd-qr-wrap { position: relative; width: 56px; height: 56px; }
+    .sertifikat-ttd-qr { width: 56px; height: 56px; }
     .sertifikat-ttd-qr img, .sertifikat-ttd-qr canvas { width: 100%; height: 100%; }
     .sertifikat-ttd-qr-logo {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 14px;
-        height: 14px;
+        width: 18px;
+        height: 18px;
         background: #ffffff;
         border-radius: 3px;
         padding: 1px;
@@ -235,8 +239,8 @@
             if (qrEl && typeof QRCode === 'function') {
                 new QRCode(qrEl, {
                     text: {!! json_encode($verifikasiUrl) !!},
-                    width: 40,
-                    height: 40,
+                    width: 300,
+                    height: 300,
                     correctLevel: QRCode.CorrectLevel.H
                 });
             }

@@ -2272,7 +2272,7 @@
                 target.style.transform = 'none';
 
                 html2canvas(target, {
-                    scale: 2,
+                    scale: 4,
                     useCORS: true,
                     backgroundColor: '#ffffff',
                     width: 1000,

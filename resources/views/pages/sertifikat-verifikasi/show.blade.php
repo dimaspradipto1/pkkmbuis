@@ -142,9 +142,14 @@
                 </div>
             </div>
             <div class="verifikasi-row">
-                <div class="verifikasi-row-label">Ditandatangani</div>
+                <div class="verifikasi-row-label">Dikeluarkan Oleh:</div>
                 <div class="verifikasi-row-sep">:</div>
-                <div class="verifikasi-row-value" style="color:#1e293b;">{{ $setting->nama_mengetahui }} ({{ $setting->jabatan_mengetahui }})</div>
+                <div class="verifikasi-row-value" style="color:#1e293b;">Universitas Ibnu Sina</div>
+            </div>
+            <div class="verifikasi-row">
+                <div class="verifikasi-row-label">Ketua Pelaksana</div>
+                <div class="verifikasi-row-sep">:</div>
+                <div class="verifikasi-row-value" style="color:#1e293b;">{{ $setting->nama_ketua_panitia }}</div>
             </div>
             <div class="verifikasi-row">
                 <div class="verifikasi-row-label">Tanggal Terbit</div>
