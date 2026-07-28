@@ -175,7 +175,7 @@ class Userseeder extends Seeder
         ];
 
         $names = [
-            'Mahasiswa (Aditya)',
+            'Aditya',
             'Anisa Putri',
             'Bagas Pratama',
             'Citra Dewi',

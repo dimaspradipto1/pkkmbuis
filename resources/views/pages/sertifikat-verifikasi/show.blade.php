@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Verifikasi Sertifikat PKKMB - Universitas Ibnu Sina</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             font-family: 'Poppins', sans-serif;
@@ -16,18 +20,33 @@
         }
 
         .verifikasi-card {
-            max-width: 620px;
+            max-width: 820px;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
             padding: 36px 32px;
             text-align: center;
         }
 
-        .verifikasi-logo { height: 90px; margin-bottom: 14px; }
-        .verifikasi-title { font-size: 1.5rem; font-weight: 900; color: #14532d; margin: 0; }
-        .verifikasi-subtitle { font-size: 0.95rem; font-weight: 700; color: #2f7a3f; margin: 4px 0 24px; }
+        .verifikasi-logo {
+            height: 90px;
+            margin-bottom: 14px;
+        }
+
+        .verifikasi-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #14532d;
+            margin: 0;
+        }
+
+        .verifikasi-subtitle {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #2f7a3f;
+            margin: 4px 0 24px;
+        }
 
         .verifikasi-info-box {
             background: #f8faf8;
@@ -50,13 +69,42 @@
             margin-bottom: 14px;
         }
 
-        .verifikasi-row { display: flex; gap: 10px; padding: 4px 0; font-size: 0.9rem; }
-        .verifikasi-row-label { width: 130px; flex-shrink: 0; font-weight: 700; color: #1e293b; }
-        .verifikasi-row-sep { flex-shrink: 0; color: #1e293b; }
-        .verifikasi-row-value { color: #b91c1c; font-weight: 600; }
-        .verifikasi-row-value.is-lulus { color: #0f8a3f; }
-        .verifikasi-row-value.is-tidak-lulus { color: #b91c1c; }
-        .verifikasi-row-value.is-belum { color: #b45309; }
+        .verifikasi-row {
+            display: flex;
+            gap: 10px;
+            padding: 4px 0;
+            font-size: 0.9rem;
+        }
+
+        .verifikasi-row-label {
+            width: 160px;
+            flex-shrink: 0;
+            white-space: nowrap;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .verifikasi-row-sep {
+            flex-shrink: 0;
+            color: #1e293b;
+        }
+
+        .verifikasi-row-value {
+            color: #b91c1c;
+            font-weight: 600;
+        }
+
+        .verifikasi-row-value.is-lulus {
+            color: #0f8a3f;
+        }
+
+        .verifikasi-row-value.is-tidak-lulus {
+            color: #b91c1c;
+        }
+
+        .verifikasi-row-value.is-belum {
+            color: #b45309;
+        }
 
         .verifikasi-toggle-btn {
             margin-top: 26px;
@@ -75,7 +123,9 @@
             text-transform: uppercase;
         }
 
-        .verifikasi-toggle-btn:hover { background: #0f6b32; }
+        .verifikasi-toggle-btn:hover {
+            background: #0f6b32;
+        }
 
         .verifikasi-cert-wrapper {
             display: none;
@@ -87,10 +137,12 @@
             background: #f1f5f9;
         }
 
-        .verifikasi-cert-wrapper.is-open { display: block; }
+        .verifikasi-cert-wrapper.is-open {
+            display: block;
+        }
 
         .verifikasi-footer {
-            max-width: 620px;
+            max-width: 820px;
             margin: 20px auto 0;
             text-align: center;
             color: #ffffff;
@@ -99,6 +151,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="verifikasi-card">
         <img src="{{ asset('assets/img/logo_ibsi.png') }}" alt="Universitas Ibnu Sina" class="verifikasi-logo">
@@ -132,14 +185,8 @@
             <div class="verifikasi-row">
                 <div class="verifikasi-row-label">Nomor Sertifikat</div>
                 <div class="verifikasi-row-sep">:</div>
-                <div class="verifikasi-row-value" style="color:#1e293b;">{{ str_pad($user->nomor_sertifikat, 4, '0', STR_PAD_LEFT) }}/{{ $setting->kode_surat }}</div>
-            </div>
-            <div class="verifikasi-row">
-                <div class="verifikasi-row-label">Status</div>
-                <div class="verifikasi-row-sep">:</div>
-                <div class="verifikasi-row-value {{ !$isAllComplete ? 'is-belum' : ($isPassed ? 'is-lulus' : 'is-tidak-lulus') }}">
-                    {{ !$isAllComplete ? 'Belum Lengkap' : ($isPassed ? 'LULUS (' . number_format($finalScore, 1) . ')' : 'TIDAK LULUS (' . number_format($finalScore, 1) . ')') }}
-                </div>
+                <div class="verifikasi-row-value" style="color:#1e293b;">
+                    {{ str_pad($user->nomor_sertifikat, 4, '0', STR_PAD_LEFT) }}/{{ $setting->kode_surat }}</div>
             </div>
             <div class="verifikasi-row">
                 <div class="verifikasi-row-label">Dikeluarkan Oleh:</div>
@@ -154,7 +201,8 @@
             <div class="verifikasi-row">
                 <div class="verifikasi-row-label">Tanggal Terbit</div>
                 <div class="verifikasi-row-sep">:</div>
-                <div class="verifikasi-row-value" style="color:#1e293b;">{{ $user->sertifikat_issued_at?->translatedFormat('d F Y') ?? '-' }}</div>
+                <div class="verifikasi-row-value" style="color:#1e293b;">Batam,
+                    {{ $user->sertifikat_issued_at?->translatedFormat('d F Y') ?? '-' }}</div>
             </div>
         </div>
 
@@ -167,9 +215,16 @@
         @php
             $logoDikti = $setting->logo_dikti ? asset('storage/' . $setting->logo_dikti) : null;
             $logoBelmawa = $setting->logo_belmawa ? asset('storage/' . $setting->logo_belmawa) : null;
-            $logoPkkmb = $setting->logo_pkkmb ? asset('storage/' . $setting->logo_pkkmb) : asset('assets/img/logopkkmb.png');
-            $logoKampus = $setting->logo_kampus ? asset('storage/' . $setting->logo_kampus) : asset('assets/img/logo_ibsi.png');
+            $logoPkkmb = $setting->logo_pkkmb
+                ? asset('storage/' . $setting->logo_pkkmb)
+                : asset('assets/img/logopkkmb.png');
+            $logoKampus = $setting->logo_kampus
+                ? asset('storage/' . $setting->logo_kampus)
+                : asset('assets/img/logo_ibsi.png');
             $logoLima = $setting->logo_lima ? asset('storage/' . $setting->logo_lima) : null;
+            $verifikasiUrl = \Illuminate\Support\Facades\URL::signedRoute('sertifikat.verifikasi', [
+                'user' => $user->id,
+            ]);
         @endphp
         @include('partials.sertifikat-card', [
             'canvasId' => 'sertifikatVerifikasiCanvas',
@@ -194,11 +249,12 @@
             'logoPkkmb' => $logoPkkmb,
             'logoKampus' => $logoKampus,
             'logoLima' => $logoLima,
-            'verifikasiUrl' => null,
+            'verifikasiUrl' => $verifikasiUrl,
         ])
     </div>
 
-    <p class="verifikasi-footer">Halaman ini menampilkan status keaslian sertifikat secara otomatis berdasarkan data sistem PKKMB Universitas Ibnu Sina.</p>
+    <p class="verifikasi-footer">Halaman ini menampilkan status keaslian sertifikat secara otomatis berdasarkan data
+        sistem PKKMB Universitas Ibnu Sina.</p>
 
     <script>
         function toggleSertifikatDigital() {
@@ -207,9 +263,13 @@
             var isOpen = wrapper.classList.toggle('is-open');
             label.textContent = isOpen ? 'Tutup Sertifikat Digital' : 'Tampilkan Sertifikat Digital';
             if (isOpen) {
-                wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                wrapper.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
         }
     </script>
 </body>
+
 </html>

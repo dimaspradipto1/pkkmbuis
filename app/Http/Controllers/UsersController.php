@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Imports\UsersImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 use Illuminate\Validation\Rule;
@@ -178,6 +179,24 @@ class UsersController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
+    }
+
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids');
+
+        if (empty($ids)) {
+            Alert::error('Gagal!', 'Tidak ada user yang dipilih.')->toToast()->autoClose(3000);
+            return redirect()->back();
+        }
+
+        $ids = array_diff($ids, [Auth::id()]);
+
+        $deleted = User::whereIn('id', $ids)->delete();
+
+        Alert::success('Berhasil!', $deleted . ' user telah dihapus.')->toToast()->autoClose(3000);
+
+        return redirect()->route('users.index');
     }
 
     public function updatePassword(string $id)

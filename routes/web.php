@@ -92,6 +92,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::get('users/template', [UsersController::class, 'downloadTemplate'])->name('users.template');
     Route::post('users/import', [UsersController::class, 'import'])->name('users.import');
+    Route::post('users/bulk-destroy', [UsersController::class, 'bulkDestroy'])->name('users.bulkDestroy');
     Route::resource('users', UsersController::class);
 
     Route::get('users/{user}/password', [UsersController::class, 'updatePassword'])->name('users.updatePassword');

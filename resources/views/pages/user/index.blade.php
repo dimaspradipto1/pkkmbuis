@@ -20,6 +20,15 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="card-title">List Data Users</h5>
                             <div class="d-flex gap-2">
+                                @if (Auth::user()->role != 'mahasiswa')
+                                    <form action="{{ route('users.bulkDestroy') }}" method="POST" id="bulk-delete-form" class="d-inline">
+                                        @csrf
+                                        <div id="selected-ids-container"></div>
+                                        <button type="submit" class="btn btn-danger rounded" id="btn-bulk-delete" style="display:none;">
+                                            <i class="bi bi-trash-fill me-1"></i> Hapus Terpilih (<span id="selected-count">0</span>)
+                                        </button>
+                                    </form>
+                                @endif
                                 <button type="button" class="btn btn-success rounded" data-bs-toggle="modal" data-bs-target="#importModal">
                                     <i class="bi bi-file-earmark-excel me-1"></i> Import Excel
                                 </button>
@@ -107,4 +116,55 @@
     @else
         {!! $dataTable->scripts() !!}
     @endif
+    <script>
+        $(document).ready(function() {
+            const bulkBtn = $('#btn-bulk-delete');
+            const bulkCount = $('#selected-count');
+            const bulkForm = $('#bulk-delete-form');
+            const container = $('#selected-ids-container');
+
+            function toggleBulkButton() {
+                const checked = $('.record-checkbox:checked');
+                const count = checked.length;
+                if (count > 0) {
+                    bulkCount.text(count);
+                    bulkBtn.fadeIn(200);
+                } else {
+                    bulkBtn.fadeOut(200);
+                }
+            }
+
+            $(document).on('click', '#select-all', function() {
+                const isChecked = $(this).prop('checked');
+                $('.record-checkbox').prop('checked', isChecked);
+                toggleBulkButton();
+            });
+
+            $(document).on('change', '.record-checkbox', function() {
+                const total = $('.record-checkbox').length;
+                const checked = $('.record-checkbox:checked').length;
+                $('#select-all').prop('checked', (total > 0 && total === checked));
+                toggleBulkButton();
+            });
+
+            $(document).on('draw.dt', '#users-table', function() {
+                $('#select-all').prop('checked', false);
+                toggleBulkButton();
+            });
+
+            bulkForm.on('submit', function(e) {
+                const checked = $('.record-checkbox:checked');
+                if (checked.length === 0) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                container.empty();
+                checked.each(function() {
+                    container.append(`<input type="hidden" name="ids[]" value="${$(this).val()}">`);
+                });
+                return true;
+            });
+        });
+    </script>
 @endpush

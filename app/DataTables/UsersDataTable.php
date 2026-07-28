@@ -23,6 +23,12 @@ class UsersDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('DT_RowIndex', '')
+            ->addColumn('checkbox', function($item){
+                if (Auth::user()->role == 'mahasiswa') {
+                    return '';
+                }
+                return '<input type="checkbox" name="ids[]" value="'.$item->id.'" class="form-check-input record-checkbox">';
+            })
             ->editColumn('id_pendaftar', function($item){
                 return $item->id_pendaftar;
             })
@@ -41,12 +47,12 @@ class UsersDataTable extends DataTable
                         <form action="' . route('users.destroy', $item->id) . '" method="POST" style="display: inline">
                             ' . csrf_field() . '
                             ' . method_field('DELETE') . '
-                            <button type="submit" class="btn btn-sm btn-danger px-3 rounded" onclick="return confirm(\'Yakin ingin menghapus data ini?\')"><i class="fa-solid fa-trash"></i></button>
+                            <button type="submit" class="btn btn-sm btn-danger px-3 rounded"><i class="fa-solid fa-trash"></i></button>
                         </form>
                     </div>
                 ';
             })
-            ->rawColumns(['DT_RowIndex', 'action', 'is_active']);
+            ->rawColumns(['DT_RowIndex', 'checkbox', 'action', 'is_active']);
     }
 
     /**
@@ -74,8 +80,8 @@ class UsersDataTable extends DataTable
                     ->setTableId('users-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
-                    ->orderBy(1)
-                    ->selectStyleSingle()
+                    ->orderBy(2)
+                    ->selectStyleMulti()
                     ->buttons([
                         Button::make('excel'),
                         Button::make('csv'),
@@ -94,6 +100,14 @@ class UsersDataTable extends DataTable
     public function getColumns(): array
     {
         $columns = [
+            Column::make('checkbox')
+                ->title(Auth::user()->role != 'mahasiswa' ? '<input type="checkbox" id="select-all" class="form-check-input">' : '')
+                ->orderable(false)
+                ->searchable(false)
+                ->exportable(false)
+                ->printable(false)
+                ->width(40)
+                ->addClass('text-center align-middle'),
             Column::make('DT_RowIndex')
                 ->title('NO'),
             Column::make('name')
