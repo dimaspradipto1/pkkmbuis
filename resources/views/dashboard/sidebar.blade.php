@@ -90,7 +90,7 @@
           @endif
 
           @if (!in_array(Auth::user()->role, ['kakakpendamping', 'dosenpendamping', 'timevaluasi']))
-              <li class="nav-heading">Evaluasi Materi</li>
+              <li class="nav-heading">Evaluasi & Observasi</li>
 
               @php
                   $evaluasiMenus = \App\Models\EvaluasiMenu::orderBy('nomor')->get();
@@ -119,14 +119,6 @@
                               </li>
                           @endif
                       @endforeach
-
-                      @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
-                          <li class="mt-2 pt-2 border-top">
-                              <a href="{{ route('evaluasimenu.index') }}" class="{{ request()->routeIs('evaluasimenu.*') ? 'active' : '' }}">
-                                  <i class="bi bi-gear-fill me-1 text-primary"></i><span class="fw-bold">Pengaturan Status Menu</span>
-                              </a>
-                          </li>
-                      @endif
                   </ul>
               </li>
           @endif
@@ -134,173 +126,194 @@
           @if (Auth::user()->role == 'admin' || Auth::user()->role == 'timevaluasi')
               <li class="nav-item">
                   <a class="nav-link {{ request()->routeIs('observasiacara*') ? '' : 'collapsed' }}" data-bs-target="#observasi-acara-nav" data-bs-toggle="collapse" href="#">
-                      <i class="bi bi-eye-fill"></i><span>Observasi Acara</span><i class="bi bi-chevron-down ms-auto"></i>
-                  </a>
-                  <ul id="observasi-acara-nav" class="nav-content collapse {{ request()->routeIs('observasiacara*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                      <li>
-                          <a href="{{ route('observasiacara.index') }}" class="{{ request()->routeIs('observasiacara.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Observasi Acara 1</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('observasiacara2.index') }}" class="{{ request()->routeIs('observasiacara2.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Observasi Acara 2</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('observasiacarafeb.index') }}" class="{{ request()->routeIs('observasiacarafeb.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Observasi Acara Feb</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('observasiacarafst.index') }}" class="{{ request()->routeIs('observasiacarafst.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Observasi Acara Fst</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('observasiacarafikes.index') }}" class="{{ request()->routeIs('observasiacarafikes.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Observasi Acara Fikes</span>
-                          </a>
-                      </li>
-                  </ul>
-              </li>
-          @endif
+                          <i class="bi bi-eye-fill"></i><span>Observasi Acara</span><i class="bi bi-chevron-down ms-auto"></i>
+                      </a>
+                      <ul id="observasi-acara-nav" class="nav-content collapse {{ request()->routeIs('observasiacara*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                          <li>
+                              <a href="{{ route('observasiacara.index') }}" class="{{ request()->routeIs('observasiacara.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Observasi Acara 1</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('observasiacara2.index') }}" class="{{ request()->routeIs('observasiacara2.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Observasi Acara 2</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('observasiacarafeb.index') }}" class="{{ request()->routeIs('observasiacarafeb.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Observasi Acara Feb</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('observasiacarafst.index') }}" class="{{ request()->routeIs('observasiacarafst.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Observasi Acara Fst</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('observasiacarafikes.index') }}" class="{{ request()->routeIs('observasiacarafikes.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Observasi Acara Fikes</span>
+                              </a>
+                          </li>
+                      </ul>
+                  </li>
+              @endif
 
-          @if (Auth::user()->role == 'admin')
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('lpj.*') ? '' : 'collapsed' }}" href="{{ route('lpj.index') }}">
-                      <i class="bi bi-file-earmark-text"></i>
-                      <span>LPJ</span>
-                  </a>
-              </li>
-          @endif
+              @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
+                  <li class="nav-heading">Kelola Modul & Test</li>
 
-          @if (Auth::user()->role == 'admin' || Auth::user()->role == 'stafbaak')
-              <li class="nav-heading">Layanan & Pesan</li>
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('materimodul.*') ? '' : 'collapsed' }}" href="{{ route('materimodul.index') }}">
+                          <i class="bi bi-cloud-upload-fill"></i>
+                          <span>Upload Materi Modul</span>
+                      </a>
+                  </li>
 
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('chat.*') ? '' : 'collapsed' }} d-flex align-items-center justify-content-between" href="{{ route('chat.index') }}">
-                      <div class="d-flex align-items-center">
-                          <i class="bi bi-chat-square-text-fill text-success me-2"></i>
-                          <span>Pesan / Live Chat</span>
-                      </div>
-                      <span class="badge bg-danger rounded-pill px-2 py-1 ms-auto" id="sidebarChatUnreadBadge" style="display: none; font-size: 0.68rem;">0</span>
-                  </a>
-              </li>
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('soalpretest*') ? '' : 'collapsed' }}" data-bs-target="#soal-pretest" data-bs-toggle="collapse" href="#">
+                          <i class="bi bi-file-earmark-arrow-up-fill"></i><span>Upload Soal Pretest</span><i class="bi bi-chevron-down ms-auto"></i>
+                      </a>
+                      <ul id="soal-pretest" class="nav-content collapse {{ request()->routeIs('soalpretest*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                          <li>
+                              <a href="{{ route('soalpretestpertama.index') }}" class="{{ request()->routeIs('soalpretestpertama.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Pretest 1</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('soalpretestkedua.index') }}" class="{{ request()->routeIs('soalpretestkedua.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Pretest 2</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('soalpretestketiga.index') }}" class="{{ request()->routeIs('soalpretestketiga.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Pretest 3</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('soalpretestkeempat.index') }}" class="{{ request()->routeIs('soalpretestkeempat.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Pretest 4</span>
+                              </a>
+                          </li>
+                      </ul>
+                  </li>
 
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('chatbot-faq.*') ? '' : 'collapsed' }}" href="{{ route('chatbot-faq.index') }}">
-                      <i class="bi bi-chat-dots-fill text-primary"></i>
-                      <span>Pengaturan Chatbot & WA</span>
-                  </a>
-              </li>
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('soalposttest*') ? '' : 'collapsed' }}" data-bs-target="#soal-postest" data-bs-toggle="collapse" href="#">
+                          <i class="bi bi-file-earmark-check-fill"></i><span>Upload Soal Posttest</span><i class="bi bi-chevron-down ms-auto"></i>
+                      </a>
+                      <ul id="soal-postest" class="nav-content collapse {{ request()->routeIs('soalposttest*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                          <li>
+                              <a href="{{ route('soalposttestpertama.index') }}" class="{{ request()->routeIs('soalposttestpertama.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Posttest 1</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('soalposttestkedua.index') }}" class="{{ request()->routeIs('soalposttestkedua.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Posttest 2</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('soalposttestketiga.index') }}" class="{{ request()->routeIs('soalposttestketiga.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Posttest 3</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('soalposttestkeempat.index') }}" class="{{ request()->routeIs('soalposttestkeempat.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Posttest 4</span>
+                              </a>
+                          </li>
+                      </ul>
+                  </li>
 
-              <li class="nav-heading">Kelola Modul & Test</li>
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('soaltugaskelompok.*') ? '' : 'collapsed' }}" href="{{ route('soaltugaskelompok.index') }}">
+                          <i class="bi bi-book-half"></i>
+                          <span>Tugas Modul 5</span>
+                      </a>
+                  </li>
 
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('materimodul.*') ? '' : 'collapsed' }}" href="{{ route('materimodul.index') }}">
-                      <i class="bi bi-cloud-upload-fill"></i>
-                      <span>Upload Materi Modul</span>
-                  </a>
-              </li>
+                  <li class="nav-heading">Rekapitulasi & Laporan</li>
 
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('soalpretest*') ? '' : 'collapsed' }}" data-bs-target="#soal-pretest" data-bs-toggle="collapse" href="#">
-                      <i class="bi bi-file-earmark-arrow-up-fill"></i><span>Upload Soal Pretest</span><i class="bi bi-chevron-down ms-auto"></i>
-                  </a>
-                  <ul id="soal-pretest" class="nav-content collapse {{ request()->routeIs('soalpretest*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                      <li>
-                          <a href="{{ route('soalpretestpertama.index') }}" class="{{ request()->routeIs('soalpretestpertama.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Pretest 1</span>
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('rekap*') ? '' : 'collapsed' }}" data-bs-target="#rekap-nav" data-bs-toggle="collapse" href="#">
+                          <i class="bi bi-pie-chart-fill"></i><span>Rekapitulasi</span><i class="bi bi-chevron-down ms-auto"></i>
+                      </a>
+                      <ul id="rekap-nav" class="nav-content collapse {{ request()->routeIs('rekap*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                          <li>
+                              <a href="{{ route('rekapkeseluruhan.index') }}" class="{{ request()->routeIs('rekapkeseluruhan.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Absensi, Kedisiplinan, Pretest & Posttest</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('rekapevaluasi.index') }}" class="{{ request()->routeIs('rekapevaluasi.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Rekapitulasi Evaluasi TCR</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('kelulusan.index') }}" class="{{ request()->routeIs('kelulusan.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Status Kelulusan</span>
+                              </a>
+                          </li>
+                      </ul>
+                  </li>
+
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('hasiltest.*') ? '' : 'collapsed' }}" href="{{ route('hasiltest.index') }}">
+                          <i class="bi bi-clipboard-data-fill"></i>
+                          <span>Hasil Test Mahasiswa</span>
+                      </a>
+                  </li>
+
+                  @if (Auth::user()->role == 'admin')
+                      <li class="nav-item">
+                          <a class="nav-link {{ request()->routeIs('lpj.*') ? '' : 'collapsed' }}" href="{{ route('lpj.index') }}">
+                              <i class="bi bi-file-earmark-text"></i>
+                              <span>LPJ</span>
                           </a>
                       </li>
-                      <li>
-                          <a href="{{ route('soalpretestkedua.index') }}" class="{{ request()->routeIs('soalpretestkedua.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Pretest 2</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('soalpretestketiga.index') }}" class="{{ request()->routeIs('soalpretestketiga.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Pretest 3</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('soalpretestkeempat.index') }}" class="{{ request()->routeIs('soalpretestkeempat.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Pretest 4</span>
-                          </a>
-                      </li>
-                  </ul>
-              </li>
+                  @endif
 
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('soalposttest*') ? '' : 'collapsed' }}" data-bs-target="#soal-postest" data-bs-toggle="collapse" href="#">
-                      <i class="bi bi-file-earmark-check-fill"></i><span>Upload Soal Posttest</span><i class="bi bi-chevron-down ms-auto"></i>
-                  </a>
-                  <ul id="soal-postest" class="nav-content collapse {{ request()->routeIs('soalposttest*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                      <li>
-                          <a href="{{ route('soalposttestpertama.index') }}" class="{{ request()->routeIs('soalposttestpertama.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Posttest 1</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('soalposttestkedua.index') }}" class="{{ request()->routeIs('soalposttestkedua.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Posttest 2</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('soalposttestketiga.index') }}" class="{{ request()->routeIs('soalposttestketiga.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Posttest 3</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('soalposttestkeempat.index') }}" class="{{ request()->routeIs('soalposttestkeempat.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Posttest 4</span>
-                          </a>
-                      </li>
-                  </ul>
-              </li>
+                  <li class="nav-heading">Layanan & Pesan</li>
 
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('soaltugaskelompok.*') ? '' : 'collapsed' }}" href="{{ route('soaltugaskelompok.index') }}">
-                      <i class="bi bi-book-half"></i>
-                      <span>Tugas Modul 5</span>
-                  </a>
-              </li>
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('chat.*') ? '' : 'collapsed' }} d-flex align-items-center justify-content-between" href="{{ route('chat.index') }}">
+                          <div class="d-flex align-items-center">
+                              <i class="bi bi-chat-square-text-fill text-success me-2"></i>
+                              <span>Pesan / Live Chat</span>
+                          </div>
+                          <span class="badge bg-danger rounded-pill px-2 py-1 ms-auto" id="sidebarChatUnreadBadge" style="display: none; font-size: 0.68rem;">0</span>
+                      </a>
+                  </li>
 
-              <li class="nav-heading">Rekapitulasi & Pengguna</li>
+                  <li class="nav-heading">Pengaturan</li>
 
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('rekap*') ? '' : 'collapsed' }}" data-bs-target="#rekap-nav" data-bs-toggle="collapse" href="#">
-                      <i class="bi bi-pie-chart-fill"></i><span>Rekapitulasi</span><i class="bi bi-chevron-down ms-auto"></i>
-                  </a>
-                  <ul id="rekap-nav" class="nav-content collapse {{ request()->routeIs('rekap*') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                      <li>
-                          <a href="{{ route('rekapkeseluruhan.index') }}" class="{{ request()->routeIs('rekapkeseluruhan.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Absensi, Kedisiplinan, Pretest & Posttest</span>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="{{ route('rekapevaluasi.index') }}" class="{{ request()->routeIs('rekapevaluasi.*') ? 'active' : '' }}">
-                              <i class="bi bi-circle"></i><span>Rekapitulasi Evaluasi TCR</span>
-                          </a>
-                      </li>
-                  </ul>
-              </li>
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('chatbot-faq.*') ? '' : 'collapsed' }}" href="{{ route('chatbot-faq.index') }}">
+                          <i class="bi bi-chat-dots-fill text-primary"></i>
+                          <span>Pengaturan Chatbot & WA</span>
+                      </a>
+                  </li>
 
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('hasiltest.*') ? '' : 'collapsed' }}" href="{{ route('hasiltest.index') }}">
-                      <i class="bi bi-clipboard-data-fill"></i>
-                      <span>Hasil Test Mahasiswa</span>
-                  </a>
-              </li>
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('evaluasimenu.*') ? '' : 'collapsed' }}" href="{{ route('evaluasimenu.index') }}">
+                          <i class="bi bi-gear-fill text-primary"></i>
+                          <span>Pengaturan Status Menu Evaluasi</span>
+                      </a>
+                  </li>
 
-              <li class="nav-item">
-                  <a class="nav-link {{ request()->routeIs('users.*') ? '' : 'collapsed' }}" href="{{ route('users.index') }}">
-                      <i class="bi bi-person-lines-fill"></i>
-                      <span>Data Pengguna</span>
-                  </a>
-              </li>
-          @endif
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('sertifikatsetting.*') ? '' : 'collapsed' }}" href="{{ route('sertifikatsetting.index') }}">
+                          <i class="bi bi-patch-check-fill text-primary"></i>
+                          <span>Sertifikat</span>
+                      </a>
+                  </li>
+
+                  <li class="nav-item">
+                      <a class="nav-link {{ request()->routeIs('users.*') ? '' : 'collapsed' }}" href="{{ route('users.index') }}">
+                          <i class="bi bi-person-lines-fill"></i>
+                          <span>Data Pengguna</span>
+                      </a>
+                  </li>
+              @endif
 
       </ul>
 

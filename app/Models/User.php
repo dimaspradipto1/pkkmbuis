@@ -28,6 +28,8 @@ class User extends Authenticatable
         'program_studi',
         'kelompok_id',
         'is_active',
+        'kelulusan_is_active',
+        'nomor_sertifikat',
     ];
 
     public function kelompok()
@@ -55,6 +57,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
+            'kelulusan_is_active' => 'boolean',
         ];
     }
 

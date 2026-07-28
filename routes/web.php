@@ -78,6 +78,8 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::get('rekap-keseluruhan', [RekapKeseluruhanController::class, 'index'])->name('rekapkeseluruhan.index');
     Route::get('rekap-evaluasi', [RekapEvaluasiController::class, 'index'])->name('rekapevaluasi.index');
+    Route::get('kelulusan', [\App\Http\Controllers\KelulusanController::class, 'index'])->name('kelulusan.index');
+    Route::post('kelulusan/{id}/toggle', [\App\Http\Controllers\KelulusanController::class, 'toggle'])->name('kelulusan.toggle');
     Route::get('hasiltest/export', [HasilTestController::class, 'export'])->name('hasiltest.export');
     Route::post('hasiltest/bulk-reset', [HasilTestController::class, 'bulkReset'])->name('hasiltest.bulkReset');
     Route::post('hasiltest/user-reset/{user}', [HasilTestController::class, 'resetByUser'])->name('hasiltest.resetByUser');
@@ -264,6 +266,9 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
 
     Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');
     Route::post('evaluasimenu/{id}/toggle', [\App\Http\Controllers\EvaluasiMenuController::class, 'toggle'])->name('evaluasimenu.toggle');
+
+    Route::get('pengaturan-sertifikat', [\App\Http\Controllers\SertifikatSettingController::class, 'index'])->name('sertifikatsetting.index');
+    Route::put('pengaturan-sertifikat', [\App\Http\Controllers\SertifikatSettingController::class, 'update'])->name('sertifikatsetting.update');
 
     Route::get('chatbot-faq', [\App\Http\Controllers\ChatbotFaqController::class, 'index'])->name('chatbot-faq.index');
     Route::post('chatbot-faq', [\App\Http\Controllers\ChatbotFaqController::class, 'store'])->name('chatbot-faq.store');

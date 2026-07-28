@@ -170,6 +170,7 @@
         }
     </style>
 
+
     <div class="pagetitle">
         <h1>Dashboard</h1>
         <nav>
@@ -1985,10 +1986,14 @@
 
                                 $finalScore = $scoreTestsRaw * 0.2 + $scoreAbsRaw * 0.5 + $scoreDisRaw * 0.3;
                                 $isPassed = $finalScore >= 65;
+
+                                // Admin can force-publish the result for a specific mahasiswa
+                                // even before every component is complete.
+                                $showFinalResult = $isAllComplete || $user->kelulusan_is_active;
                             @endphp
 
-                            @if ($isAllComplete)
-                                {{-- CARD KELULUSAN HANYA TAMPIL JIKA SEMUA TELAH LENGKAP --}}
+                            @if ($showFinalResult)
+                                {{-- CARD KELULUSAN TAMPIL JIKA SEMUA TELAH LENGKAP, ATAU DIPAKSA TAMPIL OLEH ADMIN --}}
                                 <div class="display-4 fw-bold text-dark mb-1">{{ (float) number_format($finalScore, 2) }}</div>
                                 <div class="text-uppercase tracking-wider extra-small fw-bold text-muted mb-4">Total Nilai Terbobot</div>
 
@@ -2117,6 +2122,64 @@
                                         <span class="fw-bold">{{ (float) number_format($scoreDisRaw, 1) }}</span>
                                     </div>
                                 </div>
+
+                                {{-- SERTIFIKAT KELULUSAN --}}
+                                @php
+                                    $sertifikatSetting = \App\Models\SertifikatSetting::current();
+
+                                    if (!$user->nomor_sertifikat) {
+                                        \Illuminate\Support\Facades\DB::transaction(function () use ($user) {
+                                            $lockedSetting = \App\Models\SertifikatSetting::where('id', 1)->lockForUpdate()->first();
+                                            $lockedUser = \App\Models\User::where('id', $user->id)->lockForUpdate()->first();
+                                            if ($lockedUser && !$lockedUser->nomor_sertifikat) {
+                                                $nextNumber = $lockedSetting->nomor_urut_terakhir + 1;
+                                                $lockedSetting->update(['nomor_urut_terakhir' => $nextNumber]);
+                                                $lockedUser->update(['nomor_sertifikat' => $nextNumber]);
+                                            }
+                                        });
+                                        $user->refresh();
+                                    }
+
+                                    $nomorSertifikatLengkap = str_pad($user->nomor_sertifikat, 4, '0', STR_PAD_LEFT) . '/' . $sertifikatSetting->kode_surat;
+
+                                    $logoDikti = $sertifikatSetting->logo_dikti ? asset('storage/' . $sertifikatSetting->logo_dikti) : null;
+                                    $logoBelmawa = $sertifikatSetting->logo_belmawa ? asset('storage/' . $sertifikatSetting->logo_belmawa) : null;
+                                    $logoPkkmb = $sertifikatSetting->logo_pkkmb ? asset('storage/' . $sertifikatSetting->logo_pkkmb) : asset('assets/img/logopkkmb.png');
+                                    $logoKampus = $sertifikatSetting->logo_kampus ? asset('storage/' . $sertifikatSetting->logo_kampus) : asset('assets/img/logo_ibsi.png');
+                                    $logoLima = $sertifikatSetting->logo_lima ? asset('storage/' . $sertifikatSetting->logo_lima) : null;
+                                @endphp
+
+                                <div class="text-start border-top pt-4 mt-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h6 class="extra-small fw-bold text-uppercase text-muted mb-0"><i class="bi bi-award-fill me-1 text-warning"></i> Sertifikat Kelulusan</h6>
+                                        <button type="button" class="btn btn-sm btn-success rounded-pill px-3" onclick="downloadSertifikat(this)">
+                                            <i class="bi bi-download me-1"></i> Unduh PNG
+                                        </button>
+                                    </div>
+
+                                    @include('partials.sertifikat-card', [
+                                        'canvasId' => 'sertifikatCanvas',
+                                        'nomorUrut' => str_pad($user->nomor_sertifikat, 4, '0', STR_PAD_LEFT),
+                                        'kodeSurat' => $sertifikatSetting->kode_surat,
+                                        'namaMahasiswa' => $user->name,
+                                        'npm' => $user->id_pendaftar,
+                                        'prodi' => $user->program_studi ?? '-',
+                                        'fakultas' => $user->fakultas ?? '-',
+                                        'statusLulus' => $isPassed,
+                                        'namaKegiatan' => $sertifikatSetting->nama_kegiatan,
+                                        'lokasi' => $sertifikatSetting->lokasi,
+                                        'tanggal' => $sertifikatSetting->tanggal_pelaksanaan,
+                                        'namaMengetahui' => $sertifikatSetting->nama_mengetahui,
+                                        'jabatanMengetahui' => $sertifikatSetting->jabatan_mengetahui,
+                                        'namaKetuaPanitia' => $sertifikatSetting->nama_ketua_panitia,
+                                        'jabatanKetuaPanitia' => $sertifikatSetting->jabatan_ketua_panitia,
+                                        'logoDikti' => $logoDikti,
+                                        'logoBelmawa' => $logoBelmawa,
+                                        'logoPkkmb' => $logoPkkmb,
+                                        'logoKampus' => $logoKampus,
+                                        'logoLima' => $logoLima,
+                                    ])
+                                </div>
                             @else
                                 {{-- CARD KELENGKAPAN TAMPIL JIKA SALAH SATU BELUM LENGKAP --}}
                                 <div class="p-3 mb-3 bg-light rounded-4 border text-start">
@@ -2185,7 +2248,47 @@
 
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
         <script>
+            function downloadSertifikat(btn) {
+                const target = document.getElementById('sertifikatCanvas');
+                if (!target || typeof html2canvas !== 'function') return;
+
+                const originalLabel = btn ? btn.innerHTML : null;
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Memproses...';
+                }
+
+                // The preview is visually shrunk via CSS transform:scale() to fit its
+                // container; reset it to full design size (1000x707) before capture so
+                // the exported PNG is always full resolution, not the on-screen scale.
+                const originalTransform = target.style.transform;
+                target.style.transform = 'none';
+
+                html2canvas(target, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
+                    width: 1000,
+                    height: 707
+                }).then(function (canvas) {
+                    const link = document.createElement('a');
+                    link.download = 'Sertifikat-Kelulusan-{{ \Illuminate\Support\Str::slug($user->name) }}.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                }).catch(function (err) {
+                    console.error('Gagal membuat sertifikat:', err);
+                    alert('Gagal mengunduh sertifikat. Silakan coba lagi.');
+                }).finally(function () {
+                    target.style.transform = originalTransform;
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalLabel;
+                    }
+                });
+            }
+
             let scopedCardConfetti = null;
 
             function getCardConfettiInstance() {
