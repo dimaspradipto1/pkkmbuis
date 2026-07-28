@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedInteger('nomor_urut_terakhir')->default(0);
             $table->string('kode_surat')->default('UIS.PKKMB/SF/VII/2026');
-            $table->string('nama_kegiatan')->default('PENGENALAN KEHIDUPAN KAMPUS BAGI MAHASISWA BARU (PKKMB) UNIVERSITAS IBNU SINA TAHUN AKADEMIK 2026/2027');
+            $table->string('nama_kegiatan')->default('PENGENALAN KEHIDUPAN KAMPUS BAGI MAHASISWA BARU (PKKMB) UNIVERSITAS IBNU SINA TAHUN AKADEMIK 2026-2027');
             $table->string('lokasi')->default('Batam');
             $table->string('tanggal_pelaksanaan')->default('21 - 23 Agustus 2026');
             $table->string('nama_mengetahui')->default('Dr. Larisang, S.T., M.T., IPU., ASEAN.Eng');

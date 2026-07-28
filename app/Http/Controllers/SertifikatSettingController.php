@@ -35,8 +35,10 @@ class SertifikatSettingController extends Controller
             'tanggal_pelaksanaan' => 'required|string|max:255',
             'nama_mengetahui' => 'required|string|max:255',
             'jabatan_mengetahui' => 'required|string|max:255',
+            'nip_mengetahui' => 'nullable|string|max:255',
             'nama_ketua_panitia' => 'required|string|max:255',
             'jabatan_ketua_panitia' => 'required|string|max:255',
+            'nup_ketua_panitia' => 'nullable|string|max:255',
             'logo_dikti' => 'nullable|image|max:2048',
             'logo_belmawa' => 'nullable|image|max:2048',
             'logo_pkkmb' => 'nullable|image|max:2048',
@@ -53,8 +55,10 @@ class SertifikatSettingController extends Controller
             'tanggal_pelaksanaan',
             'nama_mengetahui',
             'jabatan_mengetahui',
+            'nip_mengetahui',
             'nama_ketua_panitia',
             'jabatan_ketua_panitia',
+            'nup_ketua_panitia',
         ]);
 
         foreach ($this->logoFields as $field) {

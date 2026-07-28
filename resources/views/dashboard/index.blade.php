@@ -2134,7 +2134,7 @@
                                             if ($lockedUser && !$lockedUser->nomor_sertifikat) {
                                                 $nextNumber = $lockedSetting->nomor_urut_terakhir + 1;
                                                 $lockedSetting->update(['nomor_urut_terakhir' => $nextNumber]);
-                                                $lockedUser->update(['nomor_sertifikat' => $nextNumber]);
+                                                $lockedUser->update(['nomor_sertifikat' => $nextNumber, 'sertifikat_issued_at' => now()]);
                                             }
                                         });
                                         $user->refresh();
@@ -2147,6 +2147,8 @@
                                     $logoPkkmb = $sertifikatSetting->logo_pkkmb ? asset('storage/' . $sertifikatSetting->logo_pkkmb) : asset('assets/img/logopkkmb.png');
                                     $logoKampus = $sertifikatSetting->logo_kampus ? asset('storage/' . $sertifikatSetting->logo_kampus) : asset('assets/img/logo_ibsi.png');
                                     $logoLima = $sertifikatSetting->logo_lima ? asset('storage/' . $sertifikatSetting->logo_lima) : null;
+
+                                    $verifikasiUrl = \Illuminate\Support\Facades\URL::signedRoute('sertifikat.verifikasi', ['user' => $user->id]);
                                 @endphp
 
                                 <div class="text-start border-top pt-4 mt-1">
@@ -2171,13 +2173,16 @@
                                         'tanggal' => $sertifikatSetting->tanggal_pelaksanaan,
                                         'namaMengetahui' => $sertifikatSetting->nama_mengetahui,
                                         'jabatanMengetahui' => $sertifikatSetting->jabatan_mengetahui,
+                                        'nipMengetahui' => $sertifikatSetting->nip_mengetahui,
                                         'namaKetuaPanitia' => $sertifikatSetting->nama_ketua_panitia,
                                         'jabatanKetuaPanitia' => $sertifikatSetting->jabatan_ketua_panitia,
+                                        'nupKetuaPanitia' => $sertifikatSetting->nup_ketua_panitia,
                                         'logoDikti' => $logoDikti,
                                         'logoBelmawa' => $logoBelmawa,
                                         'logoPkkmb' => $logoPkkmb,
                                         'logoKampus' => $logoKampus,
                                         'logoLima' => $logoLima,
+                                        'verifikasiUrl' => $verifikasiUrl,
                                     ])
                                 </div>
                             @else

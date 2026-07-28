@@ -66,6 +66,10 @@
                                     <label class="form-label fw-bold small">Jabatan (Mengetahui)</label>
                                     <input type="text" name="jabatan_mengetahui" class="form-control" value="{{ old('jabatan_mengetahui', $setting->jabatan_mengetahui) }}" required>
                                 </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold small">NIP (Mengetahui)</label>
+                                    <input type="text" name="nip_mengetahui" class="form-control" value="{{ old('nip_mengetahui', $setting->nip_mengetahui) }}">
+                                </div>
                             </div>
 
                             <div class="row">
@@ -77,6 +81,10 @@
                                     <label class="form-label fw-bold small">Jabatan Ketua Panitia (baris ke-2)</label>
                                     <input type="text" name="jabatan_ketua_panitia" class="form-control" value="{{ old('jabatan_ketua_panitia', $setting->jabatan_ketua_panitia) }}" required>
                                     <div class="form-text">Label "Ketua Panitia," sudah tetap; isi di sini hanya baris kedua, cth. "PKKMB Tahun 2026-2027".</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold small">NUP Ketua Panitia</label>
+                                    <input type="text" name="nup_ketua_panitia" class="form-control" value="{{ old('nup_ketua_panitia', $setting->nup_ketua_panitia) }}">
                                 </div>
                             </div>
 
@@ -143,13 +151,16 @@
                             'tanggal' => $setting->tanggal_pelaksanaan,
                             'namaMengetahui' => $setting->nama_mengetahui,
                             'jabatanMengetahui' => $setting->jabatan_mengetahui,
+                            'nipMengetahui' => $setting->nip_mengetahui,
                             'namaKetuaPanitia' => $setting->nama_ketua_panitia,
                             'jabatanKetuaPanitia' => $setting->jabatan_ketua_panitia,
+                            'nupKetuaPanitia' => $setting->nup_ketua_panitia,
                             'logoDikti' => $setting->logo_dikti ? asset('storage/' . $setting->logo_dikti) : null,
                             'logoBelmawa' => $setting->logo_belmawa ? asset('storage/' . $setting->logo_belmawa) : null,
                             'logoPkkmb' => $setting->logo_pkkmb ? asset('storage/' . $setting->logo_pkkmb) : asset('assets/img/logopkkmb.png'),
                             'logoKampus' => $setting->logo_kampus ? asset('storage/' . $setting->logo_kampus) : asset('assets/img/logo_ibsi.png'),
                             'logoLima' => $setting->logo_lima ? asset('storage/' . $setting->logo_lima) : null,
+                            'verifikasiUrl' => url('/verifikasi-sertifikat/0?signature=preview-only-not-a-real-link'),
                         ])
                     </div>
                 </div>
@@ -165,7 +176,7 @@
             var preview = document.getElementById('sertifikatPreviewCanvas');
             if (!form || !preview) return;
 
-            var textFields = ['kode_surat', 'nama_kegiatan', 'lokasi', 'tanggal_pelaksanaan', 'nama_mengetahui', 'jabatan_mengetahui', 'nama_ketua_panitia', 'jabatan_ketua_panitia'];
+            var textFields = ['kode_surat', 'nama_kegiatan', 'lokasi', 'tanggal_pelaksanaan', 'nama_mengetahui', 'jabatan_mengetahui', 'nip_mengetahui', 'nama_ketua_panitia', 'jabatan_ketua_panitia', 'nup_ketua_panitia'];
             textFields.forEach(function (field) {
                 var input = form.querySelector('[name="' + field + '"]');
                 var target = preview.querySelector('[data-field="' + field + '"]');

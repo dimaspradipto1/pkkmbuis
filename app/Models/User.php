@@ -30,6 +30,7 @@ class User extends Authenticatable
         'is_active',
         'kelulusan_is_active',
         'nomor_sertifikat',
+        'sertifikat_issued_at',
     ];
 
     public function kelompok()
@@ -59,6 +60,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_active' => 'boolean',
             'kelulusan_is_active' => 'boolean',
+            'sertifikat_issued_at' => 'datetime',
         ];
     }
 

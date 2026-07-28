@@ -70,6 +70,11 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('/logout', 'logout')->name('logout');
 });
 
+// Public, signed-URL-only verification page (scanned via QR on the certificate). No login required.
+Route::get('verifikasi-sertifikat/{user}', [\App\Http\Controllers\SertifikatVerifikasiController::class, 'show'])
+    ->middleware('signed')
+    ->name('sertifikat.verifikasi');
+
 Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
