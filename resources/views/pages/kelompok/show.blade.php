@@ -19,26 +19,50 @@
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4">
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-                            <div>
-                                <h4 class="fw-bold text-primary mb-1">{{ $kelompok->nama_kelompok }}</h4>
-                                <p class="text-muted mb-0">
-                                    <i class="bi bi-person-badge me-1 text-secondary"></i> Kakak Pendamping:
-                                    <span class="fw-bold text-dark">{{ $kelompok->pendamping->name ?? 'Belum Ditentukan' }}</span>
-                                    @if($kelompok->pendamping)
-                                        <span class="badge bg-light text-secondary border ms-1">{{ strtoupper($kelompok->pendamping->role) }}</span>
+                            <div class="flex-grow-1">
+                                <h4 class="fw-bold text-primary mb-3">{{ $kelompok->nama_kelompok }}</h4>
+                                
+                                <div class="d-flex flex-column gap-2">
+                                    <!-- Kakak Pendamping -->
+                                    <div class="d-flex align-items-start gap-2">
+                                        <div class="text-secondary mt-1"><i class="bi bi-person-badge fs-6"></i></div>
+                                        <div>
+                                            <span class="text-muted d-block small lh-1">Kakak Pendamping</span>
+                                            <div class="d-flex flex-wrap align-items-center gap-2 mt-1">
+                                                <span class="fw-bold text-dark">{{ $kelompok->pendamping->name ?? 'Belum Ditentukan' }}</span>
+                                                @if($kelompok->pendamping)
+                                                    <span class="badge bg-light text-secondary border font-monospace" style="font-size: 0.65rem; letter-spacing: 0.5px;">{{ strtoupper($kelompok->pendamping->role) }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dosen Pendamping -->
+                                    <div class="d-flex align-items-start gap-2">
+                                        <div class="text-secondary mt-1"><i class="bi bi-mortarboard fs-6"></i></div>
+                                        <div>
+                                            <span class="text-muted d-block small lh-1">Dosen Pendamping</span>
+                                            <div class="fw-bold text-dark mt-1">
+                                                @forelse($kelompok->dosenPendampings as $dosen)
+                                                    <span>{{ $dosen->name }}</span>@if(!$loop->last)<span class="text-muted fw-normal">, </span>@endif
+                                                @empty
+                                                    <span class="text-muted fw-normal">Belum Ditentukan</span>
+                                                @endforelse
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Keterangan -->
+                                    @if($kelompok->keterangan)
+                                        <div class="d-flex align-items-start gap-2">
+                                            <div class="text-secondary mt-1"><i class="bi bi-info-circle fs-6"></i></div>
+                                            <div>
+                                                <span class="text-muted d-block small lh-1">Keterangan / Kategori</span>
+                                                <span class="text-dark fw-medium d-block mt-1">{{ $kelompok->keterangan }}</span>
+                                            </div>
+                                        </div>
                                     @endif
-                                </p>
-                                <p class="text-muted mb-0">
-                                    <i class="bi bi-mortarboard me-1 text-secondary"></i> Dosen Pendamping:
-                                    @forelse($kelompok->dosenPendampings as $dosen)
-                                        <span class="fw-bold text-dark">{{ $dosen->name }}</span>@if(!$loop->last), @endif
-                                    @empty
-                                        <span class="fw-bold text-dark">Belum Ditentukan</span>
-                                    @endforelse
-                                </p>
-                                @if($kelompok->keterangan)
-                                    <small class="text-muted d-block mt-1"><i class="bi bi-info-circle me-1"></i> {{ $kelompok->keterangan }}</small>
-                                @endif
+                                </div>
                             </div>
                             <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
                                 <a href="{{ route('kelompok.index') }}" class="btn btn-outline-secondary w-100 w-sm-auto">
