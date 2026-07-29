@@ -18,7 +18,7 @@
             <div class="col-lg-12 mb-4">
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
                             <div>
                                 <h4 class="fw-bold text-primary mb-1">{{ $kelompok->nama_kelompok }}</h4>
                                 <p class="text-muted mb-0">
@@ -40,15 +40,15 @@
                                     <small class="text-muted d-block mt-1"><i class="bi bi-info-circle me-1"></i> {{ $kelompok->keterangan }}</small>
                                 @endif
                             </div>
-                            <div>
-                                <a href="{{ route('kelompok.index') }}" class="btn btn-outline-secondary me-2">
+                            <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-md-auto">
+                                <a href="{{ route('kelompok.index') }}" class="btn btn-outline-secondary w-100 w-sm-auto">
                                     <i class="bi bi-arrow-left me-1"></i> Kembali
                                 </a>
                                 @if(Auth::user()->role != 'mahasiswa')
-                                    <button class="btn btn-outline-success me-2" data-bs-toggle="modal" data-bs-target="#importMemberModal">
+                                    <button class="btn btn-outline-success w-100 w-sm-auto" data-bs-toggle="modal" data-bs-target="#importMemberModal">
                                         <i class="bi bi-file-earmark-excel me-1"></i> Import Excel
                                     </button>
-                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                                    <button class="btn btn-success w-100 w-sm-auto" data-bs-toggle="modal" data-bs-target="#addMemberModal">
                                         <i class="bi bi-person-plus-fill me-1"></i> Tambah Anggota
                                     </button>
                                 @endif
