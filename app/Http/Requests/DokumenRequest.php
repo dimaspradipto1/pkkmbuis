@@ -26,6 +26,8 @@ class DokumenRequest extends FormRequest
             'link_buku_saku' => 'nullable|url',
             'link_daftar_kelompok' => 'nullable|url',
             'link_rundown' => 'nullable|url',
+            'link_tata_tertib_kehidupan_mahasiswa' => 'nullable|url',
+            'link_video_tutorial_penggunaan_sistem_PKKMB' => 'nullable|url',
         ];
     }
 }

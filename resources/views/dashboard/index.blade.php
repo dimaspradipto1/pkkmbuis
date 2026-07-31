@@ -692,7 +692,17 @@
                                             <i class="bi bi-calendar-event me-1"></i> Rundown
                                         </a>
                                     @endif
-                                    @if(!$dokumen || (!$dokumen->link_buku_saku && !$dokumen->link_daftar_kelompok && !$dokumen->link_rundown))
+                                    @if($dokumen && $dokumen->link_tata_tertib_kehidupan_mahasiswa)
+                                        <a href="{{ $dokumen->link_tata_tertib_kehidupan_mahasiswa }}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                            <i class="bi bi-shield-exclamation me-1"></i> Tata Tertib
+                                        </a>
+                                    @endif
+                                    @if($dokumen && $dokumen->link_video_tutorial_penggunaan_sistem_PKKMB)
+                                        <a href="{{ $dokumen->link_video_tutorial_penggunaan_sistem_PKKMB }}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                            <i class="bi bi-play-btn me-1"></i> Video Tutorial
+                                        </a>
+                                    @endif
+                                    @if(!$dokumen || (!$dokumen->link_buku_saku && !$dokumen->link_daftar_kelompok && !$dokumen->link_rundown && !$dokumen->link_tata_tertib_kehidupan_mahasiswa && !$dokumen->link_video_tutorial_penggunaan_sistem_PKKMB))
                                         <span class="text-muted small">Belum ada dokumen yang diunggah.</span>
                                     @endif
                                 </div>

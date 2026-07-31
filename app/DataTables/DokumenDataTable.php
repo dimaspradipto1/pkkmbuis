@@ -36,7 +36,13 @@ class DokumenDataTable extends DataTable
             ->editColumn('link_rundown', function($item) {
                 return $item->link_rundown ? '<a href="'.$item->link_rundown.'" target="_blank" class="btn btn-sm btn-outline-info">Buka Link</a>' : '-';
             })
-            ->rawColumns(['action', 'link_buku_saku', 'link_daftar_kelompok', 'link_rundown'])
+            ->editColumn('link_tata_tertib_kehidupan_mahasiswa', function($item) {
+                return $item->link_tata_tertib_kehidupan_mahasiswa ? '<a href="'.$item->link_tata_tertib_kehidupan_mahasiswa.'" target="_blank" class="btn btn-sm btn-outline-info">Buka Link</a>' : '-';
+            })
+            ->editColumn('link_video_tutorial_penggunaan_sistem_PKKMB', function($item) {
+                return $item->link_video_tutorial_penggunaan_sistem_PKKMB ? '<a href="'.$item->link_video_tutorial_penggunaan_sistem_PKKMB.'" target="_blank" class="btn btn-sm btn-outline-info">Buka Link</a>' : '-';
+            })
+            ->rawColumns(['action', 'link_buku_saku', 'link_daftar_kelompok', 'link_rundown', 'link_tata_tertib_kehidupan_mahasiswa', 'link_video_tutorial_penggunaan_sistem_PKKMB'])
             ->setRowId('id');
     }
 
@@ -66,6 +72,8 @@ class DokumenDataTable extends DataTable
             Column::make('link_buku_saku')->title('Link Buku Saku'),
             Column::make('link_daftar_kelompok')->title('Link Daftar Kelompok'),
             Column::make('link_rundown')->title('Link Rundown'),
+            Column::make('link_tata_tertib_kehidupan_mahasiswa')->title('Link Tata Tertib'),
+            Column::make('link_video_tutorial_penggunaan_sistem_PKKMB')->title('Link Video Tutorial'),
             Column::computed('action')
                   ->title('Aksi')
                   ->exportable(false)

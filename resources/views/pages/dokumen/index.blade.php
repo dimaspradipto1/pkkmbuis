@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="pagetitle">
-        <h1>Manajemen Dokumen (Buku Saku, Kelompok, Rundown)</h1>
+        <h1>Manajemen Dokumen</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>

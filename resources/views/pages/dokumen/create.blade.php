@@ -42,6 +42,14 @@
                                 <label class="form-label">Link Rundown</label>
                                 <input type="url" class="form-control" name="link_rundown" value="{{ old('link_rundown') }}" placeholder="https://...">
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label">Link Tata Tertib Kehidupan Mahasiswa</label>
+                                <input type="url" class="form-control" name="link_tata_tertib_kehidupan_mahasiswa" value="{{ old('link_tata_tertib_kehidupan_mahasiswa') }}" placeholder="https://...">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Link Video Tutorial Penggunaan Sistem PKKMB</label>
+                                <input type="url" class="form-control" name="link_video_tutorial_penggunaan_sistem_PKKMB" value="{{ old('link_video_tutorial_penggunaan_sistem_PKKMB') }}" placeholder="https://...">
+                            </div>
                             <div class="text-end">
                                 <a href="{{ route('dokumen.index') }}" class="btn btn-secondary">Batal</a>
                                 <button type="submit" class="btn btn-primary">Simpan</button>
