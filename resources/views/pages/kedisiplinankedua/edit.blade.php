@@ -118,6 +118,23 @@
                 placeholder: 'Pilih Pengguna...',
                 allowClear: true
             });
+
+            $('input[type="radio"]:checked').each(function() {
+                $(this).data('was-checked', true);
+            });
+
+            $('input[type="radio"]').on('click', function() {
+                var $radio = $(this);
+                var name = $radio.attr('name');
+
+                if ($radio.data('was-checked') === true) {
+                    $radio.prop('checked', false);
+                    $radio.data('was-checked', false);
+                } else {
+                    $('input[name="' + name + '"]').data('was-checked', false);
+                    $radio.data('was-checked', true);
+                }
+            });
         });
     </script>
 @endpush

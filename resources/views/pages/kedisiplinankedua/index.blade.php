@@ -22,6 +22,7 @@
                             @if (Auth::user()->role != 'mahasiswa')
                                 <div class="d-flex gap-2">
                                     <button type="button" class="btn btn-warning text-white" id="btn-bulk-edit" style="display:none;"><i class="bi bi-pencil-square me-1"></i> Edit Terpilih</button>
+                                    <button type="button" class="btn btn-danger text-white" id="btn-bulk-delete" style="display:none;"><i class="bi bi-trash me-1"></i> Hapus Terpilih</button>
                                     <a href="{{ route('kedisiplinankedua.create') }}" class="btn btn-primary text-white"><i
                                             class="bi bi-plus-circle me-1"></i> Tambah Penilaian</a>
                                 </div>
@@ -115,9 +116,11 @@
                 const checkedCount = $('.record-checkbox:checked').length;
                 if (checkedCount > 0) {
                     $('#btn-bulk-edit').show().find('span').text(checkedCount);
+                    $('#btn-bulk-delete').show();
                     $('#selected-count').text(checkedCount);
                 } else {
                     $('#btn-bulk-edit').hide();
+                    $('#btn-bulk-delete').hide();
                 }
             }
 
@@ -128,6 +131,48 @@
                     container.append(`<input type="hidden" name="ids[]" value="${$(this).val()}">`);
                 });
                 $('#bulkEditModal').modal('show');
+            });
+
+            $('#btn-bulk-delete').click(function() {
+                const checked = $('.record-checkbox:checked');
+                const count = checked.length;
+                if (count === 0) return;
+
+                const doDelete = function() {
+                    const form = $('<form>', {
+                        action: "{{ route('kedisiplinankedua.bulk-delete') }}",
+                        method: 'POST'
+                    });
+                    form.append('@csrf');
+                    checked.each(function() {
+                        form.append($('<input>', {
+                            type: 'hidden',
+                            name: 'ids[]',
+                            value: $(this).val()
+                        }));
+                    });
+                    $('body').append(form);
+                    form.submit();
+                };
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Apakah anda yakin?',
+                        text: "Akan menghapus " + count + " data kedisiplinan terpilih!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            doDelete();
+                        }
+                    });
+                } else if (confirm('Apakah anda yakin ingin menghapus ' + count + ' data kedisiplinan terpilih?')) {
+                    doDelete();
+                }
             });
         });
     </script>

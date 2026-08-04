@@ -56,6 +56,19 @@ class Kelompok extends Model
         return $this->belongsTo(User::class, 'pendamping_id');
     }
 
+    public function kakakPendampings()
+    {
+        return $this->belongsToMany(User::class, 'kelompok_kakak_pendamping')->withTimestamps();
+    }
+
+    public function getAllKakakPendampingNamesAttribute()
+    {
+        if ($this->relationLoaded('kakakPendampings') && $this->kakakPendampings->isNotEmpty()) {
+            return $this->kakakPendampings->pluck('name')->implode(', ');
+        }
+        return $this->pendamping ? $this->pendamping->name : '-';
+    }
+
     public function dosenPendampings()
     {
         return $this->belongsToMany(User::class, 'kelompok_dosen_pendamping')->withTimestamps();

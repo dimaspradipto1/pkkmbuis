@@ -29,7 +29,7 @@ class KedisiplinanKetigaController extends Controller
     {
         $authUser = Auth::user();
         if ($authUser->role == 'kakakpendamping') {
-            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
             $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
         } else {
             $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
@@ -67,7 +67,7 @@ class KedisiplinanKetigaController extends Controller
         $kedisiplinanKetiga = KedisiplinanKetiga::findOrFail($id);
         $authUser = Auth::user();
         if ($authUser->role == 'kakakpendamping') {
-            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
             $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
         } else {
             $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
@@ -132,6 +132,22 @@ class KedisiplinanKetigaController extends Controller
                 ->toToast()
                 ->autoClose(3000);
         }
+
+        return redirect()->route('kedisiplinanketiga.index');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:kedisiplinan_ketigas,id',
+        ]);
+
+        KedisiplinanKetiga::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Data kedisiplinan terpilih berhasil dihapus.', 'Success')
+            ->toToast()
+            ->autoClose(3000);
 
         return redirect()->route('kedisiplinanketiga.index');
     }

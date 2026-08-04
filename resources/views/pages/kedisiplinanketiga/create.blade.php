@@ -51,7 +51,7 @@
                                 <label class="col-sm-2 col-form-label">Kelengkapan Atribut</label>
                                 <div class="col-sm-10 d-flex align-items-center">
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="kelengkapan_atribut" id="atribut_lengkap" value="Lengkap" {{ old('kelengkapan_atribut', 'Lengkap') == 'Lengkap' ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="radio" name="kelengkapan_atribut" id="atribut_lengkap" value="Lengkap" {{ old('kelengkapan_atribut') == 'Lengkap' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="atribut_lengkap">Lengkap</label>
                                     </div>
                                     <div class="form-check form-check-inline">
@@ -65,7 +65,7 @@
                                 <label class="col-sm-2 col-form-label">Ketepatan Waktu</label>
                                 <div class="col-sm-10 d-flex align-items-center">
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="ketepatan_waktu" id="waktu_tepat" value="Tepat Waktu" {{ old('ketepatan_waktu', 'Tepat Waktu') == 'Tepat Waktu' ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="radio" name="ketepatan_waktu" id="waktu_tepat" value="Tepat Waktu" {{ old('ketepatan_waktu') == 'Tepat Waktu' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="waktu_tepat">Tepat Waktu</label>
                                     </div>
                                     <div class="form-check form-check-inline">
@@ -79,7 +79,7 @@
                                 <label class="col-sm-2 col-form-label">Perilaku</label>
                                 <div class="col-sm-10 d-flex align-items-center">
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="perilaku" id="perilaku_baik" value="Baik" {{ old('perilaku', 'Baik') == 'Baik' ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="radio" name="perilaku" id="perilaku_baik" value="Baik" {{ old('perilaku') == 'Baik' ? 'checked' : '' }}>
                                         <label class="form-check-label" for="perilaku_baik">Baik</label>
                                     </div>
                                     <div class="form-check form-check-inline">
@@ -117,6 +117,23 @@
                 theme: 'bootstrap-5',
                 placeholder: 'Pilih Pengguna...',
                 allowClear: true
+            });
+
+            $('input[type="radio"]:checked').each(function() {
+                $(this).data('was-checked', true);
+            });
+
+            $('input[type="radio"]').on('click', function() {
+                var $radio = $(this);
+                var name = $radio.attr('name');
+
+                if ($radio.data('was-checked') === true) {
+                    $radio.prop('checked', false);
+                    $radio.data('was-checked', false);
+                } else {
+                    $('input[name="' + name + '"]').data('was-checked', false);
+                    $radio.data('was-checked', true);
+                }
             });
         });
     </script>

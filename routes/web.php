@@ -62,8 +62,6 @@ use Illuminate\Support\Facades\Route;
 
 
 
-
-
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'login')->name('login');
     Route::post('/', 'authenticate')->name('login.post');
@@ -96,7 +94,12 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::resource('users', UsersController::class);
 
     Route::get('users/{user}/password', [UsersController::class, 'updatePassword'])->name('users.updatePassword');
-    Route::post('users/{user}/password', [UsersController::class, 'updatePasswordPost'])->name('users.updatePasswordPost');
+    Route::get('absenpertama/check-status/{user_id}', [AbsenPertamaController::class, 'checkStatus'])->name('absenpertama.checkStatus');
+    Route::get('absenkedua/check-status/{user_id}', [AbsenKeduaController::class, 'checkStatus'])->name('absenkedua.checkStatus');
+    Route::get('absenketiga/check-status/{user_id}', [AbsenKetigaController::class, 'checkStatus'])->name('absenketiga.checkStatus');
+    Route::post('absenpertama/bulk-delete', [AbsenPertamaController::class, 'bulkDelete'])->name('absenpertama.bulk-delete');
+    Route::post('absenkedua/bulk-delete', [AbsenKeduaController::class, 'bulkDelete'])->name('absenkedua.bulk-delete');
+    Route::post('absenketiga/bulk-delete', [AbsenKetigaController::class, 'bulkDelete'])->name('absenketiga.bulk-delete');
     Route::resource('absenpertama', AbsenPertamaController::class);
     Route::resource('absenkedua', AbsenKeduaController::class);
     Route::resource('absenketiga', AbsenKetigaController::class);
@@ -114,12 +117,15 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::post('absenketiga-scan', [AbsenKetigaScanController::class, 'process'])->name('absenketiga-scan.process');
 
     Route::post('kedisiplinanpertama/bulk-update', [KedisiplinanPertamaController::class, 'bulkUpdate'])->name('kedisiplinanpertama.bulk-update');
+    Route::post('kedisiplinanpertama/bulk-delete', [KedisiplinanPertamaController::class, 'bulkDelete'])->name('kedisiplinanpertama.bulk-delete');
     Route::resource('kedisiplinanpertama', KedisiplinanPertamaController::class);
 
     Route::post('kedisiplinankedua/bulk-update', [KedisiplinanKeduaController::class, 'bulkUpdate'])->name('kedisiplinankedua.bulk-update');
+    Route::post('kedisiplinankedua/bulk-delete', [KedisiplinanKeduaController::class, 'bulkDelete'])->name('kedisiplinankedua.bulk-delete');
     Route::resource('kedisiplinankedua', KedisiplinanKeduaController::class);
 
     Route::post('kedisiplinanketiga/bulk-update', [KedisiplinanKetigaController::class, 'bulkUpdate'])->name('kedisiplinanketiga.bulk-update');
+    Route::post('kedisiplinanketiga/bulk-delete', [KedisiplinanKetigaController::class, 'bulkDelete'])->name('kedisiplinanketiga.bulk-delete');
     Route::resource('kedisiplinanketiga', KedisiplinanKetigaController::class);
 
     Route::post('kedisiplinan-attachments', [KedisiplinanAttachmentController::class, 'store'])->name('kedisiplinan-attachments.store');

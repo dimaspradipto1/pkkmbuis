@@ -22,16 +22,21 @@ class KelompokController extends Controller
 
         if ($user->role == 'mahasiswa') {
             // Mahasiswa views their own group
-            $myKelompok = $user->kelompok ? $user->kelompok->load(['pendamping', 'dosenPendampings', 'anggota']) : null;
+            $myKelompok = $user->kelompok ? $user->kelompok->load(['pendamping', 'kakakPendampings', 'dosenPendampings', 'anggota']) : null;
 
             return view('pages.kelompok.student', compact('myKelompok'));
         }
 
-        $query = Kelompok::with(['pendamping', 'dosenPendampings'])->withCount('anggota');
+        $query = Kelompok::with(['pendamping', 'kakakPendampings', 'dosenPendampings'])->withCount('anggota');
 
         if ($user->role == 'kakakpendamping') {
-            // Kakak pendamping only sees groups where they are assigned as pendamping
-            $query->where('pendamping_id', $user->id);
+            // Kakak pendamping sees groups where they are assigned
+            $query->where(function ($q) use ($user) {
+                $q->where('pendamping_id', $user->id)
+                  ->orWhereHas('kakakPendampings', function ($sub) use ($user) {
+                      $sub->where('users.id', $user->id);
+                  });
+            });
         } elseif ($user->role == 'dosenpendamping') {
             // Dosen pendamping only sees groups where they are assigned as dosen pendamping
             $query->whereHas('dosenPendampings', function ($q) use ($user) {
@@ -76,6 +81,8 @@ class KelompokController extends Controller
 
         $request->validate([
             'nama_kelompok' => 'required|string|max:255|unique:kelompoks,nama_kelompok',
+            'pendamping_ids' => 'nullable|array',
+            'pendamping_ids.*' => 'exists:users,id',
             'pendamping_id' => 'nullable|exists:users,id',
             'dosen_pendamping_ids' => 'nullable|array',
             'dosen_pendamping_ids.*' => 'exists:users,id',
@@ -84,7 +91,18 @@ class KelompokController extends Controller
             'nama_kelompok.unique' => 'Nama kelompok sudah ada.',
         ]);
 
-        $kelompok = Kelompok::create($request->only(['nama_kelompok', 'pendamping_id', 'keterangan']));
+        $pendampingIds = $request->input('pendamping_ids', []);
+        if ($request->filled('pendamping_id') && empty($pendampingIds)) {
+            $pendampingIds = [$request->pendamping_id];
+        }
+
+        $kelompok = Kelompok::create([
+            'nama_kelompok' => $request->nama_kelompok,
+            'pendamping_id' => $pendampingIds[0] ?? null,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        $kelompok->kakakPendampings()->sync($pendampingIds);
         $kelompok->dosenPendampings()->sync($request->input('dosen_pendamping_ids', []));
 
         Alert::success('Kelompok berhasil dibuat.', 'Success')
@@ -100,9 +118,9 @@ class KelompokController extends Controller
     public function show(string $slug)
     {
         $user = Auth::user();
-        $kelompok = Kelompok::with(['pendamping', 'dosenPendampings', 'anggota', 'notes.user'])->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
+        $kelompok = Kelompok::with(['pendamping', 'kakakPendampings', 'dosenPendampings', 'anggota', 'notes.user'])->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
 
-        $isKakakDenied = $user->role == 'kakakpendamping' && $kelompok->pendamping_id != $user->id;
+        $isKakakDenied = $user->role == 'kakakpendamping' && $kelompok->pendamping_id != $user->id && !$kelompok->kakakPendampings->contains('id', $user->id);
         $isDosenDenied = $user->role == 'dosenpendamping' && !$kelompok->dosenPendampings->contains('id', $user->id);
         $isMahasiswaDenied = $user->role == 'mahasiswa' && $user->kelompok_id != $kelompok->id;
 
@@ -135,7 +153,7 @@ class KelompokController extends Controller
             return redirect()->route('kelompok.index');
         }
 
-        $kelompok = Kelompok::with('dosenPendampings')->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
+        $kelompok = Kelompok::with(['kakakPendampings', 'dosenPendampings'])->where('slug', $slug)->orWhere('id', $slug)->firstOrFail();
         $pendampings = User::whereIn('role', ['kakakpendamping', 'dosenpendamping', 'stafbaak', 'admin', 'pimpinan'])->orderBy('name')->get();
         $dosenPendampingOptions = User::whereIn('role', ['dosenpendamping', 'admin', 'pimpinan'])->orderBy('name')->get();
 
@@ -159,13 +177,26 @@ class KelompokController extends Controller
 
         $request->validate([
             'nama_kelompok' => 'required|string|max:255|unique:kelompoks,nama_kelompok,' . $kelompok->id,
+            'pendamping_ids' => 'nullable|array',
+            'pendamping_ids.*' => 'exists:users,id',
             'pendamping_id' => 'nullable|exists:users,id',
             'dosen_pendamping_ids' => 'nullable|array',
             'dosen_pendamping_ids.*' => 'exists:users,id',
             'keterangan' => 'nullable|string',
         ]);
 
-        $kelompok->update($request->only(['nama_kelompok', 'pendamping_id', 'keterangan']));
+        $pendampingIds = $request->input('pendamping_ids', []);
+        if ($request->filled('pendamping_id') && empty($pendampingIds)) {
+            $pendampingIds = [$request->pendamping_id];
+        }
+
+        $kelompok->update([
+            'nama_kelompok' => $request->nama_kelompok,
+            'pendamping_id' => $pendampingIds[0] ?? null,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        $kelompok->kakakPendampings()->sync($pendampingIds);
         $kelompok->dosenPendampings()->sync($request->input('dosen_pendamping_ids', []));
 
         Alert::success('Kelompok berhasil diperbarui.', 'Success')

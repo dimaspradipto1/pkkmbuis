@@ -44,6 +44,18 @@ class KedisiplinanKetigaDataTable extends DataTable
             ->addColumn('user_name', function($item){
                 return $item->user->name;
             })
+            ->editColumn('kelengkapan_atribut', function($item) {
+                return $item->kelengkapan_atribut ?? '-';
+            })
+            ->editColumn('ketepatan_waktu', function($item) {
+                return $item->ketepatan_waktu ?? '-';
+            })
+            ->editColumn('perilaku', function($item) {
+                return $item->perilaku ?? '-';
+            })
+            ->editColumn('catatan', function($item) {
+                return $item->catatan ?? '-';
+            })
             ->filterColumn('user_name', function($query, $keyword) {
                 $query->whereHas('user', function($q) use ($keyword) {
                     $q->where('name', 'like', "%{$keyword}%")

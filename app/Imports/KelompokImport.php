@@ -24,12 +24,14 @@ class KelompokImport implements ToCollection, WithHeadingRow, SkipsEmptyRows
                     'nama_kelompok' => trim($namaKelompok),
                 ]);
 
-                // Assign Kakak Pendamping by email, if provided
-                $kakakPendampingEmail = $row['kakak_pendamping'] ?? $row['kakakpendamping'] ?? null;
-                if (!empty($kakakPendampingEmail)) {
-                    $kakak = User::where('email', trim($kakakPendampingEmail))->first();
-                    if ($kakak) {
-                        $kelompok->update(['pendamping_id' => $kakak->id]);
+                // Assign Kakak Pendamping(s) by email, comma/semicolon separated for multiple
+                $kakakPendampingRaw = $row['kakak_pendamping'] ?? $row['kakakpendamping'] ?? null;
+                if (!empty($kakakPendampingRaw)) {
+                    $kakakEmails = array_filter(array_map('trim', preg_split('/[,;]/', $kakakPendampingRaw)));
+                    $kakakIds = User::whereIn('email', $kakakEmails)->pluck('id')->all();
+                    if (!empty($kakakIds)) {
+                        $kelompok->kakakPendampings()->syncWithoutDetaching($kakakIds);
+                        $kelompok->update(['pendamping_id' => $kakakIds[0]]);
                     }
                 }
 

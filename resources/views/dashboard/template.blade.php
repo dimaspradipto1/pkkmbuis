@@ -245,6 +245,30 @@
                 height: 90px !important;
             }
         }
+        /* Night / Evening Session Button Styles */
+        .btn-outline-night {
+            color: #1e1b4b !important;
+            border-color: #312e81 !important;
+            background-color: transparent !important;
+            font-weight: 600;
+        }
+        .btn-outline-night:hover,
+        .btn-outline-night:focus,
+        .btn-check:checked + .btn-outline-night {
+            color: #ffffff !important;
+            background-color: #1e1b4b !important;
+            border-color: #1e1b4b !important;
+            box-shadow: 0 4px 12px rgba(30, 27, 75, 0.35) !important;
+        }
+        .btn-night {
+            color: #ffffff !important;
+            background-color: #1e1b4b !important;
+            border-color: #1e1b4b !important;
+        }
+        .badge-night {
+            background-color: #1e1b4b !important;
+            color: #ffffff !important;
+        }
     </style>
 
 
@@ -389,7 +413,7 @@
                             </label>
 
                             <input type="radio" class="btn-check" name="qr_session" id="qr_sore" value="SORE" autocomplete="off">
-                            <label class="btn btn-outline-info px-4 fw-bold" for="qr_sore">
+                            <label class="btn btn-outline-night px-4 fw-bold" for="qr_sore">
                                 <i class="bi bi-moon-stars me-1"></i> Sesi Sore
                             </label>
                         </div>

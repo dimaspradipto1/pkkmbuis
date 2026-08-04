@@ -31,7 +31,7 @@
                                 <label class="btn btn-outline-success" for="pagi"><i class="bi bi-sun me-1"></i> Sesi Pagi</label>
 
                                 <input type="radio" class="btn-check" name="sesi_scan" id="sore" value="hadir_sore">
-                                <label class="btn btn-outline-info" for="sore"><i class="bi bi-moon-stars me-1"></i> Sesi Sore</label>
+                                <label class="btn btn-outline-night" for="sore"><i class="bi bi-moon-stars me-1"></i> Sesi Sore</label>
                             </div>
                         </div>
                         @else

@@ -31,12 +31,12 @@
                     <div class="card-body">
                         <h5 class="card-title">Form Tambah Absensi</h5>
 
-                        <form action="{{ route('absenketiga.store') }}" method="POST">
+                        <form action="{{ route('absenketiga.store') }}" method="POST" enctype="multipart/form-data" novalidate>
                             @csrf
                             <div class="row mb-3">
-                                <label for="user_id" class="col-sm-2 col-form-label">Nama Pengguna</label>
-                                <div class="col-sm-10">
-                                    <select name="user_id" id="user_id" class="form-select" required>
+                                <label for="user_id" class="col-sm-3 col-form-label text-nowrap">Nama Pengguna <span class="text-danger">*</span></label>
+                                <div class="col-sm-9">
+                                    <select name="user_id" id="user_id" class="form-select">
                                         <option value=""></option>
                                         @foreach($users as $user)
                                             <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
@@ -48,10 +48,10 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label">Hadir Pagi</label>
-                                <div class="col-sm-10 d-flex align-items-center">
+                                <label class="col-sm-3 col-form-label text-nowrap">Hadir Pagi</label>
+                                <div class="col-sm-9 d-flex align-items-center">
                                     <div class="form-check form-check-inline me-4">
-                                        <input class="form-check-input" type="radio" name="hadir_pagi" id="pagi_hadir" value="Hadir" {{ old('hadir_pagi', 'Hadir') == 'Hadir' ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="radio" name="hadir_pagi" id="pagi_hadir" value="Hadir" {{ old('hadir_pagi') == 'Hadir' ? 'checked' : '' }}>
                                         <label class="form-check-label fw-semibold" for="pagi_hadir">Hadir</label>
                                     </div>
                                     <div class="form-check form-check-inline me-4">
@@ -65,11 +65,11 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label">Hadir Sore</label>
-                                <div class="col-sm-10 d-flex align-items-center">
+                            <div class="row mb-3" id="container_hadir_sore">
+                                <label class="col-sm-3 col-form-label text-nowrap">Hadir Sore</label>
+                                <div class="col-sm-9 d-flex align-items-center">
                                     <div class="form-check form-check-inline me-4">
-                                        <input class="form-check-input" type="radio" name="hadir_sore" id="sore_hadir" value="Hadir" {{ old('hadir_sore', 'Hadir') == 'Hadir' ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="radio" name="hadir_sore" id="sore_hadir" value="Hadir" {{ old('hadir_sore') == 'Hadir' ? 'checked' : '' }}>
                                         <label class="form-check-label fw-semibold" for="sore_hadir">Hadir</label>
                                     </div>
                                     <div class="form-check form-check-inline me-4">
@@ -79,6 +79,19 @@
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="hadir_sore" id="sore_tidak" value="Tidak Hadir" {{ old('hadir_sore') == 'Tidak Hadir' ? 'checked' : '' }}>
                                         <label class="form-check-label fw-semibold" for="sore_tidak">Tidak Hadir</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3" id="container_catatan" style="display: none;">
+                                <label for="catatan" class="col-sm-3 col-form-label text-nowrap">Catatan & Bukti <span class="text-danger" id="catatan_asterisk" style="display: none;">*</span></label>
+                                <div class="col-sm-9">
+                                    <textarea name="catatan" id="catatan" class="form-control mb-3" rows="3" placeholder="Masukkan alasan / catatan (Izin / Tidak Hadir)...">{{ old('catatan') }}</textarea>
+                                    <label for="bukti_izin" class="form-label fw-semibold text-secondary small">Upload Bukti (PNG, JPG, JPEG, WEBP) <span class="text-danger" id="bukti_asterisk" style="display: none;">*</span></label>
+                                    <input type="file" name="bukti_izin" id="bukti_izin" class="form-control" accept="image/png,image/jpeg,image/jpg,image/webp">
+                                    <div id="preview_container" class="mt-3" style="display: none;">
+                                        <small class="text-muted fw-semibold d-block mb-1">Preview Bukti:</small>
+                                        <img id="image_preview" src="" class="img-thumbnail rounded shadow-sm" style="max-height: 220px; object-fit: contain;">
                                     </div>
                                 </div>
                             </div>
@@ -102,8 +115,155 @@
         $(document).ready(function() {
             $('#user_id').select2({
                 theme: 'bootstrap-5',
-                placeholder: 'Pilih Pengguna...',
-                allowClear: true
+                placeholder: 'Cari / Pilih Pengguna...',
+                allowClear: true,
+                width: '100%'
+            });
+
+            $('#user_id').on('change', function() {
+                var userId = $(this).val();
+                $('#badge_pagi_status').remove();
+                $('#badge_sore_status').remove();
+                $('input[name="hadir_pagi"]').prop('disabled', false);
+                $('input[name="hadir_sore"]').prop('disabled', false);
+
+                if (!userId) return;
+
+                $.get("{{ url('absenketiga/check-status') }}/" + userId, function(res) {
+                    if (res.is_complete) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Peringatan',
+                                text: 'Pengguna ini sudah memiliki data absensi ketiga lengkap (Pagi & Sore)!',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        } else {
+                            alert('Pengguna ini sudah memiliki data absensi ketiga lengkap (Pagi & Sore)!');
+                        }
+                        $('#user_id').val('').trigger('change');
+                        return;
+                    }
+
+                    if (res.hadir_pagi && res.hadir_pagi !== 'Belum Absen') {
+                        $('input[name="hadir_pagi"][value="' + res.hadir_pagi + '"]').prop('checked', true).data('was-checked', true);
+                        $('input[name="hadir_pagi"]').prop('disabled', true);
+                        $('label[for="pagi_hadir"]').closest('.row').find('.col-form-label').append('<span id="badge_pagi_status" class="badge bg-success ms-2 small">Sudah Absen (' + res.hadir_pagi + ')</span>');
+                    }
+
+                    if (res.hadir_sore && res.hadir_sore !== 'Belum Absen') {
+                        $('input[name="hadir_sore"][value="' + res.hadir_sore + '"]').prop('checked', true).data('was-checked', true);
+                        $('input[name="hadir_sore"]').prop('disabled', true);
+                        $('label[for="sore_hadir"]').closest('.row').find('.col-form-label').append('<span id="badge_sore_status" class="badge bg-success ms-2 small">Sudah Absen (' + res.hadir_sore + ')</span>');
+                    }
+
+                    checkIzin();
+                });
+            });
+
+            function checkIzin() {
+                var valPagi = $('input[name="hadir_pagi"]:checked').val();
+                var valSore = $('input[name="hadir_sore"]:checked').val();
+
+                var isNonHadirPagi = (valPagi === 'Izin' || valPagi === 'Tidak Hadir');
+                var isNonHadirSore = (valSore === 'Izin' || valSore === 'Tidak Hadir');
+
+                if (isNonHadirPagi || isNonHadirSore) {
+                    $('#container_catatan').slideDown(200);
+                    $('#catatan_asterisk').show();
+                    $('#bukti_asterisk').show();
+                } else {
+                    $('#container_catatan').slideUp(200);
+                    $('#catatan_asterisk').hide();
+                    $('#bukti_asterisk').hide();
+                }
+            }
+
+            checkIzin();
+
+            $('input[type="radio"]:checked').each(function() {
+                $(this).data('was-checked', true);
+            });
+
+            $('input[type="radio"]').on('click', function() {
+                var $radio = $(this);
+                var name = $radio.attr('name');
+
+                if ($radio.prop('disabled')) return;
+
+                if ($radio.data('was-checked') === true) {
+                    $radio.prop('checked', false);
+                    $radio.data('was-checked', false);
+                } else {
+                    $('input[name="' + name + '"]').data('was-checked', false);
+                    $radio.data('was-checked', true);
+                }
+
+                setTimeout(checkIzin, 50);
+            });
+
+            $('#bukti_izin').on('change', function(e) {
+                var file = e.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(evt) {
+                        $('#image_preview').attr('src', evt.target.result);
+                        $('#preview_container').slideDown(200);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    $('#preview_container').slideUp(200);
+                    $('#image_preview').attr('src', '');
+                }
+            });
+
+            $('form').on('submit', function(e) {
+                $('input[name="hadir_pagi"], input[name="hadir_sore"]').prop('disabled', false);
+                var userId = $('#user_id').val();
+                if (!userId) {
+                    e.preventDefault();
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Peringatan',
+                            text: 'Silakan pilih Nama Pengguna terlebih dahulu!',
+                            confirmButtonColor: '#3085d6'
+                        });
+                    } else {
+                        alert('Silakan pilih Nama Pengguna terlebih dahulu!');
+                    }
+                    return false;
+                }
+
+                var valPagi = $('input[name="hadir_pagi"]:checked').val();
+                var valSore = $('input[name="hadir_sore"]:checked').val();
+                var isNonHadir = (valPagi === 'Izin' || valPagi === 'Tidak Hadir' || valSore === 'Izin' || valSore === 'Tidak Hadir');
+
+                if (isNonHadir) {
+                    var catatan = $('#catatan').val().trim();
+                    var hasBuktiFile = $('#bukti_izin')[0].files && $('#bukti_izin')[0].files.length > 0;
+                    var hasExistingBukti = $('#preview_container').is(':visible') && $('#image_preview').attr('src') !== '';
+
+                    if (!catatan || (!hasBuktiFile && !hasExistingBukti)) {
+                        e.preventDefault();
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Peringatan',
+                                text: 'Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir!',
+                                confirmButtonColor: '#3085d6'
+                            });
+                        } else {
+                            alert('Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir!');
+                        }
+                        if (!catatan) {
+                            $('#catatan').focus();
+                        } else {
+                            $('#bukti_izin').focus();
+                        }
+                        return false;
+                    }
+                }
             });
         });
     </script>

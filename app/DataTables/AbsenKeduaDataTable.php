@@ -48,7 +48,13 @@ class AbsenKeduaDataTable extends DataTable
                         ->orWhere('id_pendaftar', 'like', "%{$keyword}%");
                 });
             })
-            ->rawColumns(['action', 'DT_RowIndex']);
+            ->addColumn('bukti_izin', function($item) {
+                if (!empty($item->bukti_izin)) {
+                    return '<a href="' . asset('storage/' . $item->bukti_izin) . '" target="_blank" class="btn btn-sm btn-info text-white px-2 py-1 rounded"><i class="fa-solid fa-file-image me-1"></i> Bukti</a>';
+                }
+                return '-';
+            })
+            ->rawColumns(['action', 'DT_RowIndex', 'bukti_izin']);
     }
 
     /**
@@ -113,6 +119,14 @@ class AbsenKeduaDataTable extends DataTable
                 ->title('Hadir Pagi'),
             Column::make('hadir_sore')
                 ->title('Hadir Sore'),
+            Column::make('catatan')
+                ->title('Catatan')
+                ->defaultContent('-'),
+            Column::computed('bukti_izin')
+                ->title('Bukti Izin')
+                ->exportable(false)
+                ->printable(false)
+                ->addClass('text-center'),
         ];
 
         if (Auth::user()->role != 'mahasiswa') {

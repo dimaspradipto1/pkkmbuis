@@ -29,24 +29,28 @@
 
                         <form action="{{ route('chatbot-faq.update-wa') }}" method="POST">
                             @csrf
-                            <div class="row g-3 align-items-center">
-                                <div class="col-12 col-md-5">
-                                    <label class="form-label extra-small fw-bold mb-1" style="color: #ffffff !important;">Nomor WA / Link WA Group Panitia:</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white border-0 text-success fw-bold"><i class="bi bi-people-fill"></i> WA Group</span>
-                                        <input type="text" name="link_wa_group" class="form-control border-0 px-3 py-2 extra-small" placeholder="Contoh: 6281234567890 atau https://chat.whatsapp.com/xxx" value="{{ old('link_wa_group', $dokumen->link_wa_group ?? '') }}">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-lg-5 col-md-6">
+                                    <label class="form-label small fw-bold mb-1 text-white">Nomor WA / Link WA Group Panitia:</label>
+                                    <div class="input-group shadow-sm rounded overflow-hidden">
+                                        <span class="input-group-text bg-white border-0 text-success fw-bold px-3">
+                                            <i class="bi bi-people-fill me-1"></i> WA Group
+                                        </span>
+                                        <input type="text" name="link_wa_group" class="form-control border-0 px-3 py-2 text-dark" placeholder="Contoh: 6281234567890 atau https://chat.whatsapp.com/xxx" value="{{ old('link_wa_group', $dokumen->link_wa_group ?? '') }}">
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-4">
-                                    <label class="form-label extra-small fw-bold mb-1" style="color: #ffffff !important;">Nomor WA Personal Admin (Format 628xxx):</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white border-0 text-success fw-bold"><i class="bi bi-person-fill"></i> Personal</span>
-                                        <input type="text" name="no_wa_admin" class="form-control border-0 px-3 py-2 extra-small" placeholder="Contoh: 6281234567890 atau 081234567890" value="{{ old('no_wa_admin', $dokumen->no_wa_admin ?? '') }}">
+                                <div class="col-lg-5 col-md-6">
+                                    <label class="form-label small fw-bold mb-1 text-white">Nomor WA Personal Admin (Format 628xxx):</label>
+                                    <div class="input-group shadow-sm rounded overflow-hidden">
+                                        <span class="input-group-text bg-white border-0 text-success fw-bold px-3">
+                                            <i class="bi bi-person-fill me-1"></i> Personal
+                                        </span>
+                                        <input type="text" name="no_wa_admin" class="form-control border-0 px-3 py-2 text-dark" placeholder="Contoh: 6281234567890 atau 081234567890" value="{{ old('no_wa_admin', $dokumen->no_wa_admin ?? '') }}">
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-3 mt-md-4">
-                                    <button type="submit" class="btn btn-warning w-100 fw-bold py-2 shadow-sm text-dark">
-                                        <i class="bi bi-save me-1"></i> Simpan Kontak WA
+                                <div class="col-lg-2 col-md-12">
+                                    <button type="submit" class="btn btn-warning w-100 fw-bold py-2 shadow-sm text-dark d-flex align-items-center justify-content-center gap-1">
+                                        <i class="bi bi-box-arrow-in-down"></i> <span>Simpan Kontak WA</span>
                                     </button>
                                 </div>
                             </div>

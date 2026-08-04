@@ -2289,7 +2289,7 @@
                     height: 707
                 }).then(function (canvas) {
                     const link = document.createElement('a');
-                    link.download = 'Sertifikat-Kelulusan-{{ \Illuminate\Support\Str::slug($user->name) }}.png';
+                    link.download = 'Sertifikat-Kelulusan-{{ \Illuminate\Support\Str::slug($user->name ?? Auth::user()->name) }}.png';
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                 }).catch(function (err) {

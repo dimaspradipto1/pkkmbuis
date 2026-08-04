@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
+use Illuminate\Support\Facades\Storage;
+
 class AbsenKeduaController extends Controller
 {
     /**
@@ -28,7 +30,7 @@ class AbsenKeduaController extends Controller
     {
         $authUser = Auth::user();
         if ($authUser->role == 'kakakpendamping') {
-            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
             $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
         } else {
             $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
@@ -37,21 +39,133 @@ class AbsenKeduaController extends Controller
     }
 
     /**
+     * Check current user attendance status.
+     */
+    public function checkStatus($user_id)
+    {
+        $absen = AbsenKedua::where('user_id', $user_id)->first();
+        if (!$absen) {
+            return response()->json([
+                'exists' => false,
+                'hadir_pagi' => null,
+                'hadir_sore' => null,
+                'is_complete' => false
+            ]);
+        }
+
+        $pagiSet = !empty($absen->hadir_pagi) && $absen->hadir_pagi !== 'Belum Absen';
+        $soreSet = !empty($absen->hadir_sore) && $absen->hadir_sore !== 'Belum Absen';
+
+        return response()->json([
+            'exists' => true,
+            'hadir_pagi' => $absen->hadir_pagi,
+            'hadir_sore' => $absen->hadir_sore,
+            'is_complete' => ($pagiSet && $soreSet)
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
+        $existing = AbsenKedua::where('user_id', $request->user_id)->first();
+        $pagiInput = $request->hadir_pagi;
+        $soreInput = $request->hadir_sore;
+
+        if ($existing) {
+            $pagiAlreadySet = !empty($existing->hadir_pagi) && $existing->hadir_pagi !== 'Belum Absen';
+            $soreAlreadySet = !empty($existing->hadir_sore) && $existing->hadir_sore !== 'Belum Absen';
+
+            if ($pagiAlreadySet && $soreAlreadySet) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['user_id' => 'Pengguna ini sudah memiliki data absensi kedua lengkap (Pagi & Sore).']);
+            }
+
+            if ($pagiInput && $pagiAlreadySet && !$soreInput) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['user_id' => 'Hadir Pagi untuk pengguna ini sudah terisi! Silakan pilih Hadir Sore jika ingin melengkapi absensi.']);
+            }
+
+            if ($soreInput && $soreAlreadySet && !$pagiInput) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['user_id' => 'Hadir Sore untuk pengguna ini sudah terisi!']);
+            }
+
+            if (!$pagiInput && !$soreInput) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['user_id' => 'Silakan pilih status Hadir Pagi atau Hadir Sore.']);
+            }
+
+            $hasExistingBukti = !empty($existing->bukti_izin);
+        } else {
+            if (!$pagiInput && !$soreInput) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['user_id' => 'Silakan pilih status Hadir Pagi atau Hadir Sore.']);
+            }
+            $hasExistingBukti = false;
+        }
+
+        $isNonHadir = in_array($request->hadir_pagi, ['Izin', 'Tidak Hadir']) || in_array($request->hadir_sore, ['Izin', 'Tidak Hadir']);
+
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'hadir_pagi' => 'nullable|string',
             'hadir_sore' => 'nullable|string',
+            'catatan' => $isNonHadir ? 'required|string' : 'nullable|string',
+            'bukti_izin' => ($isNonHadir && !$hasExistingBukti) ? 'required|file|mimes:png,jpg,jpeg,webp|max:10240' : 'nullable|file|mimes:png,jpg,jpeg,webp|max:10240',
+        ], [
+            'catatan.required' => 'Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir.',
+            'bukti_izin.required' => 'Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir.',
         ]);
 
-        AbsenKedua::create($validated);
+        if ($existing) {
+            $validated['hadir_pagi'] = $pagiInput ?? $existing->hadir_pagi ?? 'Belum Absen';
+            $validated['hadir_sore'] = $soreInput ?? $existing->hadir_sore ?? 'Belum Absen';
 
-        Alert::success('Absensi berhasil ditambahkan.', 'Success')
-            ->toToast()
-            ->autoClose(3000);
+            if ($request->hasFile('bukti_izin')) {
+                if (!empty($existing->bukti_izin) && Storage::disk('public')->exists($existing->bukti_izin)) {
+                    Storage::disk('public')->delete($existing->bukti_izin);
+                }
+                $validated['bukti_izin'] = $request->file('bukti_izin')->store('bukti_izin', 'public');
+            }
+
+            $isNonHadirPagi = in_array($validated['hadir_pagi'], ['Izin', 'Tidak Hadir']);
+            $isNonHadirSore = in_array($validated['hadir_sore'], ['Izin', 'Tidak Hadir']);
+            if (!$isNonHadirPagi && !$isNonHadirSore) {
+                $validated['catatan'] = null;
+            }
+
+            $existing->update($validated);
+
+            Alert::success('Absensi berhasil diperbarui.', 'Success')
+                ->toToast()
+                ->autoClose(3000);
+        } else {
+            $validated['hadir_pagi'] = $pagiInput ?? 'Belum Absen';
+            $validated['hadir_sore'] = $soreInput ?? 'Belum Absen';
+
+            if ($request->hasFile('bukti_izin')) {
+                $validated['bukti_izin'] = $request->file('bukti_izin')->store('bukti_izin', 'public');
+            }
+
+            $isNonHadirPagi = in_array($validated['hadir_pagi'], ['Izin', 'Tidak Hadir']);
+            $isNonHadirSore = in_array($validated['hadir_sore'], ['Izin', 'Tidak Hadir']);
+            if (!$isNonHadirPagi && !$isNonHadirSore) {
+                $validated['catatan'] = null;
+            }
+
+            AbsenKedua::create($validated);
+
+            Alert::success('Absensi berhasil ditambahkan.', 'Success')
+                ->toToast()
+                ->autoClose(3000);
+        }
 
         return redirect()->route('absenkedua.index');
     }
@@ -64,7 +178,7 @@ class AbsenKeduaController extends Controller
         $absenKedua = AbsenKedua::findOrFail($id);
         $authUser = Auth::user();
         if ($authUser->role == 'kakakpendamping') {
-            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->pluck('id');
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
             $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
         } else {
             $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
@@ -79,11 +193,36 @@ class AbsenKeduaController extends Controller
     {
         $absenKedua = AbsenKedua::findOrFail($id);
 
+        $isNonHadir = in_array($request->hadir_pagi, ['Izin', 'Tidak Hadir']) || in_array($request->hadir_sore, ['Izin', 'Tidak Hadir']);
+        $hasBukti = !empty($absenKedua->bukti_izin);
+
         $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required|exists:users,id|unique:absen_keduas,user_id,' . $id,
             'hadir_pagi' => 'nullable|string',
             'hadir_sore' => 'nullable|string',
+            'catatan' => $isNonHadir ? 'required|string' : 'nullable|string',
+            'bukti_izin' => ($isNonHadir && !$hasBukti) ? 'required|file|mimes:png,jpg,jpeg,webp|max:10240' : 'nullable|file|mimes:png,jpg,jpeg,webp|max:10240',
+        ], [
+            'user_id.unique' => 'Pengguna ini sudah memiliki data absensi kedua.',
+            'catatan.required' => 'Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir.',
+            'bukti_izin.required' => 'Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir.',
         ]);
+
+        $validated['hadir_pagi'] = $request->hadir_pagi ?? 'Belum Absen';
+        $validated['hadir_sore'] = $request->hadir_sore ?? 'Belum Absen';
+
+        if ($request->hasFile('bukti_izin')) {
+            if ($absenKedua->bukti_izin) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($absenKedua->bukti_izin);
+            }
+            $validated['bukti_izin'] = $request->file('bukti_izin')->store('bukti_izin', 'public');
+        }
+
+        $isNonHadirPagi = in_array($validated['hadir_pagi'], ['Izin', 'Tidak Hadir']);
+        $isNonHadirSore = in_array($validated['hadir_sore'], ['Izin', 'Tidak Hadir']);
+        if (!$isNonHadirPagi && !$isNonHadirSore) {
+            $validated['catatan'] = null;
+        }
 
         $absenKedua->update($validated);
 
@@ -103,6 +242,31 @@ class AbsenKeduaController extends Controller
         $absenKedua->delete();
 
         Alert::success('Absensi berhasil dihapus.', 'Deleted')
+            ->toToast()
+            ->autoClose(3000);
+
+        return redirect()->route('absenkedua.index');
+    }
+
+    /**
+     * Remove the specified resources from storage in bulk.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:absen_keduas,id',
+        ]);
+
+        $absens = AbsenKedua::whereIn('id', $request->ids)->get();
+        foreach ($absens as $absen) {
+            if (!empty($absen->bukti_izin) && Storage::disk('public')->exists($absen->bukti_izin)) {
+                Storage::disk('public')->delete($absen->bukti_izin);
+            }
+            $absen->delete();
+        }
+
+        Alert::success('Data absensi terpilih berhasil dihapus.', 'Success')
             ->toToast()
             ->autoClose(3000);
 

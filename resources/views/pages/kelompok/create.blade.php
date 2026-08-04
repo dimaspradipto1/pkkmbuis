@@ -31,15 +31,15 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="pendamping_id" class="form-label fw-bold small">Kakak Pendamping</label>
-                                <select name="pendamping_id" id="pendamping_id" class="form-select">
-                                    <option value="">-- Pilih Pendamping (Opsional) --</option>
+                                <label for="pendamping_ids" class="form-label fw-bold small">Kakak Pendamping</label>
+                                <select name="pendamping_ids[]" id="pendamping_ids" class="form-select" multiple>
                                     @foreach($pendampings as $p)
-                                        <option value="{{ $p->id }}" {{ old('pendamping_id') == $p->id ? 'selected' : '' }}>
+                                        <option value="{{ $p->id }}" {{ collect(old('pendamping_ids', []))->contains($p->id) ? 'selected' : '' }}>
                                             {{ $p->name }} ({{ strtoupper($p->role) }})
                                         </option>
                                     @endforeach
                                 </select>
+                                <small class="text-muted">Bisa memilih lebih dari satu kakak pendamping.</small>
                             </div>
 
                             <div class="mb-3">
@@ -74,10 +74,9 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            $('#pendamping_id').select2({
+            $('#pendamping_ids').select2({
                 theme: 'bootstrap-5',
                 placeholder: 'Cari / Pilih Kakak Pendamping...',
-                allowClear: true,
                 width: '100%'
             });
             $('#dosen_pendamping_ids').select2({

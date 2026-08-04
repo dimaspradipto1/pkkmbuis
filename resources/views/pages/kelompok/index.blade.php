@@ -36,8 +36,8 @@
                                     <tr>
                                         <th style="width: 50px;">NO</th>
                                         <th>Nama Kelompok</th>
-                                        <th>Kakak Pendamping</th>
                                         <th>Dosen Pendamping</th>
+                                        <th>Kakak Pendamping</th>
                                         <th class="text-center">Jumlah Anggota</th>
                                         <th>Keterangan</th>
                                         <th class="text-center" style="width: 180px;">Aksi</th>
@@ -49,18 +49,21 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td class="fw-bold text-dark">{{ $item->nama_kelompok }}</td>
                                             <td>
-                                                @if($item->pendamping)
-                                                    <span class="badge bg-light text-primary border border-primary border-opacity-25 px-2 py-1">
-                                                        <i class="bi bi-person-badge me-1"></i>{{ $item->pendamping->name }}
-                                                    </span>
-                                                @else
-                                                    <span class="text-muted small">Belum Ditentukan</span>
-                                                @endif
-                                            </td>
-                                            <td>
                                                 @forelse($item->dosenPendampings as $dosen)
                                                     <span class="badge bg-light text-success border border-success border-opacity-25 px-2 py-1 mb-1">
                                                         <i class="bi bi-mortarboard me-1"></i>{{ $dosen->name }}
+                                                    </span>
+                                                @empty
+                                                    <span class="text-muted small">Belum Ditentukan</span>
+                                                @endforelse
+                                            </td>
+                                            <td>
+                                                @php
+                                                    $kakaks = $item->kakakPendampings->isNotEmpty() ? $item->kakakPendampings : ($item->pendamping ? collect([$item->pendamping]) : collect());
+                                                @endphp
+                                                @forelse($kakaks as $kakak)
+                                                    <span class="badge bg-light text-primary border border-primary border-opacity-25 px-2 py-1 mb-1">
+                                                        <i class="bi bi-person-badge me-1"></i>{{ $kakak->name }}
                                                     </span>
                                                 @empty
                                                     <span class="text-muted small">Belum Ditentukan</span>
