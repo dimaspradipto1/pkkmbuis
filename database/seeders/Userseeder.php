@@ -51,7 +51,7 @@ class Userseeder extends Seeder
 
             // 3 Dummy Kakak Pendamping
             [
-                'name' => 'Budi Santoso (Pendamping 1)',
+                'name' => 'Budi Santoso',
                 'id_pendaftar' => 'KL2026001',
                 'email' => 'kakakpendamping@uis.ac.id',
                 'no_wa' => '6281234567893',
@@ -62,7 +62,7 @@ class Userseeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'Siti Rahma (Pendamping 2)',
+                'name' => 'Siti Rahma',
                 'id_pendaftar' => 'KL2026002',
                 'email' => 'kakakpendamping2@uis.ac.id',
                 'no_wa' => '6281234567894',
@@ -73,7 +73,7 @@ class Userseeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'Ahmad Rizky (Pendamping 3)',
+                'name' => 'Ahmad Rizky',
                 'id_pendaftar' => 'KL2026003',
                 'email' => 'kakakpendamping3@uis.ac.id',
                 'no_wa' => '6281234567895',
@@ -211,7 +211,10 @@ class Userseeder extends Seeder
         }
 
         foreach ($users as $user) {
-            User::create($user);
+            User::updateOrCreate(
+                ['email' => $user['email']],
+                $user
+            );
         }
     }
 }
