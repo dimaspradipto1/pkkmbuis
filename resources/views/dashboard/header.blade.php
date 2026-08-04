@@ -3,7 +3,7 @@
 
     <div class="d-flex align-items-center justify-content-between">
       <a href="{{ route('dashboard') }}" class="logo d-flex align-items-center me-2">
-        <img src="{{ asset('assets/img/logopkkmb.png') }}" alt="" style="max-height: 30px; width: auto;">
+        <img src="{{ asset('assets/img/logo_ibsi.png') }}" alt="Logo UIS" style="max-height: 32px; width: auto;" class="me-1">
         <span class="ms-1 fw-bold text-dark d-none d-sm-inline" style="font-size: 16px; color: #012970 !important;">PKKMB UIS</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn ps-lg-3"></i>

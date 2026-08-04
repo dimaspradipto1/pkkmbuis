@@ -5,6 +5,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Verifikasi Sertifikat PKKMB - Universitas Ibnu Sina</title>
+
+    <!-- Favicons -->
+    <link href="{{ asset('assets/img/logo_ibsi.png') }}" rel="icon" type="image/png">
+    <link href="{{ asset('assets/img/logo_ibsi.png') }}" rel="shortcut icon" type="image/png">
+    <link href="{{ asset('assets/img/logo_ibsi.png') }}" rel="apple-touch-icon">
+
+    <!-- Open Graph / Meta Tags for Link Sharing -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="Verifikasi Sertifikat PKKMB - Universitas Ibnu Sina">
+    <meta property="og:description" content="Selamat Datang CAMABA UIS 2026. Siapkan diri Anda menjadi bagian dari Civitas Akademika Universitas Ibnu Sina yang berprestasi dan berakhlak mulia.">
+    <meta property="og:image" content="{{ asset('assets/img/og_share_thumbnail.png') }}">
+    <meta property="og:image:secure_url" content="{{ asset('assets/img/og_share_thumbnail.png') }}">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="Verifikasi Sertifikat PKKMB - Universitas Ibnu Sina">
+    <meta name="twitter:description" content="Selamat Datang CAMABA UIS 2026. Siapkan diri Anda menjadi bagian dari Civitas Akademika Universitas Ibnu Sina yang berprestasi dan berakhlak mulia.">
+    <meta name="twitter:image" content="{{ asset('assets/img/og_share_thumbnail.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
