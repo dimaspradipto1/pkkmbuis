@@ -33,4 +33,21 @@ class KelulusanController extends Controller
 
         return redirect()->back();
     }
+
+    public function bulkToggle(\Illuminate\Http\Request $request)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'stafbaak'])) {
+            abort(403);
+        }
+
+        $action = $request->input('action');
+        $status = ($action === 'enable_all');
+
+        User::where('role', 'mahasiswa')->update(['kelulusan_is_active' => $status]);
+
+        $statusText = $status ? 'ditampilkan (DIBUKA) untuk seluruh mahasiswa' : 'disembunyikan (DITUTUP) untuk seluruh mahasiswa';
+        Alert::success('Berhasil', "Tampilan kelulusan & sertifikat berhasil {$statusText}.")->toToast()->autoClose(3000);
+
+        return redirect()->back();
+    }
 }

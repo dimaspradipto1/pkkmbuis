@@ -30,9 +30,9 @@ class KedisiplinanKeduaController extends Controller
         $authUser = Auth::user();
         if ($authUser->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
-            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->with('kedisiplinanKedua')->orderBy('name')->get();
         } else {
-            $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->with('kedisiplinanKedua')->orderBy('name')->get();
         }
         return view('pages.kedisiplinankedua.create', compact('users'));
     }
@@ -50,9 +50,12 @@ class KedisiplinanKeduaController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
-        KedisiplinanKedua::create($validated);
+        KedisiplinanKedua::updateOrCreate(
+            ['user_id' => $validated['user_id']],
+            $validated
+        );
 
-        Alert::success('Kedisiplinan berhasil ditambahkan.', 'Success')
+        Alert::success('Kedisiplinan berhasil disimpan.', 'Success')
             ->toToast()
             ->autoClose(3000);
 
@@ -90,7 +93,16 @@ class KedisiplinanKeduaController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
-        $kedisiplinanKedua->update($validated);
+        $existingOther = KedisiplinanKedua::where('user_id', $validated['user_id'])
+            ->where('id', '!=', $id)
+            ->first();
+
+        if ($existingOther) {
+            $existingOther->update($validated);
+            $kedisiplinanKedua->delete();
+        } else {
+            $kedisiplinanKedua->update($validated);
+        }
 
         Alert::success('Kedisiplinan berhasil diperbarui.', 'Success')
             ->toToast()

@@ -69,6 +69,7 @@ class ModulPostTestController extends Controller
         // Ambil hasil test user jika ada
         $hasil_pre  = HasilTest::where('user_id', Auth::id())->where('modul', $id)->where('type', 'pretest')->first();
         $hasil_post = HasilTest::where('user_id', Auth::id())->where('modul', $id)->where('type', 'posttest')->first();
+        $posttest_is_active = \App\Models\PostTestSetting::isActive($id);
 
         return view('pages.modulposttest.index', compact(
             'questions_pre',
@@ -80,7 +81,8 @@ class ModulPostTestController extends Controller
             'materi_id',
             'hasil_pre',
             'hasil_post',
-            'tugas_kelompok'
+            'tugas_kelompok',
+            'posttest_is_active'
         ));
     }
 
@@ -110,6 +112,11 @@ class ModulPostTestController extends Controller
 
         // 2. Tambahan: Cek apakah sudah mengerjakan PRE TEST sebelum boleh mengerjakan POST TEST
         if ($type == 'posttest') {
+            if (Auth::user()->role == 'mahasiswa' && !\App\Models\PostTestSetting::isActive($modul_id)) {
+                Alert::error('Akses Ditolak', 'Sesi Post Test untuk Modul ini sedang tidak aktif / ditutup oleh Admin.');
+                return redirect()->back()->with('active_tab', 'posttest');
+            }
+
             $hasPreTest = HasilTest::where('user_id', Auth::id())
                 ->where('modul', $modul_id)
                 ->where('type', 'pretest')
@@ -190,5 +197,25 @@ class ModulPostTestController extends Controller
 
         Alert::success('Berhasil!', 'Link tugas kelompok telah berhasil disimpan.')->autoClose(3000);
         return redirect()->back()->with('active_tab', 'tugas');
+    }
+
+    public function toggleActive($modul)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
+        $modulId = (int) $modul;
+        if ($modulId < 1 || $modulId > 4) {
+            Alert::error('Gagal', 'Modul tidak valid.');
+            return redirect()->back();
+        }
+
+        $isActive = \App\Models\PostTestSetting::toggle($modulId);
+        $statusStr = $isActive ? 'DIBUKA (Aktif)' : 'DITUTUP (Nonaktif)';
+
+        Alert::success('Berhasil', "Sesi Post Test Modul {$modulId} berhasil {$statusStr}.")->toToast()->autoClose(3000);
+
+        return redirect()->back()->with('active_tab', 'posttest');
     }
 }

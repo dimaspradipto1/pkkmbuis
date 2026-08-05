@@ -83,6 +83,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::get('rekap-evaluasi', [RekapEvaluasiController::class, 'index'])->name('rekapevaluasi.index');
     Route::get('kelulusan', [\App\Http\Controllers\KelulusanController::class, 'index'])->name('kelulusan.index');
     Route::post('kelulusan/{id}/toggle', [\App\Http\Controllers\KelulusanController::class, 'toggle'])->name('kelulusan.toggle');
+    Route::post('kelulusan/bulk-toggle', [\App\Http\Controllers\KelulusanController::class, 'bulkToggle'])->name('kelulusan.bulkToggle');
     Route::get('hasiltest/export', [HasilTestController::class, 'export'])->name('hasiltest.export');
     Route::post('hasiltest/bulk-reset', [HasilTestController::class, 'bulkReset'])->name('hasiltest.bulkReset');
     Route::post('hasiltest/user-reset/{user}', [HasilTestController::class, 'resetByUser'])->name('hasiltest.resetByUser');
@@ -176,6 +177,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::resource('soaltugaskelompok', SoalTugasKelompokController::class);
     Route::post('modulposttest/reset', [ModulPostTestController::class, 'reset'])->name('modulposttest.reset');
     Route::post('modulposttest/upload-tugas', [ModulPostTestController::class, 'uploadTugasKelompok'])->name('modulposttest.upload-tugas');
+    Route::post('modulposttest/toggle-active/{modul}', [ModulPostTestController::class, 'toggleActive'])->name('modulposttest.toggle-active');
     Route::resource('modulposttest', ModulPostTestController::class);
     Route::resource('dokumen', DokumenController::class);
     Route::get('materimodul/{id}/download/{modul}', [MateriModulController::class, 'download'])->name('materimodul.download');

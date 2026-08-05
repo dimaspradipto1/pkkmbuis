@@ -8,6 +8,7 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Services\DataTable;
 
 class HasilTestPenilaianDataTable extends DataTable
@@ -90,29 +91,34 @@ class HasilTestPenilaianDataTable extends DataTable
 
     public function getColumns(): array
     {
-        return [
-            Column::make('checkbox')
+        $columns = [];
+
+        if (in_array(Auth::user()->role, ['admin', 'stafbaak'])) {
+            $columns[] = Column::make('checkbox')
                   ->title('<input type="checkbox" id="select-all" class="form-check-input">')
                   ->orderable(false)
                   ->searchable(false)
                   ->exportable(false)
                   ->printable(false)
                   ->width(40)
-                  ->addClass('text-center align-middle'),
-            Column::make('DT_RowIndex')->title('NO')->orderable(false)->searchable(false)->addClass('text-center align-middle')->width(50),
-            Column::make('name')->title('NAMA MAHASISWA')->addClass('fw-bold align-middle')->width(200),
-            Column::computed('m1_pre')->title('M1 PRE')->addClass('text-center align-middle bg-light'),
-            Column::computed('m1_post')->title('M1 POST')->addClass('text-center align-middle bg-light'),
-            Column::computed('m2_pre')->title('M2 PRE')->addClass('text-center align-middle bg-light'),
-            Column::computed('m2_post')->title('M2 POST')->addClass('text-center align-middle bg-light'),
-            Column::computed('m3_pre')->title('M3 PRE')->addClass('text-center align-middle bg-light'),
-            Column::computed('m3_post')->title('M3 POST')->addClass('text-center align-middle bg-light'),
-            Column::computed('m4_pre')->title('M4 PRE')->addClass('text-center align-middle bg-light'),
-            Column::computed('m4_post')->title('M4 POST')->addClass('text-center align-middle bg-light'),
-            Column::computed('m5_tugas')->title('M5 TGS')->addClass('text-center align-middle'),
-            Column::computed('nilai_tes')->title('NILAI TES')->addClass('text-center align-middle fw-bold bg-light'),
-            Column::computed('action')->title('ACT')->addClass('text-center align-middle')
-        ];
+                  ->addClass('text-center align-middle');
+        }
+
+        $columns[] = Column::make('DT_RowIndex')->title('NO')->orderable(false)->searchable(false)->addClass('text-center align-middle')->width(50);
+        $columns[] = Column::make('name')->title('NAMA MAHASISWA')->addClass('fw-bold align-middle')->width(200);
+        $columns[] = Column::computed('m1_pre')->title('M1 PRE')->addClass('text-center align-middle bg-light');
+        $columns[] = Column::computed('m1_post')->title('M1 POST')->addClass('text-center align-middle bg-light');
+        $columns[] = Column::computed('m2_pre')->title('M2 PRE')->addClass('text-center align-middle bg-light');
+        $columns[] = Column::computed('m2_post')->title('M2 POST')->addClass('text-center align-middle bg-light');
+        $columns[] = Column::computed('m3_pre')->title('M3 PRE')->addClass('text-center align-middle bg-light');
+        $columns[] = Column::computed('m3_post')->title('M3 POST')->addClass('text-center align-middle bg-light');
+        $columns[] = Column::computed('m4_pre')->title('M4 PRE')->addClass('text-center align-middle bg-light');
+        $columns[] = Column::computed('m4_post')->title('M4 POST')->addClass('text-center align-middle bg-light');
+        $columns[] = Column::computed('m5_tugas')->title('M5 TGS')->addClass('text-center align-middle');
+        $columns[] = Column::computed('nilai_tes')->title('NILAI TES')->addClass('text-center align-middle fw-bold bg-light');
+        $columns[] = Column::computed('action')->title('ACT')->addClass('text-center align-middle');
+
+        return $columns;
     }
 
     protected function filename(): string

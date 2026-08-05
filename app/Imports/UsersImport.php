@@ -41,47 +41,35 @@ class UsersImport implements ToModel, WithHeadingRow, SkipsEmptyRows
             'is_active'        => 1,
         ]);
 
-        AbsenPertama::create([
-            'user_id' => $user->id,
-            'hadir_pagi' => 'Belum Absen',
-            'hadir_sore' => 'Belum Absen',
-        ]);
+        AbsenPertama::firstOrCreate(
+            ['user_id' => $user->id],
+            ['hadir_pagi' => 'Belum Absen', 'hadir_sore' => 'Belum Absen']
+        );
 
-        AbsenKedua::create([
-            'user_id' => $user->id,
-            'hadir_pagi' => 'Belum Absen',
-            'hadir_sore' => 'Belum Absen',
-        ]);
+        AbsenKedua::firstOrCreate(
+            ['user_id' => $user->id],
+            ['hadir_pagi' => 'Belum Absen', 'hadir_sore' => 'Belum Absen']
+        );
 
-        AbsenKetiga::create([
-            'user_id' => $user->id,
-            'hadir_pagi' => 'Belum Absen',
-            'hadir_sore' => 'Belum Absen',
-        ]);
+        AbsenKetiga::firstOrCreate(
+            ['user_id' => $user->id],
+            ['hadir_pagi' => 'Belum Absen', 'hadir_sore' => 'Belum Absen']
+        );
 
-        KedisiplinanPertama::create([
-            'user_id' => $user->id,
-            'kelengkapan_atribut' => '-',
-            'ketepatan_waktu' => '-',
-            'perilaku' => '-',
-            'catatan' => '-',
-        ]);
+        KedisiplinanPertama::firstOrCreate(
+            ['user_id' => $user->id],
+            ['kelengkapan_atribut' => '-', 'ketepatan_waktu' => '-', 'perilaku' => '-', 'catatan' => '-']
+        );
 
-        KedisiplinanKedua::create([
-            'user_id' => $user->id,
-            'kelengkapan_atribut' => '-',
-            'ketepatan_waktu' => '-',
-            'perilaku' => '-',
-            'catatan' => '-',
-        ]);
+        KedisiplinanKedua::firstOrCreate(
+            ['user_id' => $user->id],
+            ['kelengkapan_atribut' => '-', 'ketepatan_waktu' => '-', 'perilaku' => '-', 'catatan' => '-']
+        );
 
-        KedisiplinanKetiga::create([
-            'user_id' => $user->id,
-            'kelengkapan_atribut' => '-',
-            'ketepatan_waktu' => '-',
-            'perilaku' => '-',
-            'catatan' => '-',
-        ]);
+        KedisiplinanKetiga::firstOrCreate(
+            ['user_id' => $user->id],
+            ['kelengkapan_atribut' => '-', 'ketepatan_waktu' => '-', 'perilaku' => '-', 'catatan' => '-']
+        );
 
         return $user;
     }

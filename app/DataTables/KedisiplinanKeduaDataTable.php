@@ -42,19 +42,43 @@ class KedisiplinanKeduaDataTable extends DataTable
                 ';
             })
             ->addColumn('user_name', function($item){
-                return $item->user->name;
+                $hasData = ($item->kelengkapan_atribut && $item->kelengkapan_atribut !== '-') ||
+                           ($item->ketepatan_waktu && $item->ketepatan_waktu !== '-') ||
+                           ($item->perilaku && $item->perilaku !== '-');
+                $badge = $hasData 
+                    ? '<span class="badge bg-success ms-2" title="Sudah Ada Data"><i class="fa-solid fa-circle-check"></i></span>' 
+                    : '<span class="badge bg-secondary ms-2" title="Belum Ada Data"><i class="fa-solid fa-circle-xmark"></i></span>';
+                return '<span>' . e($item->user->name ?? '-') . '</span>' . $badge;
             })
             ->editColumn('kelengkapan_atribut', function($item) {
-                return $item->kelengkapan_atribut ?? '-';
+                $val = $item->kelengkapan_atribut ?? '-';
+                if ($val === 'Lengkap') {
+                    return '<span class="badge bg-success"><i class="fa-solid fa-check me-1"></i>Lengkap</span>';
+                } elseif ($val === 'Tidak Lengkap') {
+                    return '<span class="badge bg-danger"><i class="fa-solid fa-xmark me-1"></i>Tidak Lengkap</span>';
+                }
+                return '<span class="badge bg-secondary">-</span>';
             })
             ->editColumn('ketepatan_waktu', function($item) {
-                return $item->ketepatan_waktu ?? '-';
+                $val = $item->ketepatan_waktu ?? '-';
+                if ($val === 'Tepat Waktu') {
+                    return '<span class="badge bg-success"><i class="fa-solid fa-clock me-1"></i>Tepat Waktu</span>';
+                } elseif ($val === 'Terlambat') {
+                    return '<span class="badge bg-warning text-dark"><i class="fa-solid fa-triangle-exclamation me-1"></i>Terlambat</span>';
+                }
+                return '<span class="badge bg-secondary">-</span>';
             })
             ->editColumn('perilaku', function($item) {
-                return $item->perilaku ?? '-';
+                $val = $item->perilaku ?? '-';
+                if ($val === 'Baik') {
+                    return '<span class="badge bg-success"><i class="fa-solid fa-thumbs-up me-1"></i>Baik</span>';
+                } elseif ($val === 'Tidak Baik') {
+                    return '<span class="badge bg-danger"><i class="fa-solid fa-thumbs-down me-1"></i>Tidak Baik</span>';
+                }
+                return '<span class="badge bg-secondary">-</span>';
             })
             ->editColumn('catatan', function($item) {
-                return $item->catatan ?? '-';
+                return e($item->catatan ?? '-');
             })
             ->filterColumn('user_name', function($query, $keyword) {
                 $query->whereHas('user', function($q) use ($keyword) {
@@ -62,7 +86,7 @@ class KedisiplinanKeduaDataTable extends DataTable
                       ->orWhere('id_pendaftar', 'like', "%{$keyword}%");
                 });
             })
-            ->rawColumns(['action', 'DT_RowIndex', 'checkbox']);
+            ->rawColumns(['action', 'DT_RowIndex', 'checkbox', 'user_name', 'kelengkapan_atribut', 'ketepatan_waktu', 'perilaku']);
     }
 
     /**
@@ -114,28 +138,31 @@ class KedisiplinanKeduaDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        $columns = [
-            Column::make('checkbox')
+        $columns = [];
+
+        if (in_array(Auth::user()->role, ['admin', 'stafbaak'])) {
+            $columns[] = Column::make('checkbox')
                 ->title('<input type="checkbox" id="select-all">')
                 ->orderable(false)
                 ->searchable(false)
                 ->width(30)
-                ->addClass('text-center'),
-            Column::make('DT_RowIndex')
-                ->title('NO')
-                ->orderable(false)
-                ->searchable(false),
-            Column::make('user_name')
-                ->title('Nama Pengguna'),
-            Column::make('kelengkapan_atribut')
-                ->title('Atribut'),
-            Column::make('ketepatan_waktu')
-                ->title('Waktu'),
-            Column::make('perilaku')
-                ->title('Perilaku'),
-            Column::make('catatan')
-                ->title('Catatan'),
-        ];
+                ->addClass('text-center');
+        }
+
+        $columns[] = Column::make('DT_RowIndex')
+            ->title('NO')
+            ->orderable(false)
+            ->searchable(false);
+        $columns[] = Column::make('user_name')
+            ->title('Nama Pengguna');
+        $columns[] = Column::make('kelengkapan_atribut')
+            ->title('Atribut');
+        $columns[] = Column::make('ketepatan_waktu')
+            ->title('Waktu');
+        $columns[] = Column::make('perilaku')
+            ->title('Perilaku');
+        $columns[] = Column::make('catatan')
+            ->title('Catatan');
 
         if (Auth::user()->role != 'mahasiswa') {
             $columns[] = Column::computed('action')

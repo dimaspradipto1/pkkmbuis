@@ -39,15 +39,26 @@
                                     <select name="user_id" id="user_id" class="form-select" required>
                                         <option value=""></option>
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                                {{ $user->name }} ({{ $user->id_pendaftar }})
+                                            @php
+                                                $kp = $user->kedisiplinanPertama;
+                                                $hasData = $kp && (
+                                                    ($kp->kelengkapan_atribut && $kp->kelengkapan_atribut !== '-') ||
+                                                    ($kp->ketepatan_waktu && $kp->ketepatan_waktu !== '-') ||
+                                                    ($kp->perilaku && $kp->perilaku !== '-')
+                                                );
+                                            @endphp
+                                            <option value="{{ $user->id }}" data-has-data="{{ $hasData ? '1' : '0' }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                                {{ $user->name }} ({{ $user->id_pendaftar }}) {{ $hasData ? '✓' : '' }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    <div id="already-exists-alert" class="alert alert-warning py-2 px-3 mt-2" style="display: none; border-radius: 8px;">
+                                        <i class="fa-solid fa-triangle-exclamation me-1"></i> <strong>Perhatian:</strong> Pengguna ini sudah memiliki data kedisiplinan Hari I. Menyimpan form ini akan <strong>memperbarui (update)</strong> data tersebut.
+                                    </div>
                                 </div>
                             </div>
 
-                             <div class="row mb-3">
+                            <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Kelengkapan Atribut</label>
                                 <div class="col-sm-10 d-flex align-items-center">
                                     <div class="form-check form-check-inline">
@@ -113,11 +124,35 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            function formatUserOption (opt) {
+                if (!opt.id) return opt.text;
+                var $element = $(opt.element);
+                var hasData = $element.data('has-data') == '1';
+                if (hasData) {
+                    return $('<span>' + opt.text.replace(' ✓', '') + ' <span class="badge bg-success ms-1" title="Sudah Ada Data"><i class="fa-solid fa-circle-check"></i></span></span>');
+                }
+                return $('<span>' + opt.text + ' <span class="badge bg-secondary ms-1" title="Belum Ada Data"><i class="fa-solid fa-circle-xmark"></i></span></span>');
+            }
+
             $('#user_id').select2({
                 theme: 'bootstrap-5',
                 placeholder: 'Pilih Pengguna...',
-                allowClear: true
+                allowClear: true,
+                templateResult: formatUserOption,
+                templateSelection: formatUserOption
             });
+
+            function checkSelectedUser() {
+                var selectedOpt = $('#user_id').find('option:selected');
+                if (selectedOpt.length && selectedOpt.data('has-data') == '1') {
+                    $('#already-exists-alert').slideDown();
+                } else {
+                    $('#already-exists-alert').slideUp();
+                }
+            }
+
+            $('#user_id').on('change', checkSelectedUser);
+            checkSelectedUser();
 
             $('input[type="radio"]:checked').each(function() {
                 $(this).data('was-checked', true);

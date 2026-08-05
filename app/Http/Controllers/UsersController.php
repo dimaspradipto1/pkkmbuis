@@ -82,29 +82,35 @@ class UsersController extends Controller
             'hadir_sore' => 'Belum Absen',
         ]);
 
-        KedisiplinanPertama::create([
-            'user_id' => $user->id,
-            'kelengkapan_atribut' => '-',
-            'ketepatan_waktu' => '-',
-            'perilaku' => '-',
-            'catatan' => '-',
-        ]);
+        KedisiplinanPertama::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'kelengkapan_atribut' => '-',
+                'ketepatan_waktu' => '-',
+                'perilaku' => '-',
+                'catatan' => '-',
+            ]
+        );
 
-        KedisiplinanKedua::create([
-            'user_id' => $user->id,
-            'kelengkapan_atribut' => '-',
-            'ketepatan_waktu' => '-',
-            'perilaku' => '-',
-            'catatan' => '-',
-        ]);
+        KedisiplinanKedua::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'kelengkapan_atribut' => '-',
+                'ketepatan_waktu' => '-',
+                'perilaku' => '-',
+                'catatan' => '-',
+            ]
+        );
 
-        KedisiplinanKetiga::create([
-            'user_id' => $user->id,
-            'kelengkapan_atribut' => '-',
-            'ketepatan_waktu' => '-',
-            'perilaku' => '-',
-            'catatan' => '-',
-        ]);
+        KedisiplinanKetiga::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'kelengkapan_atribut' => '-',
+                'ketepatan_waktu' => '-',
+                'perilaku' => '-',
+                'catatan' => '-',
+            ]
+        );
 
         Alert::success('User berhasil ditambahkan.', 'Success')
             ->toToast()

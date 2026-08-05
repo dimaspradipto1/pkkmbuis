@@ -351,67 +351,71 @@
     {{-- SweetAlert2 JS --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Global SweetAlert2 confirm for onsubmit / onclick confirm()
-        document.addEventListener('submit', function (e) {
-            const form = e.target;
-            const onsubmitAttr = form.getAttribute('onsubmit');
-            if (onsubmitAttr && onsubmitAttr.includes('confirm(')) {
-                e.preventDefault();
-                let match = onsubmitAttr.match(/confirm\(['"](.*?)['"]\)/);
-                let message = match ? match[1] : 'Apakah Anda yakin?';
-                
-                form.removeAttribute('onsubmit');
-                
+        // Global SweetAlert2 confirm handler for any element or form with confirm()
+        (function () {
+            function handleConfirm(title, text, onConfirm) {
                 Swal.fire({
-                    title: 'Konfirmasi Akses',
-                    text: message,
+                    title: title || 'Konfirmasi Hapus',
+                    text: text || 'Apakah Anda yakin ingin menghapus data ini?',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Lanjutkan!',
+                    confirmButtonText: 'Ya, Hapus!',
                     cancelButtonText: 'Batal',
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        form.submit();
-                    } else {
-                        form.setAttribute('onsubmit', onsubmitAttr);
+                        onConfirm();
                     }
                 });
             }
-        }, true);
 
-        $(document).on('click', 'button[onclick*="confirm("], a[onclick*="confirm("]', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const btn = this;
-            const onclickAttr = $(btn).attr('onclick');
-            let match = onclickAttr ? onclickAttr.match(/confirm\(['"](.*?)['"]\)/) : null;
-            let message = match ? match[1] : 'Apakah Anda yakin?';
-            const form = $(btn).closest('form');
+            function extractConfirmMessage(attrVal) {
+                if (!attrVal) return null;
+                let match = attrVal.match(/confirm\(['"](.*?)['"]\)/);
+                return match ? match[1] : null;
+            }
 
-            Swal.fire({
-                title: 'Konfirmasi Akses',
-                text: message,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, Lanjutkan!',
-                cancelButtonText: 'Batal',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (form.length) {
-                        $(btn).removeAttr('onclick');
-                        form.submit();
-                    } else if ($(btn).is('a') && $(btn).attr('href')) {
-                        window.location.href = $(btn).attr('href');
-                    }
+            // Intercept click on elements with onclick attribute containing confirm() in CAPTURE phase
+            document.addEventListener('click', function (e) {
+                const target = e.target.closest('[onclick*="confirm("]');
+                if (!target) return;
+
+                const onclickAttr = target.getAttribute('onclick');
+                const message = extractConfirmMessage(onclickAttr);
+                if (message !== null) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+
+                    const form = target.closest('form');
+                    handleConfirm('Konfirmasi Hapus', message, function () {
+                        if (form) {
+                            HTMLFormElement.prototype.submit.call(form);
+                        } else if (target.tagName === 'A' && target.href) {
+                            window.location.href = target.href;
+                        }
+                    });
                 }
-            });
-        });
+            }, true);
+
+            // Intercept submit on forms with onsubmit attribute containing confirm() in CAPTURE phase
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+                const onsubmitAttr = form.getAttribute('onsubmit');
+                const message = extractConfirmMessage(onsubmitAttr);
+                if (message !== null) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+
+                    handleConfirm('Konfirmasi Hapus', message, function () {
+                        HTMLFormElement.prototype.submit.call(form);
+                    });
+                }
+            }, true);
+        })();
     </script>
 
     @if (Auth::check() && Auth::user()->role != 'mahasiswa')

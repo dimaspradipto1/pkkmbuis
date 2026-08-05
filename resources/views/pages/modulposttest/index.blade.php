@@ -240,6 +240,28 @@
                                 <!-- Post Test Tab Content -->
                                 <div class="tab-pane fade {{ session('active_tab') == 'posttest' ? 'show active' : '' }}" id="posttest" role="tabpanel" aria-labelledby="posttest-tab">
                                     <div class="py-2">
+                                        @if (Auth::user()->role != 'mahasiswa')
+                                            <div class="alert alert-light border border-warning shadow-sm mb-4 rounded-3 p-3">
+                                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                                    <div>
+                                                        <strong class="text-dark"><i class="bi bi-shield-lock-fill text-warning me-1 fs-5"></i> Status Akses Sesi Post Test Modul {{ $id }}:</strong>
+                                                        @if ($posttest_is_active)
+                                                            <span class="badge bg-success px-3 py-2 ms-2"><i class="bi bi-check-circle-fill me-1"></i> Sesi DIBUKA (Aktif)</span>
+                                                        @else
+                                                            <span class="badge bg-danger px-3 py-2 ms-2"><i class="bi bi-x-circle-fill me-1"></i> Sesi DITUTUP (Nonaktif)</span>
+                                                        @endif
+                                                    </div>
+                                                    <form action="{{ route('modulposttest.toggle-active', $id) }}" method="POST" class="d-inline m-0">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm {{ $posttest_is_active ? 'btn-danger' : 'btn-success' }} px-3 rounded shadow-sm fw-bold">
+                                                            <i class="bi {{ $posttest_is_active ? 'bi-lock-fill' : 'bi-unlock-fill' }} me-1"></i>
+                                                            {{ $posttest_is_active ? 'Tutup Sesi Post Test' : 'Buka Sesi Post Test' }}
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @endif
+
                                         @if($hasil_post)
                                             <div class="alert alert-success border-0 shadow-sm d-flex align-items-center mb-4">
                                                 <i class="bi bi-star-fill fs-4 me-3 text-warning"></i>
@@ -250,87 +272,102 @@
                                             </div>
                                         @endif
 
-                                        <form action="{{ route('modulposttest.store') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="modul_id" value="{{ $id }}">
-                                            <input type="hidden" name="type" value="posttest">
+                                        @if (Auth::user()->role == 'mahasiswa' && !$posttest_is_active && !$hasil_post)
+                                            <div class="text-center py-5">
+                                                <div class="mb-3">
+                                                    <i class="bi bi-shield-lock-fill text-danger" style="font-size: 4rem;"></i>
+                                                </div>
+                                                <h5 class="fw-bold text-dark mb-2">Sesi Post Test Modul {{ $id }} Belum Aktif</h5>
+                                                <p class="text-muted max-w-lg mx-auto mb-4" style="max-width: 480px;">
+                                                    Sesi Post Test untuk Modul {{ $id }} saat ini sedang ditutup/dinonaktifkan oleh Admin untuk mencegah kecurangan. Silakan tunggu hingga sesi ujian dibuka oleh panitia.
+                                                </p>
+                                                <a href="{{ route('modulposttest.index', ['modul' => $id]) }}" class="btn btn-outline-primary btn-sm px-3 rounded-pill">
+                                                    <i class="bi bi-arrow-clockwise me-1"></i> Muat Ulang Halaman
+                                                </a>
+                                            </div>
+                                        @else
+                                            <form action="{{ route('modulposttest.store') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="modul_id" value="{{ $id }}">
+                                                <input type="hidden" name="type" value="posttest">
 
-                                            @foreach ($questions_post as $index => $q)
-                                                <div class="mb-4 pb-3 border-bottom last-border-none">
-                                                    <p class="fw-bold mb-3">{{ $index + 1 }}. {{ $q->soal }}</p>
-                                                    <div class="row g-3">
-                                                        @php
-                                                            $saved_jawaban_post = $hasil_post ? json_decode($hasil_post->jawaban, true) : null;
-                                                            $user_ans_post = $saved_jawaban_post[$q->id] ?? null;
-                                                        @endphp
-                                                        <div class="col-md-6">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="post_soal_{{ $q->id }}"
-                                                                    id="post_q{{ $q->id }}_a" value="A"
-                                                                    {{ $user_ans_post == 'A' ? 'checked' : '' }}
-                                                                    {{ $hasil_post ? 'disabled' : 'required' }}>
-                                                                <label class="form-check-label text-muted"
-                                                                    for="post_q{{ $q->id }}_a">
-                                                                    <span class="fw-bold text-dark">A.</span>
-                                                                    {{ $q->pilihan_a }}
-                                                                </label>
+                                                @foreach ($questions_post as $index => $q)
+                                                    <div class="mb-4 pb-3 border-bottom last-border-none">
+                                                        <p class="fw-bold mb-3">{{ $index + 1 }}. {{ $q->soal }}</p>
+                                                        <div class="row g-3">
+                                                            @php
+                                                                $saved_jawaban_post = $hasil_post ? json_decode($hasil_post->jawaban, true) : null;
+                                                                $user_ans_post = $saved_jawaban_post[$q->id] ?? null;
+                                                            @endphp
+                                                            <div class="col-md-6">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="post_soal_{{ $q->id }}"
+                                                                        id="post_q{{ $q->id }}_a" value="A"
+                                                                        {{ $user_ans_post == 'A' ? 'checked' : '' }}
+                                                                        {{ $hasil_post ? 'disabled' : 'required' }}>
+                                                                    <label class="form-check-label text-muted"
+                                                                        for="post_q{{ $q->id }}_a">
+                                                                        <span class="fw-bold text-dark">A.</span>
+                                                                        {{ $q->pilihan_a }}
+                                                                    </label>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="post_soal_{{ $q->id }}"
-                                                                    id="post_q{{ $q->id }}_b" value="B"
-                                                                    {{ $user_ans_post == 'B' ? 'checked' : '' }}
-                                                                    {{ $hasil_post ? 'disabled' : 'required' }}>
-                                                                <label class="form-check-label text-muted"
-                                                                    for="post_q{{ $q->id }}_b">
-                                                                    <span class="fw-bold text-dark">B.</span>
-                                                                    {{ $q->pilihan_b }}
-                                                                </label>
+                                                            <div class="col-md-6">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="post_soal_{{ $q->id }}"
+                                                                        id="post_q{{ $q->id }}_b" value="B"
+                                                                        {{ $user_ans_post == 'B' ? 'checked' : '' }}
+                                                                        {{ $hasil_post ? 'disabled' : 'required' }}>
+                                                                    <label class="form-check-label text-muted"
+                                                                        for="post_q{{ $q->id }}_b">
+                                                                        <span class="fw-bold text-dark">B.</span>
+                                                                        {{ $q->pilihan_b }}
+                                                                    </label>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="post_soal_{{ $q->id }}"
-                                                                    id="post_q{{ $q->id }}_c" value="C"
-                                                                    {{ $user_ans_post == 'C' ? 'checked' : '' }}
-                                                                    {{ $hasil_post ? 'disabled' : 'required' }}>
-                                                                <label class="form-check-label text-muted"
-                                                                    for="post_q{{ $q->id }}_c">
-                                                                    <span class="fw-bold text-dark">C.</span>
-                                                                    {{ $q->pilihan_c }}
-                                                                </label>
+                                                            <div class="col-md-6">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="post_soal_{{ $q->id }}"
+                                                                        id="post_q{{ $q->id }}_c" value="C"
+                                                                        {{ $user_ans_post == 'C' ? 'checked' : '' }}
+                                                                        {{ $hasil_post ? 'disabled' : 'required' }}>
+                                                                    <label class="form-check-label text-muted"
+                                                                        for="post_q{{ $q->id }}_c">
+                                                                        <span class="fw-bold text-dark">C.</span>
+                                                                        {{ $q->pilihan_c }}
+                                                                    </label>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="post_soal_{{ $q->id }}"
-                                                                    id="post_q{{ $q->id }}_d" value="D"
-                                                                    {{ $user_ans_post == 'D' ? 'checked' : '' }}
-                                                                    {{ $hasil_post ? 'disabled' : 'required' }}>
-                                                                <label class="form-check-label text-muted"
-                                                                    for="post_q{{ $q->id }}_d">
-                                                                    <span class="fw-bold text-dark">D.</span>
-                                                                    {{ $q->pilihan_d }}
-                                                                </label>
+                                                            <div class="col-md-6">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="post_soal_{{ $q->id }}"
+                                                                        id="post_q{{ $q->id }}_d" value="D"
+                                                                        {{ $user_ans_post == 'D' ? 'checked' : '' }}
+                                                                        {{ $hasil_post ? 'disabled' : 'required' }}>
+                                                                    <label class="form-check-label text-muted"
+                                                                        for="post_q{{ $q->id }}_d">
+                                                                        <span class="fw-bold text-dark">D.</span>
+                                                                        {{ $q->pilihan_d }}
+                                                                    </label>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
-                                            @if (count($questions_post) == 0)
-                                                <p class="text-center text-muted my-5">Belum ada soal post test.</p>
-                                            @elseif (!$hasil_post)
-                                                <div class="text-end mt-4">
-                                                    <button type="submit" class="btn btn-success px-4">Submit
-                                                        JAWABAN POST TEST</button>
-                                                </div>
-                                            @endif
-                                        </form>
+                                                @endforeach
+                                                @if (count($questions_post) == 0)
+                                                    <p class="text-center text-muted my-5">Belum ada soal post test.</p>
+                                                @elseif (!$hasil_post)
+                                                    <div class="text-end mt-4">
+                                                        <button type="submit" class="btn btn-success px-4">Submit
+                                                            JAWABAN POST TEST</button>
+                                                    </div>
+                                                @endif
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
                             @else

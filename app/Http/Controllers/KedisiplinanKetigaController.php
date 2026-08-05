@@ -30,9 +30,9 @@ class KedisiplinanKetigaController extends Controller
         $authUser = Auth::user();
         if ($authUser->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
-            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->with('kedisiplinanKetiga')->orderBy('name')->get();
         } else {
-            $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->with('kedisiplinanKetiga')->orderBy('name')->get();
         }
         return view('pages.kedisiplinanketiga.create', compact('users'));
     }
@@ -50,9 +50,12 @@ class KedisiplinanKetigaController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
-        KedisiplinanKetiga::create($validated);
+        KedisiplinanKetiga::updateOrCreate(
+            ['user_id' => $validated['user_id']],
+            $validated
+        );
 
-        Alert::success('Kedisiplinan berhasil ditambahkan.', 'Success')
+        Alert::success('Kedisiplinan berhasil disimpan.', 'Success')
             ->toToast()
             ->autoClose(3000);
 
@@ -90,7 +93,16 @@ class KedisiplinanKetigaController extends Controller
             'catatan' => 'nullable|string',
         ]);
 
-        $kedisiplinanKetiga->update($validated);
+        $existingOther = KedisiplinanKetiga::where('user_id', $validated['user_id'])
+            ->where('id', '!=', $id)
+            ->first();
+
+        if ($existingOther) {
+            $existingOther->update($validated);
+            $kedisiplinanKetiga->delete();
+        } else {
+            $kedisiplinanKetiga->update($validated);
+        }
 
         Alert::success('Kedisiplinan berhasil diperbarui.', 'Success')
             ->toToast()

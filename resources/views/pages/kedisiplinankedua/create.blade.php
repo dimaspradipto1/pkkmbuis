@@ -39,11 +39,22 @@
                                     <select name="user_id" id="user_id" class="form-select" required>
                                         <option value=""></option>
                                         @foreach($users as $user)
-                                            <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                                {{ $user->name }} ({{ $user->id_pendaftar }})
+                                            @php
+                                                $kp = $user->kedisiplinanKedua;
+                                                $hasData = $kp && (
+                                                    ($kp->kelengkapan_atribut && $kp->kelengkapan_atribut !== '-') ||
+                                                    ($kp->ketepatan_waktu && $kp->ketepatan_waktu !== '-') ||
+                                                    ($kp->perilaku && $kp->perilaku !== '-')
+                                                );
+                                            @endphp
+                                            <option value="{{ $user->id }}" data-has-data="{{ $hasData ? '1' : '0' }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                                {{ $user->name }} ({{ $user->id_pendaftar }}) {{ $hasData ? '✓ [Sudah Ada Data]' : '' }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    <div id="already-exists-alert" class="alert alert-warning py-2 px-3 mt-2" style="display: none; border-radius: 8px;">
+                                        <i class="fa-solid fa-triangle-exclamation me-1"></i> <strong>Perhatian:</strong> Pengguna ini sudah memiliki data kedisiplinan Hari II. Menyimpan form ini akan <strong>memperbarui (update)</strong> data tersebut.
+                                    </div>
                                 </div>
                             </div>
 
@@ -113,11 +124,35 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            function formatUserOption (opt) {
+                if (!opt.id) return opt.text;
+                var $element = $(opt.element);
+                var hasData = $element.data('has-data') == '1';
+                if (hasData) {
+                    return $('<span>' + opt.text.replace(' ✓ [Sudah Ada Data]', '') + ' <span class="badge bg-success ms-1"><i class="fa-solid fa-circle-check me-1"></i>Sudah Ada Data</span></span>');
+                }
+                return $('<span>' + opt.text + ' <span class="badge bg-secondary ms-1">Belum Ada Data</span></span>');
+            }
+
             $('#user_id').select2({
                 theme: 'bootstrap-5',
                 placeholder: 'Pilih Pengguna...',
-                allowClear: true
+                allowClear: true,
+                templateResult: formatUserOption,
+                templateSelection: formatUserOption
             });
+
+            function checkSelectedUser() {
+                var selectedOpt = $('#user_id').find('option:selected');
+                if (selectedOpt.length && selectedOpt.data('has-data') == '1') {
+                    $('#already-exists-alert').slideDown();
+                } else {
+                    $('#already-exists-alert').slideUp();
+                }
+            }
+
+            $('#user_id').on('change', checkSelectedUser);
+            checkSelectedUser();
 
             $('input[type="radio"]:checked').each(function() {
                 $(this).data('was-checked', true);

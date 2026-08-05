@@ -301,10 +301,21 @@
                   </li>
 
                   <li class="nav-item">
-                      <a class="nav-link {{ request()->routeIs('sertifikatsetting.*') ? '' : 'collapsed' }}" href="{{ route('sertifikatsetting.index') }}">
-                          <i class="bi bi-patch-check-fill text-primary"></i>
-                          <span>Sertifikat</span>
+                      <a class="nav-link {{ (request()->routeIs('sertifikatsetting.*') || request()->routeIs('kelulusan.*')) ? '' : 'collapsed' }}" data-bs-target="#sertifikat-nav" data-bs-toggle="collapse" href="#">
+                          <i class="bi bi-patch-check-fill text-primary"></i><span>Sertifikat & Kelulusan</span><i class="bi bi-chevron-down ms-auto"></i>
                       </a>
+                      <ul id="sertifikat-nav" class="nav-content collapse {{ (request()->routeIs('sertifikatsetting.*') || request()->routeIs('kelulusan.*')) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                          <li>
+                              <a href="{{ route('sertifikatsetting.index') }}" class="{{ request()->routeIs('sertifikatsetting.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Pengaturan Template Sertifikat</span>
+                              </a>
+                          </li>
+                          <li>
+                              <a href="{{ route('kelulusan.index') }}" class="{{ request()->routeIs('kelulusan.*') ? 'active' : '' }}">
+                                  <i class="bi bi-circle"></i><span>Status Kelulusan & Buka Sertifikat</span>
+                              </a>
+                          </li>
+                      </ul>
                   </li>
 
                   <li class="nav-item">

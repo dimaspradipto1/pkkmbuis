@@ -26,9 +26,27 @@
 
         <div class="row">
             <div class="col-lg-12">
-                <div class="card">
+                <div class="card shadow-sm border-0 rounded-4">
                     <div class="card-body">
-                        <h5 class="card-title">Daftar Status Kelulusan</h5>
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                            <h5 class="card-title mb-0">Daftar Status Kelulusan & Sertifikat</h5>
+                            <div class="d-flex gap-2">
+                                <form action="{{ route('kelulusan.bulkToggle') }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin MENAMPILKAN / MEMBUKA sertifikat & hasil kelulusan untuk SELURUH mahasiswa?')">
+                                    @csrf
+                                    <input type="hidden" name="action" value="enable_all">
+                                    <button type="submit" class="btn btn-success btn-sm rounded shadow-sm px-3 fw-bold">
+                                        <i class="bi bi-eye-fill me-1"></i> Buka Semua Tampilan Sertifikat
+                                    </button>
+                                </form>
+                                <form action="{{ route('kelulusan.bulkToggle') }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin MENYEMBUNYIKAN / MENUTUP sertifikat & hasil kelulusan untuk SELURUH mahasiswa?')">
+                                    @csrf
+                                    <input type="hidden" name="action" value="disable_all">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded shadow-sm px-3 fw-bold">
+                                        <i class="bi bi-eye-slash-fill me-1"></i> Tutup Semua Tampilan Sertifikat
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                         <div class="table-responsive">
                             {!! $dataTable->table() !!}
                         </div>

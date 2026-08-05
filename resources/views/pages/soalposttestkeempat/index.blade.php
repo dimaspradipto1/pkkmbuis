@@ -9,6 +9,30 @@
     </div>
     <section class="section">
         <div class="row"><div class="col-lg-12">
+            @if (Auth::user()->role != 'mahasiswa')
+                @php
+                    $posttest_is_active = \App\Models\PostTestSetting::isActive(4);
+                @endphp
+                <div class="alert alert-light border border-warning shadow-sm mb-3 rounded-3 p-3">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <strong class="text-dark"><i class="bi bi-shield-lock-fill text-warning me-1 fs-5"></i> Status Akses Sesi Post Test Hari IV (Modul 4):</strong>
+                            @if ($posttest_is_active)
+                                <span class="badge bg-success px-3 py-2 ms-2"><i class="bi bi-check-circle-fill me-1"></i> Sesi DIBUKA (Aktif)</span>
+                            @else
+                                <span class="badge bg-danger px-3 py-2 ms-2"><i class="bi bi-x-circle-fill me-1"></i> Sesi DITUTUP (Nonaktif)</span>
+                            @endif
+                        </div>
+                        <form action="{{ route('modulposttest.toggle-active', 4) }}" method="POST" class="d-inline m-0">
+                            @csrf
+                            <button type="submit" class="btn btn-sm {{ $posttest_is_active ? 'btn-danger' : 'btn-success' }} px-3 rounded shadow-sm fw-bold">
+                                <i class="bi {{ $posttest_is_active ? 'bi-lock-fill' : 'bi-unlock-fill' }} me-1"></i>
+                                {{ $posttest_is_active ? 'Tutup Sesi Post Test' : 'Buka Sesi Post Test' }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @endif
             <div class="card"><div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="card-title">List Soal Post Test Hari IV</h5>
