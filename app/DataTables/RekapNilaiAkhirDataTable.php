@@ -51,10 +51,10 @@ class RekapNilaiAkhirDataTable extends DataTable
                 
                 foreach ($records as $rec) {
                     if ($rec) {
-                        // Strict Matching: ONLY award if status is the highest honor
+                        // Award if status is complete/good
                         if (strtolower($rec->kelengkapan_atribut ?? '') === 'lengkap') $points++;
                         if (strtolower($rec->ketepatan_waktu ?? '') === 'tepat waktu') $points++;
-                        if (strtolower($rec->perilaku ?? '') === 'sangat baik') $points++;
+                        if (in_array(strtolower($rec->perilaku ?? ''), ['baik', 'sangat baik'])) $points++;
                     }
                 }
                 return round(($points / 9) * 100, 2);
@@ -83,14 +83,14 @@ class RekapNilaiAkhirDataTable extends DataTable
                 }
                 $scoreAbs = ($absPoints / 6) * 100;
 
-                // 4. Disiplin Score (9 metrics) - Strict Honors Only
+                // 4. Disiplin Score (9 metrics)
                 $disPoints = 0;
                 $disRecords = [$row->kedisiplinanPertama, $row->kedisiplinanKedua, $row->kedisiplinanKetiga];
                 foreach ($disRecords as $rec) {
                     if ($rec) {
                         if (strtolower($rec->kelengkapan_atribut ?? '') === 'lengkap') $disPoints++;
                         if (strtolower($rec->ketepatan_waktu ?? '') === 'tepat waktu') $disPoints++;
-                        if (strtolower($rec->perilaku ?? '') === 'sangat baik') $disPoints++;
+                        if (in_array(strtolower($rec->perilaku ?? ''), ['baik', 'sangat baik'])) $disPoints++;
                     }
                 }
                 $scoreDis = ($disPoints / 9) * 100;

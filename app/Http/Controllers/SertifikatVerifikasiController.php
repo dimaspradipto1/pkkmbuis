@@ -86,13 +86,13 @@ class SertifikatVerifikasiController extends Controller
             if ($di) {
                 if (strtolower($di->kelengkapan_atribut ?? '') === 'lengkap') $disPoints++;
                 if (strtolower($di->ketepatan_waktu ?? '') === 'tepat waktu') $disPoints++;
-                if (strtolower($di->perilaku ?? '') === 'sangat baik') $disPoints++;
+                if (in_array(strtolower($di->perilaku ?? ''), ['baik', 'sangat baik'])) $disPoints++;
             }
         }
         $scoreDisRaw = ($disPoints / 9) * 100;
 
         $finalScore = $scoreTestsRaw * 0.2 + $scoreAbsRaw * 0.5 + $scoreDisRaw * 0.3;
-        $isPassed = $isAllComplete && $finalScore >= 65;
+        $isPassed = ($isAllComplete && $finalScore >= 65) || (bool) $user->kelulusan_is_active;
 
         return view('pages.sertifikat-verifikasi.show', [
             'user' => $user,

@@ -1989,13 +1989,13 @@
                                     if ($myDi) {
                                         if (strtolower($myDi->kelengkapan_atribut ?? '') === 'lengkap') $disPoints++;
                                         if (strtolower($myDi->ketepatan_waktu ?? '') === 'tepat waktu') $disPoints++;
-                                        if (strtolower($myDi->perilaku ?? '') === 'sangat baik') $disPoints++;
+                                        if (in_array(strtolower($myDi->perilaku ?? ''), ['baik', 'sangat baik'])) $disPoints++;
                                     }
                                 }
                                 $scoreDisRaw = ($disPoints / 9) * 100;
 
                                 $finalScore = $scoreTestsRaw * 0.2 + $scoreAbsRaw * 0.5 + $scoreDisRaw * 0.3;
-                                $isPassed = $finalScore >= 65;
+                                $isPassed = $finalScore >= 65 || (bool) $user->kelulusan_is_active;
 
                                 // Admin can force-publish the result for a specific mahasiswa
                                 // even before every component is complete.

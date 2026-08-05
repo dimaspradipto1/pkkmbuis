@@ -149,13 +149,19 @@ class KelulusanDataTable extends DataTable
         }
         $absComplete = $absCount >= 6;
 
-        $disCount = 0;
+        $disPoints = 0;
+        $disDayCount = 0;
         foreach ([$row->kedisiplinanPertama, $row->kedisiplinanKedua, $row->kedisiplinanKetiga] as $di) {
             if ($di && !empty($di->kelengkapan_atribut) && !empty($di->ketepatan_waktu) && !empty($di->perilaku)) {
-                $disCount++;
+                $disDayCount++;
+            }
+            if ($di) {
+                if (strtolower($di->kelengkapan_atribut ?? '') === 'lengkap') $disPoints++;
+                if (strtolower($di->ketepatan_waktu ?? '') === 'tepat waktu') $disPoints++;
+                if (in_array(strtolower($di->perilaku ?? ''), ['baik', 'sangat baik'])) $disPoints++;
             }
         }
-        $disComplete = $disCount >= 3;
+        $disComplete = $disDayCount >= 3;
 
         $pretestComplete = $row->hasilTests->where('type', 'pretest')->pluck('modul')->unique()->count() >= 4;
         $posttestComplete = $row->hasilTests->where('type', 'posttest')->pluck('modul')->unique()->count() >= 4;
@@ -172,10 +178,10 @@ class KelulusanDataTable extends DataTable
         $sumTests = $row->hasilTests->sum('skor') + ($tugasComplete ? 100 : 0);
         $scoreTestsRaw = $sumTests / 9;
         $scoreAbsRaw = ($absCount / 6) * 100;
-        $scoreDisRaw = ($disCount / 9) * 100;
+        $scoreDisRaw = ($disPoints / 9) * 100;
 
         $finalScore = $scoreTestsRaw * 0.2 + $scoreAbsRaw * 0.5 + $scoreDisRaw * 0.3;
-        $isPassed = $finalScore >= 65;
+        $isPassed = $finalScore >= 65 || (bool) $row->kelulusan_is_active;
 
         return [$isAllComplete, $isPassed, $finalScore];
     }
