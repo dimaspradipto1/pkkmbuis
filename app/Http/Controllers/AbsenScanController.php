@@ -217,7 +217,14 @@ class AbsenScanController extends Controller
                 ]);
             }
 
-            $absen->update([$map['col'] => 'Hadir']);
+            $updateData = [$map['col'] => 'Hadir'];
+            // Catat waktu sesuai sesi (datang atau pulang)
+            if ($map['col'] === 'hadir_pagi') {
+                $updateData['waktu_datang'] = now();
+            } else {
+                $updateData['waktu_pulang'] = now();
+            }
+            $absen->update($updateData);
 
             return response()->json([
                 'success' => true,
@@ -260,7 +267,14 @@ class AbsenScanController extends Controller
                 ['hadir_pagi' => 'Belum Absen', 'hadir_sore' => 'Belum Absen']
             );
 
-            $absen->update([$sesi => 'Hadir']);
+            $updateData = [$sesi => 'Hadir'];
+            // Catat waktu sesuai sesi
+            if ($sesi === 'hadir_pagi') {
+                $updateData['waktu_datang'] = now();
+            } else {
+                $updateData['waktu_pulang'] = now();
+            }
+            $absen->update($updateData);
 
             return response()->json([
                 'success' => true,

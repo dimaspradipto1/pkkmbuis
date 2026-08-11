@@ -28,10 +28,10 @@
                             <label class="form-label d-block fw-bold">Sesi Absensi (Khusus Admin)</label>
                             <div class="btn-group w-100" role="group">
                                 <input type="radio" class="btn-check" name="sesi_scan" id="pagi" value="hadir_pagi" checked>
-                                <label class="btn btn-outline-success" for="pagi"><i class="bi bi-sun me-1"></i> Sesi Pagi</label>
+                                <label class="btn btn-outline-success" for="pagi"><i class="bi bi-sun me-1"></i> Sesi Datang</label>
 
                                 <input type="radio" class="btn-check" name="sesi_scan" id="sore" value="hadir_sore">
-                                <label class="btn btn-outline-night" for="sore"><i class="bi bi-moon-stars me-1"></i> Sesi Sore</label>
+                                <label class="btn btn-outline-night" for="sore"><i class="bi bi-moon-stars me-1"></i> Sesi Pulang</label>
                             </div>
                         </div>
                         @else

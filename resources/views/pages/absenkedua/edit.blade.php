@@ -50,7 +50,7 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label class="col-sm-3 col-form-label text-nowrap">Hadir Pagi</label>
+                                <label class="col-sm-3 col-form-label text-nowrap">Hadir Datang</label>
                                 <div class="col-sm-9 d-flex align-items-center">
                                     <div class="form-check form-check-inline me-4">
                                         <input class="form-check-input" type="radio" name="hadir_pagi" id="pagi_hadir" value="Hadir" {{ old('hadir_pagi', $absenKedua->hadir_pagi) == 'Hadir' ? 'checked' : '' }}>
@@ -68,7 +68,7 @@
                             </div>
 
                             <div class="row mb-3" id="container_hadir_sore">
-                                <label class="col-sm-3 col-form-label text-nowrap">Hadir Sore</label>
+                                <label class="col-sm-3 col-form-label text-nowrap">Hadir Pulang</label>
                                 <div class="col-sm-9 d-flex align-items-center">
                                     <div class="form-check form-check-inline me-4">
                                         <input class="form-check-input" type="radio" name="hadir_sore" id="sore_hadir" value="Hadir" {{ old('hadir_sore', $absenKedua->hadir_sore) == 'Hadir' ? 'checked' : '' }}>
@@ -86,10 +86,10 @@
                             </div>
 
                             <div class="row mb-3" id="container_catatan" style="display: none;">
-                                <label for="catatan" class="col-sm-3 col-form-label text-nowrap">Catatan & Bukti <span class="text-danger" id="catatan_asterisk" style="display: none;">*</span></label>
+                                <label for="catatan" class="col-sm-3 col-form-label text-nowrap">Catatan & Bukti <span class="text-muted small">(Opsional)</span></label>
                                 <div class="col-sm-9">
                                     <textarea name="catatan" id="catatan" class="form-control mb-3" rows="3" placeholder="Masukkan alasan / catatan (Izin / Tidak Hadir)...">{{ old('catatan', $absenKedua->catatan ?? '') }}</textarea>
-                                    <label for="bukti_izin" class="form-label fw-semibold text-secondary small">Upload Bukti (PNG, JPG, JPEG, WEBP) <span class="text-danger" id="bukti_asterisk" style="display: none;">*</span></label>
+                                    <label for="bukti_izin" class="form-label fw-semibold text-secondary small">Upload Bukti (PNG, JPG, JPEG, WEBP)</label>
                                     <input type="file" name="bukti_izin" id="bukti_izin" class="form-control" accept="image/png,image/jpeg,image/jpg,image/webp">
                                     
                                     <div id="preview_container" class="mt-3" style="{{ !empty($absenKedua->bukti_izin) ? '' : 'display: none;' }}">
@@ -134,17 +134,8 @@
 
                 if (isNonHadirPagi || isNonHadirSore) {
                     $('#container_catatan').slideDown(200);
-                    $('#catatan_asterisk').show();
-                    var hasExistingBukti = $('#preview_container').is(':visible') && $('#image_preview').attr('src') !== '';
-                    if (!hasExistingBukti) {
-                        $('#bukti_asterisk').show();
-                    } else {
-                        $('#bukti_asterisk').hide();
-                    }
                 } else {
                     $('#container_catatan').slideUp(200);
-                    $('#catatan_asterisk').hide();
-                    $('#bukti_asterisk').hide();
                 }
             }
 
@@ -177,7 +168,6 @@
                         $('#image_preview').attr('src', evt.target.result);
                         $('#preview_link').attr('href', evt.target.result);
                         $('#preview_container').slideDown(200);
-                        $('#bukti_asterisk').hide();
                     };
                     reader.readAsDataURL(file);
                 } else {
@@ -185,11 +175,9 @@
                         $('#image_preview').attr('src', "{{ asset('storage/' . $absenKedua->bukti_izin) }}");
                         $('#preview_link').attr('href', "{{ asset('storage/' . $absenKedua->bukti_izin) }}");
                         $('#preview_container').show();
-                        $('#bukti_asterisk').hide();
                     @else
                         $('#preview_container').slideUp(200);
                         $('#image_preview').attr('src', '');
-                        $('#bukti_asterisk').show();
                     @endif
                 }
             });
@@ -209,36 +197,6 @@
                         alert('Silakan pilih Nama Pengguna terlebih dahulu!');
                     }
                     return false;
-                }
-
-                var valPagi = $('input[name="hadir_pagi"]:checked').val();
-                var valSore = $('input[name="hadir_sore"]:checked').val();
-                var isNonHadir = (valPagi === 'Izin' || valPagi === 'Tidak Hadir' || valSore === 'Izin' || valSore === 'Tidak Hadir');
-
-                if (isNonHadir) {
-                    var catatan = $('#catatan').val().trim();
-                    var hasBuktiFile = $('#bukti_izin')[0].files && $('#bukti_izin')[0].files.length > 0;
-                    var hasExistingBukti = $('#preview_container').is(':visible') && $('#image_preview').attr('src') !== '';
-
-                    if (!catatan || (!hasBuktiFile && !hasExistingBukti)) {
-                        e.preventDefault();
-                        if (typeof Swal !== 'undefined') {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'Peringatan',
-                                text: 'Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir!',
-                                confirmButtonColor: '#3085d6'
-                            });
-                        } else {
-                            alert('Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir!');
-                        }
-                        if (!catatan) {
-                            $('#catatan').focus();
-                        } else {
-                            $('#bukti_izin').focus();
-                        }
-                        return false;
-                    }
                 }
             });
         });

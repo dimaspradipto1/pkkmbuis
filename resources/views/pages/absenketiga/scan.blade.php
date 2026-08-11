@@ -21,18 +21,7 @@
                         <a href="{{ route('absenketiga.index') }}" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i> Kembali</a>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title mb-4">Pilih Sesi & Klik Start</h5>
-
-                        <div class="mb-4">
-                            <label class="form-label d-block fw-bold">Sesi Absensi</label>
-                            <div class="btn-group w-100" role="group">
-                                <input type="radio" class="btn-check" name="sesi_scan" id="pagi" value="hadir_pagi" checked>
-                                <label class="btn btn-outline-success" for="pagi"><i class="bi bi-sun me-1"></i> Sesi Pagi</label>
-
-                                <input type="radio" class="btn-check" name="sesi_scan" id="sore" value="hadir_sore">
-                                <label class="btn btn-outline-night" for="sore"><i class="bi bi-moon-stars me-1"></i> Sesi Sore</label>
-                            </div>
-                        </div>
+                        <h5 class="card-title mb-4">Silakan Scan QR Absensi dari Admin/Panitia</h5>
 
                         <div id="reader" class="rounded overflow-hidden" style="width: 100%; border: 2px dashed #00A538;"></div>
                         
@@ -108,23 +97,21 @@
             if (isProcessing) return;
             
             isProcessing = true;
-            const sesi = document.querySelector('input[name="sesi_scan"]:checked').value;
-            
+
             // Visual feedback
             const resDiv = document.getElementById('result');
             const resMsg = document.getElementById('scan-message');
             resDiv.classList.remove('d-none');
             resMsg.innerText = "Memproses: " + decodedText;
 
-            fetch("{{ route('absenketiga-scan.process') }}", {
+            fetch("{{ route('absen-scan.process') }}", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": "{{ csrf_token() }}",
                 },
                 body: JSON.stringify({
-                    id_pendaftar: decodedText,
-                    sesi: sesi
+                    barcode_data: decodedText
                 })
             })
             .then(res => res.json())

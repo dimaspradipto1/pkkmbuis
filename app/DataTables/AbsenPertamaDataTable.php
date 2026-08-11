@@ -54,6 +54,16 @@ class AbsenPertamaDataTable extends DataTable
                 }
                 return '-';
             })
+            ->addColumn('waktu_datang', function($item) {
+                return $item->waktu_datang
+                    ? \Carbon\Carbon::parse($item->waktu_datang)->timezone('Asia/Jakarta')->format('H:i:s')
+                    : '-';
+            })
+            ->addColumn('waktu_pulang', function($item) {
+                return $item->waktu_pulang
+                    ? \Carbon\Carbon::parse($item->waktu_pulang)->timezone('Asia/Jakarta')->format('H:i:s')
+                    : '-';
+            })
             ->rawColumns(['action', 'DT_RowIndex', 'bukti_izin']);
     }
 
@@ -116,9 +126,15 @@ class AbsenPertamaDataTable extends DataTable
             Column::make('user_name')
                 ->title('Nama Pengguna'),
             Column::make('hadir_pagi')
-                ->title('Hadir Pagi'),
+                ->title('Hadir Datang'),
+            Column::computed('waktu_datang')
+                ->title('Waktu Datang')
+                ->addClass('text-center'),
             Column::make('hadir_sore')
-                ->title('Hadir Sore'),
+                ->title('Hadir Pulang'),
+            Column::computed('waktu_pulang')
+                ->title('Waktu Pulang')
+                ->addClass('text-center'),
             Column::make('catatan')
                 ->title('Catatan')
                 ->defaultContent('-'),

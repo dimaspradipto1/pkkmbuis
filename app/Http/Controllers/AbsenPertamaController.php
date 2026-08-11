@@ -86,42 +86,34 @@ class AbsenPertamaController extends Controller
             if ($pagiInput && $pagiAlreadySet && !$soreInput) {
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['user_id' => 'Hadir Pagi untuk pengguna ini sudah terisi! Silakan pilih Hadir Sore jika ingin melengkapi absensi.']);
+                    ->withErrors(['user_id' => 'Hadir Datang untuk pengguna ini sudah terisi! Silakan pilih Hadir Pulang jika ingin melengkapi absensi.']);
             }
 
             if ($soreInput && $soreAlreadySet && !$pagiInput) {
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['user_id' => 'Hadir Sore untuk pengguna ini sudah terisi!']);
+                    ->withErrors(['user_id' => 'Hadir Pulang untuk pengguna ini sudah terisi!']);
             }
 
             if (!$pagiInput && !$soreInput) {
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['user_id' => 'Silakan pilih status Hadir Pagi atau Hadir Sore.']);
+                    ->withErrors(['user_id' => 'Silakan pilih status Hadir Datang atau Hadir Pulang.']);
             }
-
-            $hasExistingBukti = !empty($existing->bukti_izin);
         } else {
             if (!$pagiInput && !$soreInput) {
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['user_id' => 'Silakan pilih status Hadir Pagi atau Hadir Sore.']);
+                    ->withErrors(['user_id' => 'Silakan pilih status Hadir Datang atau Hadir Pulang.']);
             }
-            $hasExistingBukti = false;
         }
-
-        $isNonHadir = in_array($request->hadir_pagi, ['Izin', 'Tidak Hadir']) || in_array($request->hadir_sore, ['Izin', 'Tidak Hadir']);
 
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'hadir_pagi' => 'nullable|string',
             'hadir_sore' => 'nullable|string',
-            'catatan' => $isNonHadir ? 'required|string' : 'nullable|string',
-            'bukti_izin' => ($isNonHadir && !$hasExistingBukti) ? 'required|file|mimes:png,jpg,jpeg,webp|max:10240' : 'nullable|file|mimes:png,jpg,jpeg,webp|max:10240',
-        ], [
-            'catatan.required' => 'Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir.',
-            'bukti_izin.required' => 'Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir.',
+            'catatan' => 'nullable|string',
+            'bukti_izin' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:10240',
         ]);
 
         if ($existing) {
@@ -143,6 +135,18 @@ class AbsenPertamaController extends Controller
 
             $existing->update($validated);
 
+            // Catat waktu jika belum ada dan status Hadir
+            $timeUpdate = [];
+            if ($validated['hadir_pagi'] === 'Hadir' && empty($existing->waktu_datang)) {
+                $timeUpdate['waktu_datang'] = now();
+            }
+            if ($validated['hadir_sore'] === 'Hadir' && empty($existing->waktu_pulang)) {
+                $timeUpdate['waktu_pulang'] = now();
+            }
+            if (!empty($timeUpdate)) {
+                $existing->update($timeUpdate);
+            }
+
             Alert::success('Absensi berhasil diperbarui.', 'Success')
                 ->toToast()
                 ->autoClose(3000);
@@ -160,7 +164,19 @@ class AbsenPertamaController extends Controller
                 $validated['catatan'] = null;
             }
 
-            AbsenPertama::create($validated);
+            $absen = AbsenPertama::create($validated);
+
+            // Catat waktu jika status Hadir
+            $timeUpdate = [];
+            if (($validated['hadir_pagi'] ?? '') === 'Hadir') {
+                $timeUpdate['waktu_datang'] = now();
+            }
+            if (($validated['hadir_sore'] ?? '') === 'Hadir') {
+                $timeUpdate['waktu_pulang'] = now();
+            }
+            if (!empty($timeUpdate)) {
+                $absen->update($timeUpdate);
+            }
 
             Alert::success('Absensi berhasil ditambahkan.', 'Success')
                 ->toToast()
@@ -193,19 +209,14 @@ class AbsenPertamaController extends Controller
     {
         $absenPertama = AbsenPertama::findOrFail($id);
 
-        $isNonHadir = in_array($request->hadir_pagi, ['Izin', 'Tidak Hadir']) || in_array($request->hadir_sore, ['Izin', 'Tidak Hadir']);
-        $hasBukti = !empty($absenPertama->bukti_izin);
-
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id|unique:absen_pertamas,user_id,' . $id,
             'hadir_pagi' => 'nullable|string',
             'hadir_sore' => 'nullable|string',
-            'catatan' => $isNonHadir ? 'required|string' : 'nullable|string',
-            'bukti_izin' => ($isNonHadir && !$hasBukti) ? 'required|file|mimes:png,jpg,jpeg,webp|max:10240' : 'nullable|file|mimes:png,jpg,jpeg,webp|max:10240',
+            'catatan' => 'nullable|string',
+            'bukti_izin' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:10240',
         ], [
             'user_id.unique' => 'Pengguna ini sudah memiliki data absensi pertama.',
-            'catatan.required' => 'Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir.',
-            'bukti_izin.required' => 'Catatan dan Upload Bukti wajib diisi untuk status Izin atau Tidak Hadir.',
         ]);
 
         $validated['hadir_pagi'] = $request->hadir_pagi ?? 'Belum Absen';
