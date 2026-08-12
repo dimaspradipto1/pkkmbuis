@@ -2,11 +2,11 @@
 
 @section('content')
     <div class="pagetitle">
-        <h1>Data Absensi Kedua</h1>
+        <h1>Data Absensi Hari Kedua</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                <li class="breadcrumb-item">Absensi Kedua</li>
+                <li class="breadcrumb-item">Absensi Hari Kedua</li>
             </ol>
         </nav>
     </div>
