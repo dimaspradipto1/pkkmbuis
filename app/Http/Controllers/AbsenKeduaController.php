@@ -88,7 +88,7 @@ class AbsenKeduaController extends Controller
             if ($pagiAlreadySet && $soreAlreadySet) {
                 return redirect()->back()
                     ->withInput()
-                    ->withErrors(['user_id' => 'Pengguna ini sudah memiliki data absensi kedua lengkap (Pagi & Sore).']);
+                    ->withErrors(['user_id' => 'Pengguna ini sudah memiliki data absensi kedua lengkap (Datang & Pulang).']);
             }
 
             if ($pagiInput && $pagiAlreadySet && !$soreInput) {

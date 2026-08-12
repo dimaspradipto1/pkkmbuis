@@ -41,8 +41,8 @@
                             $notifications[] = [
                                 'id' => 'notif-absen-1-pagi-' . $user->id,
                                 'icon' => 'bi-check-circle text-success',
-                                'title' => 'Absensi Pagi H-1',
-                                'text' => 'Absensi Pagi Hari I Anda tercatat Hadir.',
+                                'title' => 'Absensi Datang H-1',
+                                'text' => 'Absensi Datang Hari I Anda tercatat Hadir.',
                                 'time' => 'Terverifikasi'
                             ];
                         }
@@ -50,8 +50,8 @@
                             $notifications[] = [
                                 'id' => 'notif-absen-1-sore-' . $user->id,
                                 'icon' => 'bi-check-circle text-success',
-                                'title' => 'Absensi Sore H-1',
-                                'text' => 'Absensi Sore Hari I Anda tercatat Hadir.',
+                                'title' => 'Absensi Pulang H-1',
+                                'text' => 'Absensi Pulang Hari I Anda tercatat Hadir.',
                                 'time' => 'Terverifikasi'
                             ];
                         }
@@ -63,8 +63,8 @@
                             $notifications[] = [
                                 'id' => 'notif-absen-2-pagi-' . $user->id,
                                 'icon' => 'bi-check-circle text-success',
-                                'title' => 'Absensi Pagi H-2',
-                                'text' => 'Absensi Pagi Hari II Anda tercatat Hadir.',
+                                'title' => 'Absensi Datang H-2',
+                                'text' => 'Absensi Datang Hari II Anda tercatat Hadir.',
                                 'time' => 'Terverifikasi'
                             ];
                         }
@@ -72,8 +72,8 @@
                             $notifications[] = [
                                 'id' => 'notif-absen-2-sore-' . $user->id,
                                 'icon' => 'bi-check-circle text-success',
-                                'title' => 'Absensi Sore H-2',
-                                'text' => 'Absensi Sore Hari II Anda tercatat Hadir.',
+                                'title' => 'Absensi Pulang H-2',
+                                'text' => 'Absensi Pulang Hari II Anda tercatat Hadir.',
                                 'time' => 'Terverifikasi'
                             ];
                         }
@@ -85,8 +85,8 @@
                             $notifications[] = [
                                 'id' => 'notif-absen-3-pagi-' . $user->id,
                                 'icon' => 'bi-check-circle text-success',
-                                'title' => 'Absensi Pagi H-3',
-                                'text' => 'Absensi Pagi Hari III Anda tercatat Hadir.',
+                                'title' => 'Absensi Datang H-3',
+                                'text' => 'Absensi Datang Hari III Anda tercatat Hadir.',
                                 'time' => 'Terverifikasi'
                             ];
                         }
@@ -94,8 +94,8 @@
                             $notifications[] = [
                                 'id' => 'notif-absen-3-sore-' . $user->id,
                                 'icon' => 'bi-check-circle text-success',
-                                'title' => 'Absensi Sore H-3',
-                                'text' => 'Absensi Sore Hari III Anda tercatat Hadir.',
+                                'title' => 'Absensi Pulang H-3',
+                                'text' => 'Absensi Pulang Hari III Anda tercatat Hadir.',
                                 'time' => 'Terverifikasi'
                             ];
                         }

@@ -29,7 +29,7 @@
                     <div>
                         <h6 class="fw-bold mb-1">Panduan Atribut Akademik & Pembobotan</h6>
                         <p class="mb-0 opacity-75 small">
-                            <strong>A:</strong> Absensi (Pagi/Sore) | <strong>D:</strong> Kedisiplinan Atribut | <strong>M:</strong> Grade Pretest/Posttest | <strong>M5:</strong> Tugas Kelompok. 
+                            <strong>A:</strong> Absensi (Datang/Pulang) | <strong>D:</strong> Kedisiplinan Atribut | <strong>M:</strong> Grade Pretest/Posttest | <strong>M5:</strong> Tugas Kelompok. 
                             <br>
                             <span class="text-warning fw-bold">Bobot Akhir: Test/Tugas (20%) + Absensi (50%) + Disiplin (30%).</span>
                         </p>

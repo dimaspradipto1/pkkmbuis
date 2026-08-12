@@ -142,11 +142,11 @@
                             Swal.fire({
                                 icon: 'warning',
                                 title: 'Peringatan',
-                                text: 'Pengguna ini sudah memiliki data absensi pertama lengkap (Pagi & Sore)!',
+                                text: 'Pengguna ini sudah memiliki data absensi pertama lengkap (Datang & Pulang)!',
                                 confirmButtonColor: '#3085d6'
                             });
                         } else {
-                            alert('Pengguna ini sudah memiliki data absensi pertama lengkap (Pagi & Sore)!');
+                            alert('Pengguna ini sudah memiliki data absensi pertama lengkap (Datang & Pulang)!');
                         }
                         $('#user_id').val('').trigger('change');
                         return;

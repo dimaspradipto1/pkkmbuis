@@ -455,12 +455,12 @@
                         <div class="mb-3 d-flex justify-content-center gap-2">
                             <input type="radio" class="btn-check" name="qr_session" id="qr_pagi" value="PAGI" checked autocomplete="off">
                             <label class="btn btn-outline-success px-4 fw-bold" for="qr_pagi">
-                                <i class="bi bi-sun me-1"></i> Sesi Pagi
+                                <i class="bi bi-sun me-1"></i> Waktu Datang
                             </label>
 
                             <input type="radio" class="btn-check" name="qr_session" id="qr_sore" value="SORE" autocomplete="off">
                             <label class="btn btn-outline-night px-4 fw-bold" for="qr_sore">
-                                <i class="bi bi-moon-stars me-1"></i> Sesi Sore
+                                <i class="bi bi-moon-stars me-1"></i> Waktu Pulang
                             </label>
                         </div>
 
@@ -544,7 +544,7 @@
 
             function updateModalTitle() {
                 const checkedSession = document.querySelector('input[name="qr_session"]:checked');
-                const sessionName = checkedSession && checkedSession.value === 'SORE' ? 'Sore' : 'Pagi';
+                const sessionName = checkedSession && checkedSession.value === 'SORE' ? 'Waktu Pulang' : 'Waktu Datang';
                 document.getElementById('dynamicQrTitle').innerText = `QR Absensi Hari ${activeDay} (${sessionName})`;
             }
 

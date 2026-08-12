@@ -383,7 +383,7 @@
             <ol class="ps-3 mb-3 text-secondary extra-small" style="line-height: 1.6;">
                 <li class="mb-1">Buka menu <strong class="text-dark">Scan Absensi Mandiri</strong> pada Dashboard.</li>
                 <li class="mb-1">Arahkan kamera HP ke <strong class="text-dark">QR Code Dynamic</strong> yang ditampilkan Panitia di layar utama.</li>
-                <li class="mb-1">Absensi dilakukan 2x sehari (<strong class="text-dark">Sesi Pagi & Sesi Sore</strong>).</li>
+                <li class="mb-1">Absensi dilakukan 2x sehari (<strong class="text-dark">Waktu Datang & Waktu Pulang</strong>).</li>
             </ol>
             <div class="d-flex flex-wrap gap-1 mt-2">
                 <a href="/absen-scan" class="btn btn-sm btn-success rounded-pill px-3 extra-small"><i class="bi bi-camera me-1"></i> Scan QR Sekarang</a>
