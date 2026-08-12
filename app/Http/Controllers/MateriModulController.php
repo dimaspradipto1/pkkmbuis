@@ -22,19 +22,26 @@ class MateriModulController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'modul1' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:10240',
-            'modul2' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:10240',
-            'modul3' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:10240',
-            'modul4' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:10240',
-            'modul5' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:10240',
-        ]);
+        $rules = [];
+        foreach ([1, 2, 3, 4, 5] as $num) {
+            $rules['modul' . $num]        = 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip';
+            $rules['modul' . $num . '_link'] = 'nullable|url|max:2048';
+        }
+        $request->validate($rules);
 
         $data = [];
         foreach ([1, 2, 3, 4, 5] as $num) {
-            $field = 'modul' . $num;
+            $field     = 'modul' . $num;
+            $linkField = 'modul' . $num . '_link';
+
             if ($request->hasFile($field)) {
-                $data[$field] = $request->file($field)->store("materi_modul/$field", 'public');
+                $data[$field]     = $request->file($field)->store("materi_modul/$field", 'public');
+                $data[$linkField] = null; // clear link if file uploaded
+            }
+
+            if ($request->filled($linkField) && !$request->hasFile($field)) {
+                $data[$linkField] = $request->input($linkField);
+                $data[$field]     = null; // clear file path if link provided
             }
         }
 
@@ -54,24 +61,34 @@ class MateriModulController extends Controller
     {
         $materiModul = MateriModul::findOrFail($id);
 
-        $request->validate([
-            'modul1' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:10240',
-            'modul2' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:10240',
-            'modul3' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:10240',
-            'modul4' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:10240',
-            'modul5' => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip|max:10240',
-        ]);
+        $rules = [];
+        foreach ([1, 2, 3, 4, 5] as $num) {
+            $rules['modul' . $num]        = 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip';
+            $rules['modul' . $num . '_link'] = 'nullable|url|max:2048';
+        }
+        $request->validate($rules);
 
         $data = [];
         foreach ([1, 2, 3, 4, 5] as $num) {
-            $field = 'modul' . $num;
+            $field     = 'modul' . $num;
+            $linkField = 'modul' . $num . '_link';
+
             if ($request->hasFile($field)) {
                 // Hapus file lama jika ada
                 if ($materiModul->$field) {
                     Storage::disk('public')->delete($materiModul->$field);
                 }
-                $data[$field] = $request->file($field)->store("materi_modul/$field", 'public');
+                $data[$field]     = $request->file($field)->store("materi_modul/$field", 'public');
+                $data[$linkField] = null; // clear link when file uploaded
+            } elseif ($request->filled($linkField)) {
+                // Pakai link — hapus file lama jika ada
+                if ($materiModul->$field) {
+                    Storage::disk('public')->delete($materiModul->$field);
+                }
+                $data[$field]     = null;
+                $data[$linkField] = $request->input($linkField);
             }
+            // Jika keduanya kosong → tidak ada perubahan (lama tetap tersimpan)
         }
 
         $materiModul->update($data);
@@ -84,7 +101,6 @@ class MateriModulController extends Controller
     {
         $materiModul = MateriModul::findOrFail($id);
 
-        // Hapus semua file terkait
         foreach ([1, 2, 3, 4, 5] as $num) {
             $field = 'modul' . $num;
             if ($materiModul->$field) {
@@ -102,7 +118,7 @@ class MateriModulController extends Controller
     {
         $materiModul = MateriModul::findOrFail($id);
         $field = 'modul' . $modul;
-        
+
         if (!$materiModul->$field || !Storage::disk('public')->exists($materiModul->$field)) {
             abort(404, 'File materi tidak ditemukan');
         }
@@ -114,7 +130,7 @@ class MateriModulController extends Controller
     {
         $materiModul = MateriModul::findOrFail($id);
         $field = 'modul' . $modul;
-        
+
         if (!$materiModul->$field || !Storage::disk('public')->exists($materiModul->$field)) {
             abort(404, 'File materi tidak ditemukan');
         }

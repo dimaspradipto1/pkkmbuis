@@ -14,10 +14,15 @@ return new class extends Migration
         Schema::create('materi_moduls', function (Blueprint $table) {
             $table->id();
             $table->string('modul1')->nullable();
+            $table->string('modul1_link')->nullable();
             $table->string('modul2')->nullable();
+            $table->string('modul2_link')->nullable();
             $table->string('modul3')->nullable();
+            $table->string('modul3_link')->nullable();
             $table->string('modul4')->nullable();
+            $table->string('modul4_link')->nullable();
             $table->string('modul5')->nullable();
+            $table->string('modul5_link')->nullable();
             $table->timestamps();
         });
     }

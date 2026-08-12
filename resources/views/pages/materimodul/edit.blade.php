@@ -23,8 +23,9 @@
                 <h5 class="card-title">Form Edit Materi Modul</h5>
                 <p class="text-muted mb-4">
                     <i class="bi bi-info-circle me-1"></i>
-                    Upload file baru untuk mengganti materi yang sudah ada. Jika tidak diisi, file lama tetap tersimpan.
-                    Format: <strong>PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, ZIP</strong> &mdash; Maks. <strong>10 MB</strong>.
+                    Pilih metode upload untuk setiap modul. Upload file <strong>tidak ada batasan ukuran</strong>.
+                    Format file: <strong>PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, ZIP</strong>.
+                    Atau masukkan <strong>link Google Drive</strong> sebagai alternatif. Jika dikosongkan, data lama tetap tersimpan.
                 </p>
 
                 <form action="{{ route('materimodul.update', $materiModul->id) }}" method="POST" enctype="multipart/form-data">
@@ -32,42 +33,91 @@
                     @method('PUT')
 
                     @foreach ([1, 2, 3, 4, 5] as $num)
-                    @php $field = 'modul'.$num; $currentFile = $materiModul->$field; @endphp
+                    @php
+                        $field     = 'modul' . $num;
+                        $linkField = 'modul' . $num . '_link';
+                        $currentFile = $materiModul->$field;
+                        $currentLink = $materiModul->$linkField;
+                        // Tentukan tab aktif: kalau ada link & tidak ada file → tab link, selainnya → tab file
+                        $activeTab = (!$currentFile && $currentLink) ? 'link' : 'file';
+                    @endphp
                     <div class="row mb-4">
-                        <label for="{{ $field }}" class="col-sm-2 col-form-label fw-semibold">
+                        <label class="col-sm-2 col-form-label fw-semibold">
                             <i class="bi bi-journal-bookmark-fill me-1 text-primary"></i> Modul {{ $num }}
                         </label>
                         <div class="col-sm-10">
-                            @if ($currentFile)
-                                <div class="mb-2 d-flex align-items-center gap-2">
+
+                            {{-- Status saat ini --}}
+                            <div class="mb-2 d-flex align-items-center gap-2 flex-wrap">
+                                @if ($currentFile)
                                     <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
                                         <i class="bi bi-file-earmark-check me-1"></i> File tersimpan
                                     </span>
-                                    <a href="{{ asset('storage/'.$currentFile) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ asset('storage/' . $currentFile) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-download me-1"></i> Download File Saat Ini
                                     </a>
-                                </div>
-                            @else
-                                <div class="mb-2">
-                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">
-                                        <i class="bi bi-x-circle me-1"></i> Belum ada file
+                                @elseif ($currentLink)
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1">
+                                        <i class="bi bi-link-45deg me-1"></i> Link tersimpan
                                     </span>
-                                </div>
-                            @endif
-
-                            <input type="file" name="{{ $field }}" id="{{ $field }}"
-                                class="form-control @error($field) is-invalid @enderror"
-                                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip">
-                            @error($field)
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">
-                                @if ($currentFile)
-                                    Upload file baru untuk mengganti. Biarkan kosong jika tidak ingin diganti.
+                                    <a href="{{ $currentLink }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-box-arrow-up-right me-1"></i> Buka Link Saat Ini
+                                    </a>
                                 @else
-                                    Upload file materi untuk modul ini.
+                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">
+                                        <i class="bi bi-x-circle me-1"></i> Belum ada file / link
+                                    </span>
                                 @endif
-                            </small>
+                            </div>
+
+                            {{-- Toggle pilih metode --}}
+                            <div class="d-flex gap-2 mb-2" id="toggle-{{ $num }}">
+                                <button type="button"
+                                    class="btn btn-sm {{ $activeTab === 'file' ? 'btn-primary' : 'btn-outline-secondary' }} toggle-btn"
+                                    data-modul="{{ $num }}" data-type="file">
+                                    <i class="bi bi-upload me-1"></i> Upload File
+                                </button>
+                                <button type="button"
+                                    class="btn btn-sm {{ $activeTab === 'link' ? 'btn-info text-white' : 'btn-outline-secondary' }} toggle-btn"
+                                    data-modul="{{ $num }}" data-type="link">
+                                    <i class="bi bi-link-45deg me-1"></i> Link Google Drive
+                                </button>
+                            </div>
+
+                            {{-- Panel Upload File --}}
+                            <div id="panel-file-{{ $num }}" class="{{ $activeTab === 'file' ? '' : 'd-none' }}">
+                                <input type="file" name="{{ $field }}" id="{{ $field }}"
+                                    class="form-control @error($field) is-invalid @enderror"
+                                    accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip">
+                                @error($field)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">
+                                    @if ($currentFile)
+                                        Upload file baru untuk mengganti. Biarkan kosong jika tidak ingin diganti.
+                                    @else
+                                        Upload file materi untuk modul ini.
+                                    @endif
+                                </small>
+                            </div>
+
+                            {{-- Panel Link Google Drive --}}
+                            <div id="panel-link-{{ $num }}" class="{{ $activeTab === 'link' ? '' : 'd-none' }}">
+                                <input type="url" name="{{ $linkField }}" id="{{ $linkField }}"
+                                    class="form-control @error($linkField) is-invalid @enderror"
+                                    placeholder="https://drive.google.com/..."
+                                    value="{{ old($linkField, $currentLink) }}">
+                                @error($linkField)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">
+                                    Masukkan link Google Drive yang bisa diakses. Pastikan link sudah di-share publik.
+                                    @if ($currentLink)
+                                        Kosongkan jika tidak ingin mengubah link.
+                                    @endif
+                                </small>
+                            </div>
+
                         </div>
                     </div>
                     @endforeach
@@ -83,3 +133,38 @@
         </div></div>
     </section>
 @endsection
+
+@push('scripts')
+<script>
+    document.querySelectorAll('.toggle-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var modul = this.dataset.modul;
+            var type  = this.dataset.type;
+
+            // Update button styles
+            document.querySelectorAll('[data-modul="' + modul + '"].toggle-btn').forEach(function(b) {
+                b.classList.remove('btn-primary', 'btn-info', 'text-white', 'btn-outline-secondary');
+                b.classList.add('btn-outline-secondary');
+            });
+
+            if (type === 'file') {
+                this.classList.remove('btn-outline-secondary');
+                this.classList.add('btn-primary');
+                document.getElementById('panel-file-' + modul).classList.remove('d-none');
+                document.getElementById('panel-link-' + modul).classList.add('d-none');
+                // Clear link input so it doesn't get submitted
+                var linkInput = document.getElementById('modul' + modul + '_link');
+                if (linkInput) linkInput.value = '';
+            } else {
+                this.classList.remove('btn-outline-secondary');
+                this.classList.add('btn-info', 'text-white');
+                document.getElementById('panel-link-' + modul).classList.remove('d-none');
+                document.getElementById('panel-file-' + modul).classList.add('d-none');
+                // Clear file input so it doesn't get submitted
+                var fileInput = document.getElementById('modul' + modul);
+                if (fileInput) fileInput.value = '';
+            }
+        });
+    });
+</script>
+@endpush
