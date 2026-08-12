@@ -88,7 +88,7 @@ class Userseeder extends Seeder
             [
                 'name' => 'Novan Aswadi, S.Kom',
                 'id_pendaftar' => 'DP2026001',
-                'email' => 'novanaswadi@uis.ac.id',
+                'email' => 'nopanaswadi@uis.ac.id',
                 'no_wa' => '6281234567910',
                 'password' => Hash::make('password'),
                 'role' => 'dosenpendamping',
@@ -97,14 +97,14 @@ class Userseeder extends Seeder
                 'is_active' => true,
             ],
             [
-                'name' => 'Nanda Jarti, S. Kom., M. Kom',
+                'name' => 'Agus Suryadi, M.Kom',
                 'id_pendaftar' => 'DP2026002',
-                'email' => 'nandajarti@uis.ac.id',
+                'email' => 'agussuryadi@uis.ac.id',
                 'no_wa' => '6281234567911',
                 'password' => Hash::make('password'),
                 'role' => 'dosenpendamping',
                 'fakultas' => 'FAKULTAS SAINS DAN TEKNOLOGI (FST)',
-                'program_studi' => 'S1 SISTEM INFORMASI',
+                'program_studi' => 'S1 TEKNIK INFORMATIKA',
                 'is_active' => true,
             ],
             [
@@ -143,14 +143,14 @@ class Userseeder extends Seeder
 
             // Tim Evaluasi
             [
-                'name' => 'Tim Evaluasi (Dr. Rina Marlina, M.Si)',
+                'name' => 'Dr. Nov Hendri, M.Pd. T',
                 'id_pendaftar' => 'TE2026001',
                 'email' => 'timevaluasi@uis.ac.id',
                 'no_wa' => '6281234567901',
                 'password' => Hash::make('password'),
                 'role' => 'timevaluasi',
-                'fakultas' => 'FAKULTAS EKONOMI DAN BISNIS (FEB)',
-                'program_studi' => 'S1 MANAJEMEN',
+                'fakultas' => 'FAKULTAS Sains dan Teknologi (FST)',
+                'program_studi' => 'S1 TEKNIK INFORMATIKA',
                 'is_active' => true,
             ],
         ];
@@ -212,7 +212,7 @@ class Userseeder extends Seeder
 
         foreach ($users as $user) {
             User::updateOrCreate(
-                ['email' => $user['email']],
+                ['id_pendaftar' => $user['id_pendaftar']],
                 $user
             );
         }
