@@ -39,6 +39,9 @@
                                         @endif
                                     @endif
                                     <button type="button" class="btn btn-danger text-white" id="btn-bulk-delete" style="display:none;"><i class="bi bi-trash me-1"></i> Hapus Terpilih</button>
+                                    <a href="{{ route('absenkedua.export') }}" class="btn btn-success text-white">
+                                        <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+                                    </a>
                                     <a href="{{ route('absenkedua.create') }}" class="btn btn-primary text-white">
                                         <i class="bi bi-plus-circle me-1"></i> Tambah
                                     </a>

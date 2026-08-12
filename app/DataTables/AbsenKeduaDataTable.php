@@ -64,6 +64,29 @@ class AbsenKeduaDataTable extends DataTable
                     ? \Carbon\Carbon::parse($item->waktu_pulang)->timezone('Asia/Jakarta')->format('H:i:s')
                     : '-';
             })
+            ->addColumn('catatan_datang', function($item) {
+                if (!empty($item->catatan_datang)) {
+                    return e($item->catatan_datang);
+                }
+                if (!empty($item->catatan)) {
+                    if (str_contains($item->catatan, 'Datang:')) {
+                        preg_match('/Datang:\s*([^|]+)/', $item->catatan, $m);
+                        return trim($m[1] ?? '-');
+                    }
+                    return e($item->catatan);
+                }
+                return '-';
+            })
+            ->addColumn('catatan_pulang', function($item) {
+                if (!empty($item->catatan_pulang)) {
+                    return e($item->catatan_pulang);
+                }
+                if (!empty($item->catatan) && str_contains($item->catatan, 'Pulang:')) {
+                    preg_match('/Pulang:\s*([^|]+)/', $item->catatan, $m);
+                    return trim($m[1] ?? '-');
+                }
+                return '-';
+            })
             ->rawColumns(['action', 'DT_RowIndex', 'bukti_izin']);
     }
 
@@ -130,13 +153,16 @@ class AbsenKeduaDataTable extends DataTable
             Column::computed('waktu_datang')
                 ->title('Waktu Datang')
                 ->addClass('text-center'),
+            Column::computed('catatan_datang')
+                ->title('Catatan Datang')
+                ->defaultContent('-'),
             Column::make('hadir_sore')
                 ->title('Hadir Pulang'),
             Column::computed('waktu_pulang')
                 ->title('Waktu Pulang')
                 ->addClass('text-center'),
-            Column::make('catatan')
-                ->title('Catatan')
+            Column::computed('catatan_pulang')
+                ->title('Catatan Pulang')
                 ->defaultContent('-'),
             Column::computed('bukti_izin')
                 ->title('Bukti Izin')

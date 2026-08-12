@@ -303,21 +303,25 @@
                 </div>
             @endforeach
 
-            <!-- Saran & Masukan Card -->
-            <div class="eval-card">
-                <div class="eval-question-title">
-                    Berikan saran dan masukan terhadap pemateri
-                </div>
-                <div class="mt-3">
-                    <textarea name="saran_dan_masukan" 
-                              class="form-control eval-input-line eval-text-break @error('saran_dan_masukan') is-invalid @enderror" 
-                              rows="2" 
-                              placeholder="Jawaban Anda">{{ old('saran_dan_masukan') }}</textarea>
-                    @error('saran_dan_masukan')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-            </div>
+            <!-- Saran & Masukan Card(s) -->
+            @php
+                $saranQuestions = \App\Models\EvaluasiQuestion::getSaranQuestions(1);
+            @endphp
+            @if(!empty($saranQuestions))
+                @foreach($saranQuestions as $sKey => $sLabel)
+                    <div class="eval-card">
+                        <div class="eval-question-title">
+                            {{ $sLabel }}
+                        </div>
+                        <div class="mt-3">
+                            <textarea name="saran_inputs[{{ $sKey }}]" 
+                                      class="form-control eval-input-line eval-text-break" 
+                                      rows="2" 
+                                      placeholder="Jawaban Anda">{{ old('saran_inputs.'.$sKey) }}</textarea>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
 
             <!-- Bottom Actions -->
             <div class="eval-action-bar">

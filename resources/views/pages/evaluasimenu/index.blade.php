@@ -25,8 +25,8 @@
                                 <tr>
                                     <th style="width: 60px;" class="text-center">No</th>
                                     <th>Nama Sub-Menu Evaluasi</th>
-                                    <th style="width: 160px;" class="text-center">Status (is_active)</th>
-                                    <th style="width: 160px;" class="text-center">Aksi Toggle</th>
+                                    <th style="width: 160px;" class="text-center">Status</th>
+                                    <th style="width: 240px;" class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,16 +46,21 @@
                                             @endif
                                         </td>
                                         <td class="text-center">
-                                            <form action="{{ route('evaluasimenu.toggle', $menu->id) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm {{ $menu->is_active ? 'btn-outline-danger' : 'btn-outline-success' }}">
-                                                    @if($menu->is_active)
-                                                        <i class="bi bi-toggle-on me-1"></i> Nonaktifkan
-                                                    @else
-                                                        <i class="bi bi-toggle-off me-1"></i> Aktifkan
-                                                    @endif
-                                                </button>
-                                            </form>
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a href="{{ route('evaluasimenu.questions', $menu->id) }}" class="btn btn-sm btn-primary px-3 rounded shadow-sm">
+                                                    <i class="bi bi-pencil-square me-1"></i> Kelola Soal
+                                                </a>
+                                                <form action="{{ route('evaluasimenu.toggle', $menu->id) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm {{ $menu->is_active ? 'btn-outline-danger' : 'btn-outline-success' }}" title="Toggle Status">
+                                                        @if($menu->is_active)
+                                                            <i class="bi bi-toggle-on"></i>
+                                                        @else
+                                                            <i class="bi bi-toggle-off"></i>
+                                                        @endif
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

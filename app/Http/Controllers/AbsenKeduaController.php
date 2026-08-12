@@ -16,6 +16,14 @@ class AbsenKeduaController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\AbsensiExport(\App\Models\AbsenKedua::class),
+            'Absensi_Hari_Kedua_' . date('Ymd_His') . '.xlsx'
+        );
+    }
+
     public function index(AbsenKeduaDataTable $dataTable)
     {
         $attachments = \App\Models\AbsenAttachment::where('category', 'absenkedua')->latest()->get();
@@ -113,8 +121,22 @@ class AbsenKeduaController extends Controller
             'hadir_pagi' => 'nullable|string',
             'hadir_sore' => 'nullable|string',
             'catatan' => 'nullable|string',
+            'catatan_datang' => 'nullable|string',
+            'catatan_pulang' => 'nullable|string',
             'bukti_izin' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:10240',
         ]);
+
+        $notes = [];
+        if (!empty($validated['catatan_datang'])) {
+            $notes[] = 'Datang: ' . $validated['catatan_datang'];
+        }
+        if (!empty($validated['catatan_pulang'])) {
+            $notes[] = 'Pulang: ' . $validated['catatan_pulang'];
+        }
+        if (!empty($validated['catatan']) && empty($notes)) {
+            $notes[] = $validated['catatan'];
+        }
+        $validated['catatan'] = implode(' | ', $notes);
 
         if ($existing) {
             $validated['hadir_pagi'] = $pagiInput ?? $existing->hadir_pagi ?? 'Belum Absen';
@@ -127,25 +149,17 @@ class AbsenKeduaController extends Controller
                 $validated['bukti_izin'] = $request->file('bukti_izin')->store('bukti_izin', 'public');
             }
 
-            $isNonHadirPagi = in_array($validated['hadir_pagi'], ['Izin', 'Tidak Hadir']);
-            $isNonHadirSore = in_array($validated['hadir_sore'], ['Izin', 'Tidak Hadir']);
-            if (!$isNonHadirPagi && !$isNonHadirSore) {
-                $validated['catatan'] = null;
+
+
+            // Catat waktu untuk semua status (Hadir/Izin/Tidak Hadir) jika belum ada
+            if (!empty($validated['hadir_pagi']) && $validated['hadir_pagi'] !== 'Belum Absen' && empty($existing->waktu_datang)) {
+                $validated['waktu_datang'] = now();
+            }
+            if (!empty($validated['hadir_sore']) && $validated['hadir_sore'] !== 'Belum Absen' && empty($existing->waktu_pulang)) {
+                $validated['waktu_pulang'] = now();
             }
 
             $existing->update($validated);
-
-            // Catat waktu jika belum ada dan status Hadir
-            $timeUpdate = [];
-            if ($validated['hadir_pagi'] === 'Hadir' && empty($existing->waktu_datang)) {
-                $timeUpdate['waktu_datang'] = now();
-            }
-            if ($validated['hadir_sore'] === 'Hadir' && empty($existing->waktu_pulang)) {
-                $timeUpdate['waktu_pulang'] = now();
-            }
-            if (!empty($timeUpdate)) {
-                $existing->update($timeUpdate);
-            }
 
             Alert::success('Absensi berhasil diperbarui.', 'Success')
                 ->toToast()
@@ -158,25 +172,17 @@ class AbsenKeduaController extends Controller
                 $validated['bukti_izin'] = $request->file('bukti_izin')->store('bukti_izin', 'public');
             }
 
-            $isNonHadirPagi = in_array($validated['hadir_pagi'], ['Izin', 'Tidak Hadir']);
-            $isNonHadirSore = in_array($validated['hadir_sore'], ['Izin', 'Tidak Hadir']);
-            if (!$isNonHadirPagi && !$isNonHadirSore) {
-                $validated['catatan'] = null;
+
+
+            // Catat waktu untuk semua status (Hadir/Izin/Tidak Hadir)
+            if (!empty($validated['hadir_pagi']) && $validated['hadir_pagi'] !== 'Belum Absen') {
+                $validated['waktu_datang'] = now();
+            }
+            if (!empty($validated['hadir_sore']) && $validated['hadir_sore'] !== 'Belum Absen') {
+                $validated['waktu_pulang'] = now();
             }
 
             $absen = AbsenKedua::create($validated);
-
-            // Catat waktu jika status Hadir
-            $timeUpdate = [];
-            if (($validated['hadir_pagi'] ?? '') === 'Hadir') {
-                $timeUpdate['waktu_datang'] = now();
-            }
-            if (($validated['hadir_sore'] ?? '') === 'Hadir') {
-                $timeUpdate['waktu_pulang'] = now();
-            }
-            if (!empty($timeUpdate)) {
-                $absen->update($timeUpdate);
-            }
 
             Alert::success('Absensi berhasil ditambahkan.', 'Success')
                 ->toToast()
@@ -214,10 +220,24 @@ class AbsenKeduaController extends Controller
             'hadir_pagi' => 'nullable|string',
             'hadir_sore' => 'nullable|string',
             'catatan' => 'nullable|string',
+            'catatan_datang' => 'nullable|string',
+            'catatan_pulang' => 'nullable|string',
             'bukti_izin' => 'nullable|file|mimes:png,jpg,jpeg,webp|max:10240',
         ], [
             'user_id.unique' => 'Pengguna ini sudah memiliki data absensi kedua.',
         ]);
+
+        $notes = [];
+        if (!empty($validated['catatan_datang'])) {
+            $notes[] = 'Datang: ' . $validated['catatan_datang'];
+        }
+        if (!empty($validated['catatan_pulang'])) {
+            $notes[] = 'Pulang: ' . $validated['catatan_pulang'];
+        }
+        if (!empty($validated['catatan']) && empty($notes)) {
+            $notes[] = $validated['catatan'];
+        }
+        $validated['catatan'] = implode(' | ', $notes);
 
         $validated['hadir_pagi'] = $request->hadir_pagi ?? 'Belum Absen';
         $validated['hadir_sore'] = $request->hadir_sore ?? 'Belum Absen';
@@ -229,10 +249,14 @@ class AbsenKeduaController extends Controller
             $validated['bukti_izin'] = $request->file('bukti_izin')->store('bukti_izin', 'public');
         }
 
-        $isNonHadirPagi = in_array($validated['hadir_pagi'], ['Izin', 'Tidak Hadir']);
-        $isNonHadirSore = in_array($validated['hadir_sore'], ['Izin', 'Tidak Hadir']);
-        if (!$isNonHadirPagi && !$isNonHadirSore) {
-            $validated['catatan'] = null;
+
+
+        // Set waktu untuk semua status (Hadir/Izin/Tidak Hadir) jika belum ada
+        if (!empty($validated['hadir_pagi']) && $validated['hadir_pagi'] !== 'Belum Absen' && empty($absenKedua->waktu_datang)) {
+            $validated['waktu_datang'] = now();
+        }
+        if (!empty($validated['hadir_sore']) && $validated['hadir_sore'] !== 'Belum Absen' && empty($absenKedua->waktu_pulang)) {
+            $validated['waktu_pulang'] = now();
         }
 
         $absenKedua->update($validated);

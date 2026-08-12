@@ -118,6 +118,16 @@
                                                 </a>
                                             </div>
                                         @endif
+                                    @elseif ($materi_link)
+                                        {{-- Link Google Drive tersedia --}}
+                                        <div class="text-center py-5">
+                                            <i class="bi bi-google text-primary" style="font-size: 4rem;"></i>
+                                            <p class="fw-semibold mt-3 mb-1">Materi Modul {{ $id }} tersedia via Google Drive</p>
+                                            <p class="text-muted small mb-4">Klik tombol di bawah untuk membuka materi di Google Drive.</p>
+                                            <a href="{{ $materi_link }}" target="_blank" class="btn btn-primary px-4">
+                                                <i class="bi bi-box-arrow-up-right me-2"></i> Buka Materi di Google Drive
+                                            </a>
+                                        </div>
                                     @else
                                         {{-- Belum ada file materi --}}
                                         <div class="text-center py-5">
@@ -127,6 +137,7 @@
                                                 admin.</p>
                                         </div>
                                     @endif
+
                                 </div>
                             </div>
 

@@ -20,19 +20,29 @@ class MateriModulDataTable extends DataTable
             ->addColumn('DT_RowIndex', '')
             ->addColumn('modul1_file', fn($item) => $item->modul1
                 ? '<a href="'.route('materimodul.download', ['id' => $item->id, 'modul' => 1]).'" target="_blank" class="btn btn-sm btn-outline-success"><i class="bi bi-download me-1"></i>Download</a>'
-                : '<span class="badge bg-secondary">Belum ada</span>')
+                : ($item->modul1_link
+                    ? '<a href="'.$item->modul1_link.'" target="_blank" class="btn btn-sm btn-outline-info"><i class="bi bi-link-45deg me-1"></i>Buka Link</a>'
+                    : '<span class="badge bg-secondary">Belum ada</span>'))
             ->addColumn('modul2_file', fn($item) => $item->modul2
                 ? '<a href="'.route('materimodul.download', ['id' => $item->id, 'modul' => 2]).'" target="_blank" class="btn btn-sm btn-outline-success"><i class="bi bi-download me-1"></i>Download</a>'
-                : '<span class="badge bg-secondary">Belum ada</span>')
+                : ($item->modul2_link
+                    ? '<a href="'.$item->modul2_link.'" target="_blank" class="btn btn-sm btn-outline-info"><i class="bi bi-link-45deg me-1"></i>Buka Link</a>'
+                    : '<span class="badge bg-secondary">Belum ada</span>'))
             ->addColumn('modul3_file', fn($item) => $item->modul3
                 ? '<a href="'.route('materimodul.download', ['id' => $item->id, 'modul' => 3]).'" target="_blank" class="btn btn-sm btn-outline-success"><i class="bi bi-download me-1"></i>Download</a>'
-                : '<span class="badge bg-secondary">Belum ada</span>')
+                : ($item->modul3_link
+                    ? '<a href="'.$item->modul3_link.'" target="_blank" class="btn btn-sm btn-outline-info"><i class="bi bi-link-45deg me-1"></i>Buka Link</a>'
+                    : '<span class="badge bg-secondary">Belum ada</span>'))
             ->addColumn('modul4_file', fn($item) => $item->modul4
                 ? '<a href="'.route('materimodul.download', ['id' => $item->id, 'modul' => 4]).'" target="_blank" class="btn btn-sm btn-outline-success"><i class="bi bi-download me-1"></i>Download</a>'
-                : '<span class="badge bg-secondary">Belum ada</span>')
+                : ($item->modul4_link
+                    ? '<a href="'.$item->modul4_link.'" target="_blank" class="btn btn-sm btn-outline-info"><i class="bi bi-link-45deg me-1"></i>Buka Link</a>'
+                    : '<span class="badge bg-secondary">Belum ada</span>'))
             ->addColumn('modul5_file', fn($item) => $item->modul5
                 ? '<a href="'.route('materimodul.download', ['id' => $item->id, 'modul' => 5]).'" target="_blank" class="btn btn-sm btn-outline-success"><i class="bi bi-download me-1"></i>Download</a>'
-                : '<span class="badge bg-secondary">Belum ada</span>')
+                : ($item->modul5_link
+                    ? '<a href="'.$item->modul5_link.'" target="_blank" class="btn btn-sm btn-outline-info"><i class="bi bi-link-45deg me-1"></i>Buka Link</a>'
+                    : '<span class="badge bg-secondary">Belum ada</span>'))
             ->addColumn('action', function ($item) {
                 if (Auth::user()->role == 'mahasiswa') return '';
                 return '

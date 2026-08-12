@@ -67,7 +67,8 @@
                                 <input type="url" name="modul{{ $num }}_link" id="modul{{ $num }}_link"
                                     class="form-control @error('modul'.$num.'_link') is-invalid @enderror"
                                     placeholder="https://drive.google.com/..."
-                                    value="{{ old('modul'.$num.'_link') }}">
+                                    value="{{ old('modul'.$num.'_link') }}"
+                                    disabled>
                                 @error('modul'.$num.'_link')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -103,22 +104,25 @@
                 b.classList.add('btn-outline-secondary');
             });
 
+            var fileInput = document.getElementById('modul' + modul);
+            var linkInput = document.getElementById('modul' + modul + '_link');
+
             if (type === 'file') {
                 this.classList.remove('btn-outline-secondary');
                 this.classList.add('btn-primary');
                 document.getElementById('panel-file-' + modul).classList.remove('d-none');
                 document.getElementById('panel-link-' + modul).classList.add('d-none');
-                // Clear link input
-                var linkInput = document.getElementById('modul' + modul + '_link');
-                if (linkInput) linkInput.value = '';
+                // Disable link agar tidak ter-submit, aktifkan file
+                if (linkInput) linkInput.disabled = true;
+                if (fileInput) fileInput.disabled = false;
             } else {
                 this.classList.remove('btn-outline-secondary');
                 this.classList.add('btn-info', 'text-white');
                 document.getElementById('panel-link-' + modul).classList.remove('d-none');
                 document.getElementById('panel-file-' + modul).classList.add('d-none');
-                // Clear file input
-                var fileInput = document.getElementById('modul' + modul);
-                if (fileInput) fileInput.value = '';
+                // Disable file agar tidak ter-submit, aktifkan link
+                if (fileInput) fileInput.disabled = true;
+                if (linkInput) linkInput.disabled = false;
             }
         });
     });

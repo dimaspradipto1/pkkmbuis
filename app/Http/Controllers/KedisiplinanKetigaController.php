@@ -14,6 +14,14 @@ class KedisiplinanKetigaController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\KedisiplinanExport(\App\Models\Kedisiplinanketiga::class),
+            'Kedisiplinan_Hari_Ketiga_' . date('Ymd_His') . '.xlsx'
+        );
+    }
+
     public function index(KedisiplinanKetigaDataTable $dataTable)
     {
         $attachments = \App\Models\KedisiplinanAttachment::where('category', 'kedisiplinanketiga')->latest()->get();

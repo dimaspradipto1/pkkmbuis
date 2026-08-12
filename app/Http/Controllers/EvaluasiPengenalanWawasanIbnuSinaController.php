@@ -245,22 +245,26 @@ class EvaluasiPengenalanWawasanIbnuSinaController extends Controller
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(EvaluasiPengenalanWawasanIbnuSinaRequest $request)
     {
+        $data = $request->validated();
+        $data['user_id'] = Auth::id();
+
+        if ($request->has('saran_inputs') && is_array($request->saran_inputs)) {
+            $filtered = array_filter(array_map('trim', $request->saran_inputs));
+            if (!empty($filtered)) {
+                $data['saran_dan_masukan'] = implode("\n\n", $filtered);
+            }
+        }
+
         if (Auth::user()->role == 'mahasiswa') {
             $existing = EvaluasiPengenalanWawasanIbnuSina::where('user_id', Auth::id())->first();
             if ($existing) {
-                $existing->update($request->validated());
+                $existing->update($data);
                 Alert::success('Berhasil', 'Evaluasi penyampaian materi berhasil diperbarui.')->toToast()->autoClose(3000);
                 return redirect()->route('evaluasipengenalanwawasanibnusina.index');
             }
         }
-
-        $data = $request->validated();
-        $data['user_id'] = Auth::id();
 
         EvaluasiPengenalanWawasanIbnuSina::create($data);
 

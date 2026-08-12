@@ -14,6 +14,14 @@ class KedisiplinanPertamaController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\KedisiplinanExport(\App\Models\KedisiplinanPertama::class),
+            'Kedisiplinan_Hari_Pertama_' . date('Ymd_His') . '.xlsx'
+        );
+    }
+
     public function index(KedisiplinanPertamaDataTable $dataTable)
     {
         $attachments = \App\Models\KedisiplinanAttachment::where('category', 'kedisiplinanpertama')->latest()->get();

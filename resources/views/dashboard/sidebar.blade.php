@@ -295,8 +295,8 @@
 
                   <li class="nav-item">
                       <a class="nav-link {{ request()->routeIs('evaluasimenu.*') ? '' : 'collapsed' }}" href="{{ route('evaluasimenu.index') }}">
-                          <i class="bi bi-gear-fill text-primary"></i>
-                          <span>Pengaturan Status Menu Evaluasi</span>
+                          <i class="bi bi-pencil-square text-primary"></i>
+                          <span>Pengaturan & Soal Evaluasi</span>
                       </a>
                   </li>
 

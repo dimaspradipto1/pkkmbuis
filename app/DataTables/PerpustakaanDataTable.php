@@ -70,15 +70,12 @@ class PerpustakaanDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('perpustakaan-table')
+                    ->setTableId('evaluasiperpustakaan-table')
                     ->columns($this->getColumns())
                     ->minifiedAjax()
                     ->orderBy(1)
                     ->selectStyleSingle()
-                    ->parameters([
-                        'dom' => 'Bfrtip',
-                        'buttons' => ['excel', 'csv', 'pdf', 'print', 'reset', 'reload'],
-                    ]);
+                    ->parameters(['scrollX' => true]);
     }
 
     /**

@@ -34,7 +34,7 @@ class EvaluasiPelayananKemahasiswaanPusatPrestasi extends Model
 
     public static function questions(): array
     {
-        return [
+        $defaults = [
             'q1'  => 'Pemateri Memahami materi',
             'q2'  => 'Pamateri Berinteraksi dengan peserta',
             'q3'  => 'Pemaparan jelas dan mudah dipahami',
@@ -49,5 +49,7 @@ class EvaluasiPelayananKemahasiswaanPusatPrestasi extends Model
             'q12' => 'Materi yang di sajikan Relevan dengan Kegiatan PKKMB',
             'q13' => 'Materi yang di sajikan Mendukung peningkatan SDM MABA UIS',
         ];
+
+        return EvaluasiQuestion::getQuestionsForMenu(2, $defaults);
     }
 }

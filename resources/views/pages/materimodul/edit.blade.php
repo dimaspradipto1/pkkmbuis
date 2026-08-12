@@ -106,7 +106,8 @@
                                 <input type="url" name="{{ $linkField }}" id="{{ $linkField }}"
                                     class="form-control @error($linkField) is-invalid @enderror"
                                     placeholder="https://drive.google.com/..."
-                                    value="{{ old($linkField, $currentLink) }}">
+                                    value="{{ old($linkField, $currentLink) }}"
+                                    {{ $activeTab !== 'link' ? 'disabled' : '' }}>
                                 @error($linkField)
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -147,22 +148,25 @@
                 b.classList.add('btn-outline-secondary');
             });
 
+            var fileInput = document.getElementById('modul' + modul);
+            var linkInput = document.getElementById('modul' + modul + '_link');
+
             if (type === 'file') {
                 this.classList.remove('btn-outline-secondary');
                 this.classList.add('btn-primary');
                 document.getElementById('panel-file-' + modul).classList.remove('d-none');
                 document.getElementById('panel-link-' + modul).classList.add('d-none');
-                // Clear link input so it doesn't get submitted
-                var linkInput = document.getElementById('modul' + modul + '_link');
-                if (linkInput) linkInput.value = '';
+                // Disable link input agar tidak ter-submit (nilai tetap ada)
+                if (linkInput) linkInput.disabled = true;
+                if (fileInput) fileInput.disabled = false;
             } else {
                 this.classList.remove('btn-outline-secondary');
                 this.classList.add('btn-info', 'text-white');
                 document.getElementById('panel-link-' + modul).classList.remove('d-none');
                 document.getElementById('panel-file-' + modul).classList.add('d-none');
-                // Clear file input so it doesn't get submitted
-                var fileInput = document.getElementById('modul' + modul);
-                if (fileInput) fileInput.value = '';
+                // Disable file input agar tidak ter-submit
+                if (fileInput) fileInput.disabled = true;
+                if (linkInput) linkInput.disabled = false;
             }
         });
     });

@@ -101,6 +101,9 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::post('absenpertama/bulk-delete', [AbsenPertamaController::class, 'bulkDelete'])->name('absenpertama.bulk-delete');
     Route::post('absenkedua/bulk-delete', [AbsenKeduaController::class, 'bulkDelete'])->name('absenkedua.bulk-delete');
     Route::post('absenketiga/bulk-delete', [AbsenKetigaController::class, 'bulkDelete'])->name('absenketiga.bulk-delete');
+    Route::get('absenpertama/export', [AbsenPertamaController::class, 'export'])->name('absenpertama.export');
+    Route::get('absenkedua/export', [AbsenKeduaController::class, 'export'])->name('absenkedua.export');
+    Route::get('absenketiga/export', [AbsenKetigaController::class, 'export'])->name('absenketiga.export');
     Route::resource('absenpertama', AbsenPertamaController::class);
     Route::resource('absenkedua', AbsenKeduaController::class);
     Route::resource('absenketiga', AbsenKetigaController::class);
@@ -117,6 +120,9 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::get('absenketiga-scan', [AbsenKetigaScanController::class, 'index'])->name('absenketiga-scan.index');
     Route::post('absenketiga-scan', [AbsenKetigaScanController::class, 'process'])->name('absenketiga-scan.process');
 
+    Route::get('kedisiplinanpertama/export', [KedisiplinanPertamaController::class, 'export'])->name('kedisiplinanpertama.export');
+    Route::get('kedisiplinankedua/export', [KedisiplinanKeduaController::class, 'export'])->name('kedisiplinankedua.export');
+    Route::get('kedisiplinanketiga/export', [KedisiplinanKetigaController::class, 'export'])->name('kedisiplinanketiga.export');
     Route::post('kedisiplinanpertama/bulk-update', [KedisiplinanPertamaController::class, 'bulkUpdate'])->name('kedisiplinanpertama.bulk-update');
     Route::post('kedisiplinanpertama/bulk-delete', [KedisiplinanPertamaController::class, 'bulkDelete'])->name('kedisiplinanpertama.bulk-delete');
     Route::resource('kedisiplinanpertama', KedisiplinanPertamaController::class);
@@ -278,8 +284,13 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
         'evaluasifeb' => 'evaluasi'
     ]);
 
+    Route::get('evaluasi-export/{id}', [\App\Http\Controllers\EvaluasiExportController::class, 'export'])->name('evaluasi.export');
+
     Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');
     Route::post('evaluasimenu/{id}/toggle', [\App\Http\Controllers\EvaluasiMenuController::class, 'toggle'])->name('evaluasimenu.toggle');
+    Route::get('evaluasimenu/{id}/questions', [\App\Http\Controllers\EvaluasiMenuController::class, 'questions'])->name('evaluasimenu.questions');
+    Route::post('evaluasimenu/{id}/questions', [\App\Http\Controllers\EvaluasiMenuController::class, 'updateQuestions'])->name('evaluasimenu.updateQuestions');
+    Route::post('evaluasimenu/{id}/reset-questions', [\App\Http\Controllers\EvaluasiMenuController::class, 'resetQuestions'])->name('evaluasimenu.resetQuestions');
 
     Route::get('pengaturan-sertifikat', [\App\Http\Controllers\SertifikatSettingController::class, 'index'])->name('sertifikatsetting.index');
     Route::put('pengaturan-sertifikat', [\App\Http\Controllers\SertifikatSettingController::class, 'update'])->name('sertifikatsetting.update');

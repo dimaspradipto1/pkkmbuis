@@ -307,7 +307,7 @@
             <!-- Saran & Masukan Card -->
             <div class="eval-card">
                 <div class="eval-question-title">
-                    Berikan saran dan masukan terhadap pemateri
+                    {{ $saranLabel ?? \App\Models\EvaluasiQuestion::getSaranLabel(1) }}
                 </div>
                 <div class="mt-3">
                     <textarea name="saran_dan_masukan" 

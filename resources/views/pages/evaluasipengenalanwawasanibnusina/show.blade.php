@@ -85,10 +85,12 @@
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">
                     @php
-                        $total = $evaluasi->q1 + $evaluasi->q2 + $evaluasi->q3 + $evaluasi->q4 + $evaluasi->q5 + 
-                                 $evaluasi->q6 + $evaluasi->q7 + $evaluasi->q8 + $evaluasi->q9 + $evaluasi->q10 + 
-                                 $evaluasi->q11 + $evaluasi->q12 + $evaluasi->q13;
-                        $avg = round($total / 13, 2);
+                        $total = 0;
+                        $qCount = count($questions);
+                        foreach ($questions as $keyName => $qTxt) {
+                            $total += ($evaluasi->$keyName ?? 0);
+                        }
+                        $avg = $qCount > 0 ? round($total / $qCount, 2) : 0;
                     @endphp
                     <span class="text-muted d-block mb-1">Rata-Rata Skala Penilaian</span>
                     <span class="badge bg-primary score-badge">{{ $avg }} / 4</span>

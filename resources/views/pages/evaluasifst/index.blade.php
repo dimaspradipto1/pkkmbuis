@@ -12,9 +12,14 @@
                 </ol>
             </nav>
         </div>
-        <a href="{{ route('evaluasifst.create') }}" class="btn btn-primary btn-sm shadow-sm rounded-pill px-3 py-2" style="background-color: #9F1521; border-color: #9F1521;">
-            <i class="bi bi-plus-lg me-1"></i> Isi Evaluasi
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('evaluasi.export', 16) }}" class="btn btn-success btn-sm shadow-sm rounded-pill px-3 py-2">
+                <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+            </a>
+            <a href="{{ route('evaluasifst.create') }}" class="btn btn-primary btn-sm shadow-sm rounded-pill px-3 py-2" style="background-color: #9F1521; border-color: #9F1521;">
+                <i class="bi bi-plus-lg me-1"></i> Isi Evaluasi
+            </a>
+        </div>
     </div>
 
     <section class="section">

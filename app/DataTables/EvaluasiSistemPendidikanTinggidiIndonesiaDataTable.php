@@ -75,10 +75,7 @@ class EvaluasiSistemPendidikanTinggidiIndonesiaDataTable extends DataTable
                     ->minifiedAjax()
                     ->orderBy(1)
                     ->selectStyleSingle()
-                    ->parameters([
-                        'dom' => 'Bfrtip',
-                        'buttons' => ['excel', 'csv', 'pdf', 'print', 'reset', 'reload'],
-                    ]);
+                    ->parameters(['scrollX' => true]);
     }
 
     /**

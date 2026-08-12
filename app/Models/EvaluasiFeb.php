@@ -54,7 +54,7 @@ class EvaluasiFeb extends Model
 
     public static function questions(): array
     {
-        return [
+        $defaults = [
             'q1'  => 'Pemateri Memahami materi',
             'q2'  => 'Pamateri Berinteraksi dengan peserta',
             'q3'  => 'Pemaparan jelas dan mudah dipahami',
@@ -78,6 +78,8 @@ class EvaluasiFeb extends Model
             'q21' => 'Kualitas Sarana prasarana pendukung (Toilet, Taman, Tempat duduk, dan Mushola dll)',
             'q22' => 'Kualitas Sound/suara dan tampilan layar infocus',
         ];
+
+        return EvaluasiQuestion::getQuestionsForMenu(17, $defaults);
     }
 
     public static function saranFields(): array

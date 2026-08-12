@@ -11,22 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('absen_pertamas') && !Schema::hasColumn('absen_pertamas', 'catatan')) {
-            Schema::table('absen_pertamas', function (Blueprint $table) {
-                $table->text('catatan')->nullable()->after('hadir_sore');
-            });
-        }
-
-        if (Schema::hasTable('absen_keduas') && !Schema::hasColumn('absen_keduas', 'catatan')) {
-            Schema::table('absen_keduas', function (Blueprint $table) {
-                $table->text('catatan')->nullable()->after('hadir_sore');
-            });
-        }
-
-        if (Schema::hasTable('absen_ketigas') && !Schema::hasColumn('absen_ketigas', 'catatan')) {
-            Schema::table('absen_ketigas', function (Blueprint $table) {
-                $table->text('catatan')->nullable()->after('hadir_sore');
-            });
+        foreach (['absen_pertamas', 'absen_keduas', 'absen_ketigas'] as $tbl) {
+            if (Schema::hasTable($tbl)) {
+                Schema::table($tbl, function (Blueprint $table) use ($tbl) {
+                    if (!Schema::hasColumn($tbl, 'catatan')) {
+                        $table->text('catatan')->nullable()->after('hadir_sore');
+                    }
+                    if (!Schema::hasColumn($tbl, 'catatan_datang')) {
+                        $table->text('catatan_datang')->nullable()->after('waktu_datang');
+                    }
+                    if (!Schema::hasColumn($tbl, 'catatan_pulang')) {
+                        $table->text('catatan_pulang')->nullable()->after('waktu_pulang');
+                    }
+                });
+            }
         }
     }
 
@@ -35,22 +33,17 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (Schema::hasTable('absen_pertamas') && Schema::hasColumn('absen_pertamas', 'catatan')) {
-            Schema::table('absen_pertamas', function (Blueprint $table) {
-                $table->dropColumn('catatan');
-            });
-        }
-
-        if (Schema::hasTable('absen_keduas') && Schema::hasColumn('absen_keduas', 'catatan')) {
-            Schema::table('absen_keduas', function (Blueprint $table) {
-                $table->dropColumn('catatan');
-            });
-        }
-
-        if (Schema::hasTable('absen_ketigas') && Schema::hasColumn('absen_ketigas', 'catatan')) {
-            Schema::table('absen_ketigas', function (Blueprint $table) {
-                $table->dropColumn('catatan');
-            });
+        foreach (['absen_pertamas', 'absen_keduas', 'absen_ketigas'] as $tbl) {
+            if (Schema::hasTable($tbl)) {
+                Schema::table($tbl, function (Blueprint $table) use ($tbl) {
+                    if (Schema::hasColumn($tbl, 'catatan_datang')) {
+                        $table->dropColumn('catatan_datang');
+                    }
+                    if (Schema::hasColumn($tbl, 'catatan_pulang')) {
+                        $table->dropColumn('catatan_pulang');
+                    }
+                });
+            }
         }
     }
 };

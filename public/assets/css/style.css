@@ -699,7 +699,7 @@ h6 {
 .sidebar-nav .nav-link {
   display: flex;
   align-items: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   color: #4154f1;
   transition: 0.3;
@@ -750,7 +750,7 @@ h6 {
 .sidebar-nav .nav-content a {
   display: flex;
   align-items: flex-start;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: #012970;
   padding: 6px 10px 6px 35px;
@@ -759,7 +759,7 @@ h6 {
 }
 
 .sidebar-nav .nav-content a i {
-  font-size: 6px;
+  font-size: 7px;
   margin-right: 8px;
   line-height: 0;
   border-radius: 50%;

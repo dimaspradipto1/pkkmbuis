@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 
@@ -74,10 +75,7 @@ class EvaluasiMotivasiWaliKotaBatamDataTable extends DataTable
                     ->minifiedAjax()
                     ->orderBy(1)
                     ->selectStyleSingle()
-                    ->parameters([
-                        'dom' => 'Bfrtip',
-                        'buttons' => ['excel', 'csv', 'pdf', 'print', 'reset', 'reload'],
-                    ]);
+                    ->parameters(['scrollX' => true]);
     }
 
     /**

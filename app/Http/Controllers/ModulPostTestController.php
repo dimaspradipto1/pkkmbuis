@@ -52,8 +52,10 @@ class ModulPostTestController extends Controller
 
         // Ambil data materi modul dari database
         $materiModul  = MateriModul::latest()->first();
-        $modulKey     = 'modul' . $id; // e.g. "modul1", "modul2", ...
+        $modulKey     = 'modul' . $id;          // e.g. "modul1"
+        $modulLinkKey = 'modul' . $id . '_link'; // e.g. "modul1_link"
         $materi_file  = $materiModul ? $materiModul->$modulKey : null;
+        $materi_link  = $materiModul ? $materiModul->$modulLinkKey : null;
         $materi_id    = $materiModul ? $materiModul->id : null;
 
         $modul_title = "MODUL $id";
@@ -78,6 +80,7 @@ class ModulPostTestController extends Controller
             'id',
             'modul_title',
             'materi_file',
+            'materi_link',
             'materi_id',
             'hasil_pre',
             'hasil_post',

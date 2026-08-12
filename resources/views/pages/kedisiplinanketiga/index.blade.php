@@ -23,6 +23,9 @@
                                 <div class="d-flex gap-2">
                                     <button type="button" class="btn btn-warning text-white" id="btn-bulk-edit" style="display:none;"><i class="bi bi-pencil-square me-1"></i> Edit Terpilih</button>
                                     <button type="button" class="btn btn-danger text-white" id="btn-bulk-delete" style="display:none;"><i class="bi bi-trash me-1"></i> Hapus Terpilih</button>
+                                    <a href="{{ route('kedisiplinanketiga.export') }}" class="btn btn-success text-white">
+                                        <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
+                                    </a>
                                     <a href="{{ route('kedisiplinanketiga.create') }}" class="btn btn-primary text-white"><i
                                             class="bi bi-plus-circle me-1"></i> Tambah Penilaian</a>
                                 </div>
