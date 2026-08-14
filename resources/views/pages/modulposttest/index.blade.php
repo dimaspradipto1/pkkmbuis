@@ -11,6 +11,25 @@
         </nav>
     </div>
 
+    @php
+        $isMahasiswa = Auth::check() && Auth::user()->role == 'mahasiswa';
+        $isPreTestDone = (bool) $hasil_pre;
+        $isMateriLocked = in_array($id, [1, 2, 3, 4]) && $isMahasiswa && !$isPreTestDone;
+
+        $activeTab = session('active_tab');
+        if (!$activeTab) {
+            if ($id == 5) {
+                $activeTab = 'materi';
+            } else {
+                if ($isMateriLocked) {
+                    $activeTab = 'pretest';
+                } else {
+                    $activeTab = 'materi';
+                }
+            }
+        }
+    @endphp
+
     <section class="section">
         <div class="row">
             <!-- Left Side: Card with Tabs -->
@@ -21,26 +40,37 @@
                         <!-- Tabs -->
                         <ul class="nav nav-tabs nav-tabs-bordered border-bottom-0" id="modulTab" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="materi-tab" data-bs-toggle="tab" data-bs-target="#materi"
+                                <button class="nav-link {{ $activeTab == 'materi' ? 'active' : '' }}" id="materi-tab" data-bs-toggle="tab" data-bs-target="#materi"
                                     type="button" role="tab" aria-controls="materi"
-                                    aria-selected="false">Materi</button>
+                                    aria-selected="{{ $activeTab == 'materi' ? 'true' : 'false' }}">
+                                    @if ($isMateriLocked)
+                                        <i class="bi bi-lock-fill text-warning me-1"></i>
+                                    @endif
+                                    Materi
+                                </button>
                             </li>
                             @if ($id != 5)
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="pretest-tab" data-bs-toggle="tab"
+                                    <button class="nav-link {{ $activeTab == 'pretest' ? 'active' : '' }}" id="pretest-tab" data-bs-toggle="tab"
                                         data-bs-target="#pretest" type="button" role="tab" aria-controls="pretest"
-                                        aria-selected="true">Pre Test</button>
+                                        aria-selected="{{ $activeTab == 'pretest' ? 'true' : 'false' }}">
+                                        Pre Test
+                                        @if ($isPreTestDone)
+                                            <i class="bi bi-check-circle-fill text-success ms-1 small"></i>
+                                        @endif
+                                    </button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="posttest-tab" data-bs-toggle="tab" data-bs-target="#posttest"
-                                        type="button" role="tab" aria-controls="posttest" aria-selected="false">Post
+                                    <button class="nav-link {{ $activeTab == 'posttest' ? 'active' : '' }}" id="posttest-tab" data-bs-toggle="tab" data-bs-target="#posttest"
+                                        type="button" role="tab" aria-controls="posttest"
+                                        aria-selected="{{ $activeTab == 'posttest' ? 'true' : 'false' }}">Post
                                         Test</button>
                                 </li>
                             @else
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="tugas-tab" data-bs-toggle="tab"
+                                    <button class="nav-link {{ $activeTab == 'tugas' ? 'active' : '' }}" id="tugas-tab" data-bs-toggle="tab"
                                         data-bs-target="#tugas" type="button" role="tab" aria-controls="tugas"
-                                        aria-selected="true">Tugas Kelompok</button>
+                                        aria-selected="{{ $activeTab == 'tugas' ? 'true' : 'false' }}">Tugas Kelompok</button>
                                 </li>
                             @endif
                         </ul>
@@ -48,11 +78,11 @@
                     <div class="card-body px-4 py-3">
                         <div class="tab-content pt-2" id="modulTabContent">
                             <!-- Materi Tab Content -->
-                            <div class="tab-pane fade" id="materi" role="tabpanel" aria-labelledby="materi-tab">
+                            <div class="tab-pane fade {{ $activeTab == 'materi' ? 'show active' : '' }}" id="materi" role="tabpanel" aria-labelledby="materi-tab">
                                 <div class="py-3">
                                     <h5 class="fw-bold mb-3">Materi Modul {{ $id }}</h5>
 
-                                    @if (in_array($id, [1, 2, 3, 4]) && !$hasil_pre && Auth::user()->role == 'mahasiswa')
+                                    @if ($isMateriLocked)
                                         <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center mt-4">
                                             <i class="bi bi-lock-fill fs-1 me-3 text-warning"></i>
                                             <div>
@@ -143,7 +173,7 @@
 
                             @if ($id != 5)
                                 <!-- Pre Test Tab Content -->
-                                <div class="tab-pane fade {{ (session('active_tab') == 'pretest' || !session('active_tab')) ? 'show active' : '' }}" id="pretest" role="tabpanel"
+                                <div class="tab-pane fade {{ $activeTab == 'pretest' ? 'show active' : '' }}" id="pretest" role="tabpanel"
                                     aria-labelledby="pretest-tab">
                                     <div class="py-2">
                                         <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center mb-3">
@@ -249,7 +279,7 @@
                                 </div>
 
                                 <!-- Post Test Tab Content -->
-                                <div class="tab-pane fade {{ session('active_tab') == 'posttest' ? 'show active' : '' }}" id="posttest" role="tabpanel" aria-labelledby="posttest-tab">
+                                <div class="tab-pane fade {{ $activeTab == 'posttest' ? 'show active' : '' }}" id="posttest" role="tabpanel" aria-labelledby="posttest-tab">
                                     <div class="py-2">
                                         @if (Auth::user()->role != 'mahasiswa')
                                             <div class="alert alert-light border border-warning shadow-sm mb-4 rounded-3 p-3">
@@ -383,7 +413,7 @@
                                 </div>
                             @else
                                 <!-- Tugas Kelompok Tab Content -->
-                                <div class="tab-pane fade show active" id="tugas" role="tabpanel" aria-labelledby="tugas-tab">
+                                <div class="tab-pane fade {{ $activeTab == 'tugas' ? 'show active' : '' }}" id="tugas" role="tabpanel" aria-labelledby="tugas-tab">
                                     <div class="py-4">
                                         @if($tugas_kelompok)
                                             <div class="alert alert-success border-0 shadow-sm d-flex align-items-center mb-4">

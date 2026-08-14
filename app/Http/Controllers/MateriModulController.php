@@ -116,6 +116,17 @@ class MateriModulController extends Controller
 
     public function download($id, $modul)
     {
+        if (in_array((int)$modul, [1, 2, 3, 4]) && \Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role == 'mahasiswa') {
+            $hasPreTest = \App\Models\HasilTest::where('user_id', \Illuminate\Support\Facades\Auth::id())
+                ->where('modul', (int)$modul)
+                ->where('type', 'pretest')
+                ->exists();
+
+            if (!$hasPreTest) {
+                abort(403, 'Silakan selesaikan Pre Test terlebih dahulu untuk dapat mengunduh materi pada Modul ini.');
+            }
+        }
+
         $materiModul = MateriModul::findOrFail($id);
         $field = 'modul' . $modul;
 
@@ -128,6 +139,17 @@ class MateriModulController extends Controller
 
     public function viewFile($id, $modul)
     {
+        if (in_array((int)$modul, [1, 2, 3, 4]) && \Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role == 'mahasiswa') {
+            $hasPreTest = \App\Models\HasilTest::where('user_id', \Illuminate\Support\Facades\Auth::id())
+                ->where('modul', (int)$modul)
+                ->where('type', 'pretest')
+                ->exists();
+
+            if (!$hasPreTest) {
+                abort(403, 'Silakan selesaikan Pre Test terlebih dahulu untuk dapat membaca materi pada Modul ini.');
+            }
+        }
+
         $materiModul = MateriModul::findOrFail($id);
         $field = 'modul' . $modul;
 

@@ -182,9 +182,13 @@ class ModulPostTestController extends Controller
             'jawaban'      => json_encode($user_jawaban),
         ]);
 
+        if ($type == 'pretest') {
+            Alert::success('Berhasil!', 'Pre Test berhasil diselesaikan! Materi Modul ' . $modul_id . ' kini telah terbuka. Skor Anda: ' . $skor)->autoClose(5000);
+            return redirect()->back()->with('active_tab', 'materi');
+        }
+
         Alert::success('Berhasil!', 'Jawaban ' . $type . ' telah disimpan. Skor Anda: ' . $skor)->autoClose(5000);
-        
-        return redirect()->back()->with('active_tab', $type);
+        return redirect()->back()->with('active_tab', 'posttest');
     }
 
     public function uploadTugasKelompok(Request $request)
