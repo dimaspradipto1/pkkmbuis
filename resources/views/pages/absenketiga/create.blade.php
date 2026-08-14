@@ -86,21 +86,23 @@
                             <div class="row mb-3" id="container_catatan" style="display: none;">
                                 <label class="col-sm-3 col-form-label text-nowrap">Catatan & Bukti <span class="text-muted small">(Opsional)</span></label>
                                 <div class="col-sm-9">
-                                    <div class="mb-3">
-                                        <label for="catatan_datang" class="form-label fw-semibold text-secondary small">Catatan Waktu Datang (Opsional)</label>
-                                        <textarea name="catatan_datang" id="catatan_datang" class="form-control" rows="2" placeholder="Masukkan catatan/keterangan saat Hadir Datang (misal: Datang Terlambat)...">{{ old('catatan_datang') }}</textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="catatan_pulang" class="form-label fw-semibold text-secondary small">Catatan Waktu Pulang (Opsional)</label>
-                                        <textarea name="catatan_pulang" id="catatan_pulang" class="form-control" rows="2" placeholder="Masukkan catatan/keterangan saat Hadir Pulang (misal: Izin Pulang Awal)...">{{ old('catatan_pulang') }}</textarea>
-                                    </div>
-                                    <label for="bukti_izin" class="form-label fw-semibold text-secondary small">Upload Bukti (PNG, JPG, JPEG, WEBP)</label>
-                                    <input type="file" name="bukti_izin" id="bukti_izin" class="form-control" accept="image/png,image/jpeg,image/jpg,image/webp">
-                                    <div id="preview_container" class="mt-3" style="display: none;">
-                                        <small class="text-muted fw-semibold d-block mb-1">Preview Bukti:</small>
-                                        <img id="image_preview" src="" class="img-thumbnail rounded shadow-sm" style="max-height: 220px; object-fit: contain;">
-                                    </div>
-                                </div>
+                                    <div class="mb-3" id="wrapper_catatan_datang" style="display: none;">
+                                         <label for="catatan_datang" class="form-label fw-semibold text-secondary small">Catatan Waktu Datang (Opsional)</label>
+                                         <textarea name="catatan_datang" id="catatan_datang" class="form-control" rows="2" placeholder="Masukkan catatan/keterangan saat Hadir Datang (misal: Datang Terlambat)...">{{ old('catatan_datang') }}</textarea>
+                                     </div>
+                                     <div class="mb-3" id="wrapper_catatan_pulang" style="display: none;">
+                                         <label for="catatan_pulang" class="form-label fw-semibold text-secondary small">Catatan Waktu Pulang (Opsional)</label>
+                                         <textarea name="catatan_pulang" id="catatan_pulang" class="form-control" rows="2" placeholder="Masukkan catatan/keterangan saat Hadir Pulang (misal: Izin Pulang Awal)...">{{ old('catatan_pulang') }}</textarea>
+                                     </div>
+                                     <div id="wrapper_bukti_izin">
+                                         <label for="bukti_izin" class="form-label fw-semibold text-secondary small">Upload Bukti (PNG, JPG, JPEG, WEBP)</label>
+                                         <input type="file" name="bukti_izin" id="bukti_izin" class="form-control" accept="image/png,image/jpeg,image/jpg,image/webp">
+                                         <div id="preview_container" class="mt-3" style="display: none;">
+                                             <small class="text-muted fw-semibold d-block mb-1">Preview Bukti:</small>
+                                             <img id="image_preview" src="" class="img-thumbnail rounded shadow-sm" style="max-height: 220px; object-fit: contain;">
+                                         </div>
+                                     </div>
+                                 </div>
                             </div>
 
                             <div class="text-end mt-4">
@@ -177,8 +179,22 @@
 
                 if (isSelectedPagi || isSelectedSore) {
                     $('#container_catatan').slideDown(200);
+
+                    if (isSelectedPagi) {
+                        $('#wrapper_catatan_datang').slideDown(200);
+                    } else {
+                        $('#wrapper_catatan_datang').slideUp(200);
+                    }
+
+                    if (isSelectedSore) {
+                        $('#wrapper_catatan_pulang').slideDown(200);
+                    } else {
+                        $('#wrapper_catatan_pulang').slideUp(200);
+                    }
                 } else {
                     $('#container_catatan').slideUp(200);
+                    $('#wrapper_catatan_datang').hide();
+                    $('#wrapper_catatan_pulang').hide();
                 }
             }
 

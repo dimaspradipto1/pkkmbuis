@@ -795,8 +795,8 @@
                                                             style="background: #f8fafc; color: #012970;">
                                                             <th class="ps-3 py-2">NO</th>
                                                             <th>NAMA</th>
-                                                            <th>PAGI</th>
-                                                            <th class="text-end pe-3">SORE</th>
+                                                            <th>DATANG</th>
+                                                            <th class="text-end pe-3">PULANG</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -858,8 +858,8 @@
                                                             style="background: #f8fafc; color: #012970;">
                                                             <th class="ps-3 py-2">NO</th>
                                                             <th>NAMA</th>
-                                                            <th>PAGI</th>
-                                                            <th class="text-end pe-3">SORE</th>
+                                                            <th>DATANG</th>
+                                                            <th class="text-end pe-3">PULANG</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -921,8 +921,8 @@
                                                             style="background: #f8fafc; color: #012970;">
                                                             <th class="ps-3 py-2">NO</th>
                                                             <th>NAMA</th>
-                                                            <th>PAGI</th>
-                                                            <th class="text-end pe-3">SORE</th>
+                                                            <th>DATANG</th>
+                                                            <th class="text-end pe-3">PULANG</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -1550,7 +1550,7 @@
                                     <div class="alert alert-success py-2 small border-0 bg-opacity-10"
                                         style="background: rgba(0, 255, 65, 0.05);">
                                         <i class="bi bi-check-circle me-2"></i> Pastikan anda sudah melakukan scan
-                                        absensi setiap pagi dan sore.
+                                        absensi setiap datang dan pulang.
                                     </div>
                                 </div>
                             </div>
@@ -1563,8 +1563,8 @@
                                             <thead>
                                                 <tr class="extra-small text-uppercase fw-bold text-muted border-bottom">
                                                     <th class="text-start py-2">HARI</th>
-                                                    <th>PAGI</th>
-                                                    <th>SORE</th>
+                                                    <th>DATANG</th>
+                                                    <th>PULANG</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
