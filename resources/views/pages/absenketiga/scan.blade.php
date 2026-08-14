@@ -33,8 +33,8 @@
                         </div>
 
                         <div class="d-grid mt-4">
-                            <button class="btn btn-danger btn-lg shadow" id="stop-scan" style="display:none;"><i class="bi bi-stop-circle me-1"></i> Stop Scanner</button>
-                            <button class="btn btn-success btn-lg shadow" id="start-scan"><i class="bi bi-camera me-1"></i> Start Scanner</button>
+                            <button class="btn btn-danger btn-lg shadow" id="stop-scan"><i class="bi bi-stop-circle me-1"></i> Stop Scanner</button>
+                            <button class="btn btn-success btn-lg shadow" id="start-scan" style="display:none;"><i class="bi bi-camera me-1"></i> Start Scanner</button>
                         </div>
                     </div>
                 </div>
@@ -74,12 +74,26 @@
         const html5QrCode = new Html5Qrcode("reader");
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
         let isProcessing = false;
+        let isCameraRunning = false;
 
-        document.getElementById('start-scan').addEventListener('click', () => {
+        function startCamera() {
             document.getElementById('start-scan').style.display = 'none';
             document.getElementById('stop-scan').style.display = 'block';
-            
-            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess);
+
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+                .then(() => {
+                    isCameraRunning = true;
+                })
+                .catch(err => {
+                    console.warn("Kamera gagal dimulai otomatis:", err);
+                    isCameraRunning = false;
+                    document.getElementById('start-scan').style.display = 'block';
+                    document.getElementById('stop-scan').style.display = 'none';
+                });
+        }
+
+        document.getElementById('start-scan').addEventListener('click', () => {
+            startCamera();
         });
 
         document.getElementById('stop-scan').addEventListener('click', () => {
@@ -87,10 +101,27 @@
         });
 
         function stopCamera() {
-            html5QrCode.stop().then(() => {
+            if (isCameraRunning) {
+                html5QrCode.stop().then(() => {
+                    isCameraRunning = false;
+                    document.getElementById('start-scan').style.display = 'block';
+                    document.getElementById('stop-scan').style.display = 'none';
+                }).catch(err => {
+                    console.error("Gagal menghentikan kamera:", err);
+                    document.getElementById('start-scan').style.display = 'block';
+                    document.getElementById('stop-scan').style.display = 'none';
+                });
+            } else {
                 document.getElementById('start-scan').style.display = 'block';
                 document.getElementById('stop-scan').style.display = 'none';
-            });
+            }
+        }
+
+        // Auto start camera directly
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', startCamera);
+        } else {
+            startCamera();
         }
 
         function onScanSuccess(decodedText) {
