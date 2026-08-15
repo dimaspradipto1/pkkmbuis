@@ -31,14 +31,24 @@
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                             <h5 class="card-title mb-0">Daftar Status Kelulusan & Sertifikat</h5>
                             <div class="d-flex gap-2">
-                                <form action="{{ route('kelulusan.bulkToggle') }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin MENAMPILKAN / MEMBUKA sertifikat & hasil kelulusan untuk SELURUH mahasiswa?')">
+                                <form action="{{ route('kelulusan.bulkToggle') }}" method="POST" class="d-inline"
+                                      data-confirm-title="Konfirmasi Buka Semua Sertifikat"
+                                      data-confirm-btn="Ya, Buka Semua!"
+                                      data-confirm-color="#198754"
+                                      data-confirm-icon="question"
+                                      onsubmit="return confirm('Yakin ingin MENAMPILKAN / MEMBUKA sertifikat & hasil kelulusan untuk SELURUH mahasiswa?')">
                                     @csrf
                                     <input type="hidden" name="action" value="enable_all">
                                     <button type="submit" class="btn btn-success btn-sm rounded shadow-sm px-3 fw-bold">
                                         <i class="bi bi-eye-fill me-1"></i> Buka Semua Tampilan Sertifikat
                                     </button>
                                 </form>
-                                <form action="{{ route('kelulusan.bulkToggle') }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin MENYEMBUNYIKAN / MENUTUP sertifikat & hasil kelulusan untuk SELURUH mahasiswa?')">
+                                <form action="{{ route('kelulusan.bulkToggle') }}" method="POST" class="d-inline"
+                                      data-confirm-title="Konfirmasi Tutup Semua Sertifikat"
+                                      data-confirm-btn="Ya, Tutup Semua!"
+                                      data-confirm-color="#dc3545"
+                                      data-confirm-icon="warning"
+                                      onsubmit="return confirm('Yakin ingin MENYEMBUNYIKAN / MENUTUP sertifikat & hasil kelulusan untuk SELURUH mahasiswa?')">
                                     @csrf
                                     <input type="hidden" name="action" value="disable_all">
                                     <button type="submit" class="btn btn-outline-danger btn-sm rounded shadow-sm px-3 fw-bold">

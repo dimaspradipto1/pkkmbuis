@@ -288,6 +288,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::get('evaluasi-export/{id}', [\App\Http\Controllers\EvaluasiExportController::class, 'export'])->name('evaluasi.export');
 
     Route::get('evaluasimenu', [\App\Http\Controllers\EvaluasiMenuController::class, 'index'])->name('evaluasimenu.index');
+    Route::post('evaluasimenu/bulk-toggle', [\App\Http\Controllers\EvaluasiMenuController::class, 'bulkToggle'])->name('evaluasimenu.bulkToggle');
     Route::post('evaluasimenu/{id}/toggle', [\App\Http\Controllers\EvaluasiMenuController::class, 'toggle'])->name('evaluasimenu.toggle');
     Route::get('evaluasimenu/{id}/questions', [\App\Http\Controllers\EvaluasiMenuController::class, 'questions'])->name('evaluasimenu.questions');
     Route::post('evaluasimenu/{id}/questions', [\App\Http\Controllers\EvaluasiMenuController::class, 'updateQuestions'])->name('evaluasimenu.updateQuestions');

@@ -376,15 +376,54 @@
     <script>
         // Global SweetAlert2 confirm handler for any element or form with confirm()
         (function () {
-            function handleConfirm(title, text, onConfirm) {
+            function handleConfirm(elem, message, onConfirm) {
+                const customTitle = elem.getAttribute('data-confirm-title');
+                const customBtn = elem.getAttribute('data-confirm-btn');
+                const customColor = elem.getAttribute('data-confirm-color');
+                const customIcon = elem.getAttribute('data-confirm-icon');
+
+                let title = customTitle;
+                let btnText = customBtn;
+                let btnColor = customColor;
+                let icon = customIcon;
+
+                if (!title) {
+                    if (/buka|aktif|enable/i.test(message)) {
+                        title = 'Konfirmasi Buka / Aktifkan';
+                        btnText = btnText || 'Ya, Buka!';
+                        btnColor = btnColor || '#198754';
+                        icon = icon || 'question';
+                    } else if (/tutup|nonaktif|disable/i.test(message)) {
+                        title = 'Konfirmasi Tutup / Nonaktifkan';
+                        btnText = btnText || 'Ya, Tutup!';
+                        btnColor = btnColor || '#dc3545';
+                        icon = icon || 'warning';
+                    } else if (/reset/i.test(message)) {
+                        title = 'Konfirmasi Reset';
+                        btnText = btnText || 'Ya, Reset!';
+                        btnColor = btnColor || '#dc3545';
+                        icon = icon || 'warning';
+                    } else if (/hapus|delete|destroy/i.test(message)) {
+                        title = 'Konfirmasi Hapus';
+                        btnText = btnText || 'Ya, Hapus!';
+                        btnColor = btnColor || '#d33';
+                        icon = icon || 'warning';
+                    } else {
+                        title = 'Konfirmasi Tindakan';
+                        btnText = btnText || 'Ya, Lanjutkan!';
+                        btnColor = btnColor || '#0d6efd';
+                        icon = icon || 'question';
+                    }
+                }
+
                 Swal.fire({
-                    title: title || 'Konfirmasi Hapus',
-                    text: text || 'Apakah Anda yakin ingin menghapus data ini?',
-                    icon: 'warning',
+                    title: title,
+                    text: message || 'Apakah Anda yakin ingin melanjutkan tindakan ini?',
+                    icon: icon || 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
+                    confirmButtonColor: btnColor || '#198754',
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Hapus!',
+                    confirmButtonText: btnText || 'Ya, Lanjutkan!',
                     cancelButtonText: 'Batal',
                     reverseButtons: true
                 }).then((result) => {
@@ -413,7 +452,7 @@
                     e.stopImmediatePropagation();
 
                     const form = target.closest('form');
-                    handleConfirm('Konfirmasi Hapus', message, function () {
+                    handleConfirm(target, message, function () {
                         if (form) {
                             HTMLFormElement.prototype.submit.call(form);
                         } else if (target.tagName === 'A' && target.href) {
@@ -433,7 +472,7 @@
                     e.stopPropagation();
                     e.stopImmediatePropagation();
 
-                    handleConfirm('Konfirmasi Hapus', message, function () {
+                    handleConfirm(form, message, function () {
                         HTMLFormElement.prototype.submit.call(form);
                     });
                 }

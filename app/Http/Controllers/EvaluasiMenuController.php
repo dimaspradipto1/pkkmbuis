@@ -40,6 +40,24 @@ class EvaluasiMenuController extends Controller
         return view('pages.evaluasimenu.index', compact('menus'));
     }
 
+    public function bulkToggle(Request $request)
+    {
+        if (Auth::user()->role != 'admin' && Auth::user()->role != 'stafbaak') {
+            abort(403);
+        }
+
+        $action = $request->input('action');
+        if ($action === 'enable_all') {
+            EvaluasiMenu::query()->update(['is_active' => true]);
+            Alert::success('Berhasil', 'Seluruh menu evaluasi berhasil dibuka / diaktifkan untuk mahasiswa.')->toToast()->autoClose(3000);
+        } elseif ($action === 'disable_all') {
+            EvaluasiMenu::query()->update(['is_active' => false]);
+            Alert::success('Berhasil', 'Seluruh menu evaluasi berhasil ditutup / dinonaktifkan untuk mahasiswa.')->toToast()->autoClose(3000);
+        }
+
+        return redirect()->back();
+    }
+
     public function toggle($id)
     {
         if (Auth::user()->role != 'admin' && Auth::user()->role != 'stafbaak') {
