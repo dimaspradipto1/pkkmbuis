@@ -21,51 +21,15 @@ class EvaluasiFikesRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'user_id'                => 'sometimes|exists:users,id',
-
-            // Penilaian Evaluasi Pemateri
-            'q1'                     => 'required|integer|min:1|max:4',
-            'q2'                     => 'required|integer|min:1|max:4',
-            'q3'                     => 'required|integer|min:1|max:4',
-            'q4'                     => 'required|integer|min:1|max:4',
-            'q5'                     => 'required|integer|min:1|max:4',
-            'q6'                     => 'required|integer|min:1|max:4',
-            'q7'                     => 'required|integer|min:1|max:4',
-            'q8'                     => 'required|integer|min:1|max:4',
-
-            // Penilaian Evaluasi Isi Materi
-            'q9'                     => 'required|integer|min:1|max:4',
-            'q10'                    => 'required|integer|min:1|max:4',
-            'q11'                    => 'required|integer|min:1|max:4',
-            'q12'                    => 'required|integer|min:1|max:4',
-            'q13'                    => 'required|integer|min:1|max:4',
-
-            // Saran dan Masukan
-            'saran_dekan'            => 'nullable|string',
-            'saran_wakil_dekan_1'    => 'nullable|string',
-            'saran_wakil_dekan_2'    => 'nullable|string',
-            'saran_prodi_s1_kesling' => 'nullable|string',
-            'saran_prodi_s1_k3'      => 'nullable|string',
-            'saran_prodi_s2_kesmas'  => 'nullable|string',
-            'saran_hiv'              => 'nullable|string',
-            'saran_alumni_fikes'     => 'nullable|string',
-
-            // Fasilitas dan Penyelenggara
-            'q14'                    => 'required|integer|min:1|max:4',
-            'q15'                    => 'required|integer|min:1|max:4',
-            'q16'                    => 'required|integer|min:1|max:4',
-            'q17'                    => 'required|integer|min:1|max:4',
-            'q18'                    => 'required|integer|min:1|max:4',
-
-            // Sarana dan Prasarana
-            'q19'                    => 'required|integer|min:1|max:4',
-            'q20'                    => 'required|integer|min:1|max:4',
-            'q21'                    => 'required|integer|min:1|max:4',
-            'q22'                    => 'required|integer|min:1|max:4',
-
-            // Saran dan Masukan untuk Panitia
-            'saran_panitia'          => 'nullable|string',
-        ];
+        $questions = \App\Models\EvaluasiFikes::questions();
+        $rules = [];
+        foreach ($questions as $key => $text) {
+            $rules[$key] = 'required|integer|in:1,2,3,4';
+        }
+        $rules['saran_inputs'] = 'nullable|array';
+        $rules['saran_inputs.*'] = 'nullable|string';
+        $rules['saran_panitia'] = 'nullable|string';
+        $rules['saran_dan_masukan'] = 'nullable|string';
+        return $rules;
     }
 }

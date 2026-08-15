@@ -113,7 +113,7 @@
                         @if($currentIndikator != $qInfo['indikator'])
                             @php
                                 $currentIndikator = $qInfo['indikator'];
-                                $rowspan = $qNum <= 8 ? 8 : 5;
+                                $rowspan = $qNum <= 3 ? 3 : 2;
                             @endphp
                             <td rowspan="{{ $rowspan }}" class="fw-bold bg-header-sub text-center align-middle">
                                 {{ $currentIndikator }}

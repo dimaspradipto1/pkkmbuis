@@ -46,27 +46,14 @@
             </div>
         </div>
 
-        {{-- Section 1: Pemateri --}}
-        <div class="eval-header-card mb-0">PENILAIAN EVALUASI PEMATERI</div>
+        {{-- Section 1: Pemateri & Materi --}}
+        <div class="eval-header-card mb-0">PENILAIAN EVALUASI PEMATERI & MATERI</div>
         @foreach($questions as $key => $questionText)
-            @if(in_array($key, ['q1','q2','q3','q4','q5','q6','q7','q8']))
+            @if(in_array($key, ['q1', 'q2', 'q3', 'q4', 'q5']))
                 <div class="eval-card" style="{{ $loop->last ? 'border-radius:0 0 10px 10px; margin-bottom:24px;' : 'border-radius:0;' }}">
                     <div class="d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold text-dark">{{ $loop->iteration }}. {{ $questionText }}</span>
-                        <span class="badge text-white px-3 py-2" style="background-color: #9F1521; font-size: 0.95rem;">Skala: {{ $evaluasi->$key }} / 4</span>
-                    </div>
-                </div>
-            @endif
-        @endforeach
-
-        {{-- Section 2: Isi Materi --}}
-        <div class="eval-header-card mb-0">PENILAIAN EVALUASI ISI MATERI</div>
-        @foreach($questions as $key => $questionText)
-            @if(in_array($key, ['q9','q10','q11','q12','q13']))
-                <div class="eval-card" style="{{ $loop->last ? 'border-radius:0 0 10px 10px; margin-bottom:24px;' : 'border-radius:0;' }}">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="fw-semibold text-dark">{{ $loop->iteration + 8 }}. {{ $questionText }}</span>
-                        <span class="badge text-white px-3 py-2" style="background-color: #9F1521; font-size: 0.95rem;">Skala: {{ $evaluasi->$key }} / 4</span>
+                        <span class="fw-semibold text-dark">{{ $questionText }}</span>
+                        <span class="badge bg-info text-white px-3 py-2" style="font-size: 0.95rem;">Skala: {{ $evaluasi->$key }} / 4</span>
                     </div>
                 </div>
             @endif

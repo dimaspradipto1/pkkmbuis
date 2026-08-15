@@ -51,21 +51,13 @@ class RekapEvaluasiController extends Controller
             ['code' => 'M17', 'name' => 'FEB', 'model' => EvaluasiFeb::class],
         ];
 
-        // 13 Item Questions for Table 1 (Pemateri & Materi)
+        // 5 Item Questions for Table 1 (Pemateri & Materi)
         $questionsTable1 = [
-            1  => ['indikator' => 'Pemateri', 'item' => 'Pemateri Memahami materi'],
-            2  => ['indikator' => 'Pemateri', 'item' => 'Pamateri Berinteraksi dengan peserta'],
-            3  => ['indikator' => 'Pemateri', 'item' => 'Pemaparan jelas dan mudah dipahami'],
-            4  => ['indikator' => 'Pemateri', 'item' => 'Pamateri Mampu mengalokasikan waktu'],
-            5  => ['indikator' => 'Pemateri', 'item' => 'Pamateri Memberikan motivasi dan feedback'],
-            6  => ['indikator' => 'Pemateri', 'item' => 'Metode dan alat dalam penyajian menarik'],
-            7  => ['indikator' => 'Pemateri', 'item' => 'Pamateri Memberikan kesempatan berpartisipasi'],
-            8  => ['indikator' => 'Pemateri', 'item' => 'Pamateri Menjawab pertanyaan dengan benar dan jelas'],
-            9  => ['indikator' => 'Materi',   'item' => 'Materi yang di sajikan Informatif'],
-            10 => ['indikator' => 'Materi',   'item' => 'Materi yang di sajikan Mudah dipahami'],
-            11 => ['indikator' => 'Materi',   'item' => 'Materi yang di sajikan Bermanfaat dan sesuai kebutuhan'],
-            12 => ['indikator' => 'Materi',   'item' => 'Materi yang di sajikan Relevan dengan Kegiatan PKKMB'],
-            13 => ['indikator' => 'Materi',   'item' => 'Materi yang di sajikan Mendukung peningkatan SDM MABA UIS'],
+            1 => ['indikator' => 'Pemateri', 'item' => 'Pemateri menguasai materi dan menyampaikannya dengan jelas serta mudah dipahami.'],
+            2 => ['indikator' => 'Pemateri', 'item' => 'Pemateri mampu berinteraksi, memberikan kesempatan berpartisipasi, serta menjawab pertanyaan peserta dengan baik.'],
+            3 => ['indikator' => 'Pemateri', 'item' => 'Pemateri menggunakan metode penyampaian yang menarik dan mampu mengelola waktu kegiatan dengan baik.'],
+            4 => ['indikator' => 'Materi',   'item' => 'Materi yang disampaikan informatif, bermanfaat, dan sesuai dengan kebutuhan peserta.'],
+            5 => ['indikator' => 'Materi',   'item' => 'Materi yang disampaikan relevan dengan kegiatan PKKMB serta mendukung peningkatan wawasan dan kualitas SDM mahasiswa baru UIS.'],
         ];
 
         // Calculate Table 1: TCR per Question per Module
@@ -81,13 +73,13 @@ class RekapEvaluasiController extends Controller
             $modTotalResponses[$code] = $count;
 
             $sumTcrMod = 0;
-            for ($q = 1; $q <= 13; $q++) {
+            for ($q = 1; $q <= 5; $q++) {
                 $avgSkor = $count > 0 ? (float) $modelClass::avg('q' . $q) : 0;
                 $tcr = $avgSkor > 0 ? round(($avgSkor / 4) * 100, 2) : 0;
                 $tcrTable1[$q][$code] = $tcr;
                 $sumTcrMod += $tcr;
             }
-            $avgTcrMod = round($sumTcrMod / 13, 2);
+            $avgTcrMod = round($sumTcrMod / 5, 2);
             $modAvgTcr[$code] = $avgTcrMod;
             $modAvgKat[$code] = $this->getKategori($avgTcrMod);
         }

@@ -37,19 +37,11 @@ class EvaluasiSistemPendidikanTinggidiIndonesia extends Model
     public static function questions(): array
     {
         $defaults = [
-            'q1'  => 'Pemateri Memahami materi',
-            'q2'  => 'Pamateri Berinteraksi dengan peserta',
-            'q3'  => 'Pemaparan jelas dan mudah dipahami',
-            'q4'  => 'Pamateri Mampu mengalokasikan waktu',
-            'q5'  => 'Pamateri Memberikan motivasi dan feedback',
-            'q6'  => 'Metode dan alat dalam penyajian menarik',
-            'q7'  => 'Pamateri Memberikan kesempatan berpartisipasi',
-            'q8'  => 'Pamateri Menjawab pertanyaan dengan benar dan jelas',
-            'q9'  => 'Materi yang di sajikan Informatif',
-            'q10' => 'Materi yang di sajikan Mudah dipahami',
-            'q11' => 'Materi yang di sajikan Bermanfaat dan sesuai kebutuhan',
-            'q12' => 'Materi yang di sajikan Relevan dengan Kegiatan PKKMB',
-            'q13' => 'Materi yang di sajikan Mendukung peningkatan SDM MABA UIS',
+            'q1' => 'Pemateri menguasai materi dan menyampaikannya dengan jelas serta mudah dipahami.',
+            'q2' => 'Pemateri mampu berinteraksi, memberikan kesempatan berpartisipasi, serta menjawab pertanyaan peserta dengan baik.',
+            'q3' => 'Pemateri menggunakan metode penyampaian yang menarik dan mampu mengelola waktu kegiatan dengan baik.',
+            'q4' => 'Materi yang disampaikan informatif, bermanfaat, dan sesuai dengan kebutuhan peserta.',
+            'q5' => 'Materi yang disampaikan relevan dengan kegiatan PKKMB serta mendukung peningkatan wawasan dan kualitas SDM mahasiswa baru UIS.',
         ];
 
         return EvaluasiQuestion::getQuestionsForMenu(6, $defaults);

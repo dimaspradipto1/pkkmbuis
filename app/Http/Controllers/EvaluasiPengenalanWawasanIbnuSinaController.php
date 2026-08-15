@@ -57,7 +57,7 @@ class EvaluasiPengenalanWawasanIbnuSinaController extends Controller
                 $badgeClass = 'bg-danger';
             }
 
-            $indicator = in_array($key, ['q1','q2','q3','q4','q5','q6','q7','q8']) ? 'Pemateri' : 'Materi';
+            $indicator = in_array($key, ['q1', 'q2', 'q3']) ? 'Pemateri' : 'Materi';
 
             $rekapData[] = [
                 'key' => $key,

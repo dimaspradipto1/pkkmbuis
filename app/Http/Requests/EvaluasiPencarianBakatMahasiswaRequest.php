@@ -21,22 +21,14 @@ class EvaluasiPencarianBakatMahasiswaRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'user_id' => 'sometimes|exists:users,id',
-            'q1'  => 'required|integer|min:1|max:4',
-            'q2'  => 'required|integer|min:1|max:4',
-            'q3'  => 'required|integer|min:1|max:4',
-            'q4'  => 'required|integer|min:1|max:4',
-            'q5'  => 'required|integer|min:1|max:4',
-            'q6'  => 'required|integer|min:1|max:4',
-            'q7'  => 'required|integer|min:1|max:4',
-            'q8'  => 'required|integer|min:1|max:4',
-            'q9'  => 'required|integer|min:1|max:4',
-            'q10' => 'required|integer|min:1|max:4',
-            'q11' => 'required|integer|min:1|max:4',
-            'q12' => 'required|integer|min:1|max:4',
-            'q13' => 'required|integer|min:1|max:4',
-            'saran_dan_masukan' => 'nullable|string',
-        ];
+        $questions = \App\Models\EvaluasiPencarianBakatMahasiswa::questions();
+        $rules = [];
+        foreach ($questions as $key => $text) {
+            $rules[$key] = 'required|integer|in:1,2,3,4';
+        }
+        $rules['saran_inputs'] = 'nullable|array';
+        $rules['saran_inputs.*'] = 'nullable|string';
+        $rules['saran_dan_masukan'] = 'nullable|string';
+        return $rules;
     }
 }

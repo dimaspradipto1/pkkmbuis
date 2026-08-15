@@ -101,7 +101,7 @@
             <div class="eval-card">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <span class="fw-semibold text-dark">{{ $loop->iteration }}. {{ $questionText }}</span>
+                        <span class="fw-semibold text-dark">{{ $questionText }}</span>
                     </div>
                     <div>
                         <span class="badge bg-info text-white px-3 py-2" style="font-size: 0.95rem;">

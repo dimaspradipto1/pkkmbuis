@@ -155,67 +155,18 @@
                 </div>
             </div>
 
-            {{-- SECTION 1: PEMATERI --}}
+            {{-- EVALUATION QUESTIONS --}}
             <div class="eval-header-card">
-                PENILAIAN EVALUASI PEMATERI
+                PENILAIAN EVALUASI PEMATERI & MATERI
             </div>
             <div class="eval-header-body">
                 <p class="mb-0 text-muted" style="font-size: 0.9rem;">
-                    Berikan tanggapan Anda terhadap keseluruhan Pemateri yang Anda ikuti.<br>
+                    Berikan tanggapan Anda terhadap keseluruhan Pemateri dan Materi yang disajikan.<br>
                     <strong>1 = Sangat tidak setuju</strong> &nbsp;|&nbsp; <strong>4 = Sangat setuju</strong>
                 </p>
             </div>
 
-            @foreach([
-                'q1' => 'Pemateri Memahami materi',
-                'q2' => 'Pamateri Berinteraksi dengan peserta',
-                'q3' => 'Pemaparan jelas dan mudah dipahami',
-                'q4' => 'Pamateri Mampu mengalokasikan waktu',
-                'q5' => 'Pamateri Memberikan motivasi dan feedback',
-                'q6' => 'Metode dan alat dalam penyajian menarik',
-                'q7' => 'Pamateri Memberikan kesempatan berpartisipasi',
-                'q8' => 'Pamateri Menjawab pertanyaan dengan benar dan jelas'
-            ] as $key => $title)
-                <div class="eval-card">
-                    <div class="eval-question-title">
-                        {{ $title }} <span class="req">*</span>
-                    </div>
-                    <div class="eval-scale-wrapper">
-                        <div class="eval-scale-label left">Sangat tidak setuju</div>
-                        <div class="eval-radio-options">
-                            @for($i = 1; $i <= 4; $i++)
-                                <div class="eval-radio-col">
-                                    <span class="eval-num">{{ $i }}</span>
-                                    <input type="radio" name="{{ $key }}" value="{{ $i }}" {{ old($key) == $i ? 'checked' : '' }} required>
-                                </div>
-                            @endfor
-                        </div>
-                        <div class="eval-scale-label right">Sangat setuju</div>
-                    </div>
-                    @error($key)
-                        <div class="text-danger small mt-2 text-center">{{ $message }}</div>
-                    @enderror
-                </div>
-            @endforeach
-
-            {{-- SECTION 2: ISI MATERI --}}
-            <div class="eval-header-card mt-5">
-                PENILAIAN EVALUASI ISI MATERI
-            </div>
-            <div class="eval-header-body">
-                <p class="mb-0 text-muted" style="font-size: 0.9rem;">
-                    Berikan tanggapan Anda terhadap keseluruhan Materi disajikan yang Anda ikuti.<br>
-                    <strong>1 = Sangat tidak setuju</strong> &nbsp;|&nbsp; <strong>4 = Sangat setuju</strong>
-                </p>
-            </div>
-
-            @foreach([
-                'q9'  => 'Materi yang di sajikan Informatif',
-                'q10' => 'Materi yang di sajikan Mudah dipahami',
-                'q11' => 'Materi yang di sajikan Bermanfaat dan sesuai kebutuhan',
-                'q12' => 'Materi yang di sajikan Relevan dengan Kegiatan PKKMB',
-                'q13' => 'Materi yang di sajikan Mendukung peningkatan SDM MABA UIS'
-            ] as $key => $title)
+            @foreach($questions as $key => $title)
                 <div class="eval-card">
                     <div class="eval-question-title">
                         {{ $title }} <span class="req">*</span>

@@ -277,7 +277,7 @@
             @foreach($questions as $key => $questionText)
                 <div class="eval-card">
                     <div class="eval-question-title">
-                        {{ $loop->iteration }}. {{ $questionText }} <span class="req">*</span>
+                        {{ $questionText }} <span class="req">*</span>
                     </div>
 
                     <div class="eval-scale-wrapper">

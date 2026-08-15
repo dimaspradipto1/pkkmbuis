@@ -75,60 +75,31 @@
                 </div>
             </div>
 
-            <!-- Header Section 1: Pemateri -->
-            <div class="eval-header-card">PENILAIAN EVALUASI PEMATERI</div>
+            <!-- Instruction Header Card -->
+            <div class="eval-header-card">PENILAIAN EVALUASI PEMATERI & MATERI</div>
             <div class="eval-header-body">
-                <p class="mb-1 text-secondary" style="font-size: 0.95rem;">Berikan tanggapan Anda terhadap keseluruhan Pemateri yang Anda ikuti.</p>
-                <p class="mb-0 text-secondary" style="font-size: 0.95rem;">1 = Sangat tidak setuju 4 = Sangat setuju</p>
+                <p class="mb-1 text-secondary" style="font-size: 0.95rem;">Berikan tanggapan Anda terhadap keseluruhan Pemateri dan Materi yang disajikan.</p>
+                <p class="mb-0 text-secondary" style="font-size: 0.95rem;">1 = Sangat tidak setuju &nbsp;|&nbsp; 4 = Sangat setuju</p>
             </div>
 
+            <!-- Questions -->
             @foreach($questions as $key => $questionText)
-                @if(in_array($key, ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8']))
-                    <div class="eval-card">
-                        <div class="eval-question-title">{{ $questionText }} <span class="req">*</span></div>
-                        <div class="eval-scale-wrapper">
-                            <div class="eval-scale-label left">Sangat tidak setuju</div>
-                            <div class="eval-radio-options">
-                                @for($i = 1; $i <= 4; $i++)
-                                    <div class="eval-radio-col">
-                                        <span class="eval-num">{{ $i }}</span>
-                                        <input type="radio" name="{{ $key }}" id="{{ $key }}_{{ $i }}" value="{{ $i }}" {{ old($key, $evaluasi->$key) == $i ? 'checked' : '' }} required>
-                                    </div>
-                                @endfor
-                            </div>
-                            <div class="eval-scale-label right">Sangat setuju</div>
+                <div class="eval-card">
+                    <div class="eval-question-title">{{ $questionText }} <span class="req">*</span></div>
+                    <div class="eval-scale-wrapper">
+                        <div class="eval-scale-label left">Sangat tidak setuju</div>
+                        <div class="eval-radio-options">
+                            @for($i = 1; $i <= 4; $i++)
+                                <div class="eval-radio-col">
+                                    <span class="eval-num">{{ $i }}</span>
+                                    <input type="radio" name="{{ $key }}" id="{{ $key }}_{{ $i }}" value="{{ $i }}" {{ old($key, $evaluasi->$key) == $i ? 'checked' : '' }} required>
+                                </div>
+                            @endfor
                         </div>
-                        @error($key)<div class="text-danger mt-2 small text-center">{{ $message }}</div>@enderror
+                        <div class="eval-scale-label right">Sangat setuju</div>
                     </div>
-                @endif
-            @endforeach
-
-            <!-- Header Section 2: Isi Materi -->
-            <div class="eval-header-card">PENILAIAN EVALUASI ISI MATERI</div>
-            <div class="eval-header-body">
-                <p class="mb-1 text-secondary" style="font-size: 0.95rem;">Berikan tanggapan Anda terhadap keseluruhan Materi disajikan yang Anda ikuti.</p>
-                <p class="mb-0 text-secondary" style="font-size: 0.95rem;">1 = Sangat tidak setuju 4 = Sangat setuju</p>
-            </div>
-
-            @foreach($questions as $key => $questionText)
-                @if(in_array($key, ['q9', 'q10', 'q11', 'q12', 'q13']))
-                    <div class="eval-card">
-                        <div class="eval-question-title">{{ $questionText }} <span class="req">*</span></div>
-                        <div class="eval-scale-wrapper">
-                            <div class="eval-scale-label left">Sangat tidak setuju</div>
-                            <div class="eval-radio-options">
-                                @for($i = 1; $i <= 4; $i++)
-                                    <div class="eval-radio-col">
-                                        <span class="eval-num">{{ $i }}</span>
-                                        <input type="radio" name="{{ $key }}" id="{{ $key }}_{{ $i }}" value="{{ $i }}" {{ old($key, $evaluasi->$key) == $i ? 'checked' : '' }} required>
-                                    </div>
-                                @endfor
-                            </div>
-                            <div class="eval-scale-label right">Sangat setuju</div>
-                        </div>
-                        @error($key)<div class="text-danger mt-2 small text-center">{{ $message }}</div>@enderror
-                    </div>
-                @endif
+                    @error($key)<div class="text-danger mt-2 small text-center">{{ $message }}</div>@enderror
+                </div>
             @endforeach
 
             <!-- Saran & Masukan Card -->
