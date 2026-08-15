@@ -26,7 +26,11 @@ class UsersController extends Controller
      */
     public function index(UsersDataTable $dataTable)
     {
-        return $dataTable->render('pages.user.index');
+        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+        $totalKakakPendamping = User::where('role', 'kakakpendamping')->count();
+        $totalDosenPendamping = User::where('role', 'dosenpendamping')->count();
+
+        return $dataTable->render('pages.user.index', compact('totalMahasiswa', 'totalKakakPendamping', 'totalDosenPendamping'));
     }
 
     /**

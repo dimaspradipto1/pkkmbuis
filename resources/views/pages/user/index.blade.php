@@ -12,6 +12,54 @@
     </div>
 
     <section class="section">
+        <!-- Stat Cards -->
+        <div class="row g-3 mb-4">
+            <!-- Total Mahasiswa -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #2b3e50 !important; transition: all 0.2s ease;">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white shadow-sm" style="width: 48px; height: 48px; min-width: 48px; background-color: #334155;">
+                            <i class="bi bi-people-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">TOTAL MAHASISWA</div>
+                            <div class="fs-4 fw-bold text-dark lh-1 mt-1">{{ number_format($totalMahasiswa ?? 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kakak Pendamping -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #10b981 !important; transition: all 0.2s ease;">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white shadow-sm" style="width: 48px; height: 48px; min-width: 48px; background-color: #10b981;">
+                            <i class="bi bi-person-badge-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">KAKAK PENDAMPING</div>
+                            <div class="fs-4 fw-bold text-dark lh-1 mt-1">{{ number_format($totalKakakPendamping ?? 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dosen Pendamping -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #e11d48 !important; transition: all 0.2s ease;">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white shadow-sm" style="width: 48px; height: 48px; min-width: 48px; background-color: #e11d48;">
+                            <i class="bi bi-mortarboard-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">DOSEN PENDAMPING</div>
+                            <div class="fs-4 fw-bold text-dark lh-1 mt-1">{{ number_format($totalDosenPendamping ?? 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-lg-12">
 

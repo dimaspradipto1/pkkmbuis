@@ -95,6 +95,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::resource('users', UsersController::class);
 
     Route::get('users/{user}/password', [UsersController::class, 'updatePassword'])->name('users.updatePassword');
+    Route::post('users/{user}/password', [UsersController::class, 'updatePasswordPost'])->name('users.updatePasswordPost');
     Route::get('absenpertama/check-status/{user_id}', [AbsenPertamaController::class, 'checkStatus'])->name('absenpertama.checkStatus');
     Route::get('absenkedua/check-status/{user_id}', [AbsenKeduaController::class, 'checkStatus'])->name('absenkedua.checkStatus');
     Route::get('absenketiga/check-status/{user_id}', [AbsenKetigaController::class, 'checkStatus'])->name('absenketiga.checkStatus');
