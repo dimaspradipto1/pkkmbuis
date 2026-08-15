@@ -1,6 +1,6 @@
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
     <div class="copyright">
-      &copy; {{ date('Y') }} <strong><span>PKKMB UIS - HUMAS</span></strong>. All Rights Reserved
+      <strong><span>PKKMB UIS - HUMAS</span></strong>  &copy; {{ date('Y') }}
     </div>
   </footer><!-- End Footer -->
