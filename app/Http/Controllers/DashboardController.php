@@ -21,6 +21,9 @@ class DashboardController extends Controller
     public function index()
     {
         $authUser = Auth::user();
+        if ($authUser->role === 'panitia') {
+            return redirect()->route('lpj.index');
+        }
         $isPendamping = in_array($authUser->role, ['kakakpendamping', 'dosenpendamping']);
 
         // Auto-assign sequential certificate numbers for any students with kelulusan_is_active whose certificate has not been numbered yet

@@ -3,15 +3,25 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-        {{-- 1. UTAMA --}}
-        <li class="nav-heading">Utama</li>
+        @if (Auth::user()->role == 'panitia')
+            <li class="nav-heading">Laporan</li>
 
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('dashboard') ? '' : 'collapsed' }}" href="{{ route('dashboard') }}">
-                <i class="bi bi-grid-fill"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
+            <li class="nav-item">
+                <a class="nav-link {{ (request()->routeIs('lpj.*') || request()->routeIs('lpj-attachments.*')) ? '' : 'collapsed' }}" href="{{ route('lpj.index') }}">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>LPJ</span>
+                </a>
+            </li>
+        @else
+            {{-- 1. UTAMA --}}
+            <li class="nav-heading">Utama</li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('dashboard') ? '' : 'collapsed' }}" href="{{ route('dashboard') }}">
+                    <i class="bi bi-grid-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
 
         {{-- 2. PELAKSANAAN & KEGIATAN --}}
         @if (Auth::user()->role != 'timevaluasi')
@@ -341,6 +351,7 @@
                     </ul>
                 </li>
             @endif
+        @endif
         @endif
 
     </ul>

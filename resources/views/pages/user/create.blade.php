@@ -81,12 +81,64 @@
                                         <option value="kakakpendamping" {{ old('role') == 'kakakpendamping' ? 'selected' : '' }}>Kakak Pendamping</option>
                                         <option value="dosenpendamping" {{ old('role') == 'dosenpendamping' ? 'selected' : '' }}>Dosen Pendamping</option>
                                         <option value="timevaluasi" {{ old('role') == 'timevaluasi' ? 'selected' : '' }}>Tim Evaluasi</option>
+                                        <option value="panitia" {{ old('role') == 'panitia' ? 'selected' : '' }}>Panitia</option>
                                         <option value="mahasiswa" {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            @php
+                                $jabatanList = [
+                                    'Pengarah',
+                                    'Ketua Pelaksana',
+                                    'Wakil Ketua I',
+                                    'Wakil Ketua II',
+                                    'Wakil Ketua III',
+                                    'Wakil Ketua IV',
+                                    'Sekretaris',
+                                    'Wakil Sekretaris I',
+                                    'Wakil Sekretaris II',
+                                    'Wakil Sekretaris III',
+                                    'Bendahara',
+                                    'Wakil Bendahara I',
+                                    'Wakil Bendahara II',
+                                    'Wakil Bendahara III',
+                                    'Wakil Bendahara IV',
+                                    'Koordinator Seksi Kesekretariatan',
+                                    'Anggota Seksi Kesekretariatan',
+                                    'Koordinator Seksi Acara',
+                                    'Anggota Seksi Acara',
+                                    'Koordinator Seksi Kelompok',
+                                    'Anggota Seksi Kelompok',
+                                    'Koordinator Seksi Konsumsi',
+                                    'Anggota Seksi Konsumsi',
+                                    'Koordinator Seksi Perlengkapan',
+                                    'Anggota Seksi Perlengkapan',
+                                    'Koordinator Seksi Desain, Dokumentasi dan Publikasi',
+                                    'Anggota Seksi Desain, Dokumentasi dan Publikasi',
+                                    'Koordinator Seksi LPTI',
+                                    'Anggota Seksi LPTI',
+                                    'Koordinator Seksi P3K',
+                                    'Anggota Seksi P3K',
+                                    'Koordinator Seksi Perencanaan dan Evaluasi Kegiatan',
+                                    'Anggota Seksi Perencanaan dan Evaluasi Kegiatan',
+                                ];
+                            @endphp
+
+                            <div class="row mb-3" id="jabatan-panitia-group" style="display: none;">
+                                <label for="jabatan_panitia" class="col-sm-2 col-form-label">Jabatan Panitia</label>
+                                <div class="col-sm-10">
+                                    <select name="jabatan_panitia" class="form-select" id="jabatan_panitia">
+                                        <option value=""></option>
+                                        @foreach ($jabatanList as $jabatan)
+                                            <option value="{{ $jabatan }}" {{ old('jabatan_panitia') == $jabatan ? 'selected' : '' }}>{{ $jabatan }}</option>
+                                        @endforeach
+                                    </select>
+                                    <small class="text-muted" style="font-size: 0.75rem;">Opsional / boleh dikosongkan. Ketik untuk mencari jabatan.</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3" id="fakultas-group">
                                 <label for="fakultas" class="col-sm-2 col-form-label">Fakultas</label>
                                 <div class="col-sm-10">
                                     <select name="fakultas" class="form-select" id="fakultas">
@@ -98,7 +150,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
+                            <div class="row mb-3" id="prodi-group">
                                 <label for="program_studi" class="col-sm-2 col-form-label">Program Studi</label>
                                 <div class="col-sm-10">
                                     <select name="program_studi" class="form-select" id="program_studi">
@@ -148,18 +200,108 @@
     </section>
 
     <script>
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const passwordInput = document.getElementById('password');
-            const icon = this.querySelector('i');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('bi-eye');
-                icon.classList.add('bi-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('bi-eye-slash');
-                icon.classList.add('bi-eye');
+        document.addEventListener('DOMContentLoaded', function() {
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            if (togglePasswordBtn) {
+                togglePasswordBtn.addEventListener('click', function() {
+                    const passwordInput = document.getElementById('password');
+                    const icon = this.querySelector('i');
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.classList.remove('bi-eye');
+                        icon.classList.add('bi-eye-slash');
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.classList.remove('bi-eye-slash');
+                        icon.classList.add('bi-eye');
+                    }
+                });
             }
         });
+
+        const jabatanPanitiaOptions = [
+            { id: '', text: '-- Pilih Jabatan Panitia (Opsional) --' },
+            { id: 'Pengarah', text: 'Pengarah' },
+            { id: 'Ketua Pelaksana', text: 'Ketua Pelaksana' },
+            { id: 'Wakil Ketua I', text: 'Wakil Ketua I' },
+            { id: 'Wakil Ketua II', text: 'Wakil Ketua II' },
+            { id: 'Wakil Ketua III', text: 'Wakil Ketua III' },
+            { id: 'Wakil Ketua IV', text: 'Wakil Ketua IV' },
+            { id: 'Sekretaris', text: 'Sekretaris' },
+            { id: 'Wakil Sekretaris I', text: 'Wakil Sekretaris I' },
+            { id: 'Wakil Sekretaris II', text: 'Wakil Sekretaris II' },
+            { id: 'Wakil Sekretaris III', text: 'Wakil Sekretaris III' },
+            { id: 'Bendahara', text: 'Bendahara' },
+            { id: 'Wakil Bendahara I', text: 'Wakil Bendahara I' },
+            { id: 'Wakil Bendahara II', text: 'Wakil Bendahara II' },
+            { id: 'Wakil Bendahara III', text: 'Wakil Bendahara III' },
+            { id: 'Wakil Bendahara IV', text: 'Wakil Bendahara IV' },
+            { id: 'Koordinator Seksi Kesekretariatan', text: 'Koordinator Seksi Kesekretariatan' },
+            { id: 'Anggota Seksi Kesekretariatan', text: 'Anggota Seksi Kesekretariatan' },
+            { id: 'Koordinator Seksi Acara', text: 'Koordinator Seksi Acara' },
+            { id: 'Anggota Seksi Acara', text: 'Anggota Seksi Acara' },
+            { id: 'Koordinator Seksi Kelompok', text: 'Koordinator Seksi Kelompok' },
+            { id: 'Anggota Seksi Kelompok', text: 'Anggota Seksi Kelompok' },
+            { id: 'Koordinator Seksi Konsumsi', text: 'Koordinator Seksi Konsumsi' },
+            { id: 'Anggota Seksi Konsumsi', text: 'Anggota Seksi Konsumsi' },
+            { id: 'Koordinator Seksi Perlengkapan', text: 'Koordinator Seksi Perlengkapan' },
+            { id: 'Anggota Seksi Perlengkapan', text: 'Anggota Seksi Perlengkapan' },
+            { id: 'Koordinator Seksi Desain, Dokumentasi dan Publikasi', text: 'Koordinator Seksi Desain, Dokumentasi dan Publikasi' },
+            { id: 'Anggota Seksi Desain, Dokumentasi dan Publikasi', text: 'Anggota Seksi Desain, Dokumentasi dan Publikasi' },
+            { id: 'Koordinator Seksi LPTI', text: 'Koordinator Seksi LPTI' },
+            { id: 'Anggota Seksi LPTI', text: 'Anggota Seksi LPTI' },
+            { id: 'Koordinator Seksi P3K', text: 'Koordinator Seksi P3K' },
+            { id: 'Anggota Seksi P3K', text: 'Anggota Seksi P3K' },
+            { id: 'Koordinator Seksi Perencanaan dan Evaluasi Kegiatan', text: 'Koordinator Seksi Perencanaan dan Evaluasi Kegiatan' },
+            { id: 'Anggota Seksi Perencanaan dan Evaluasi Kegiatan', text: 'Anggota Seksi Perencanaan dan Evaluasi Kegiatan' }
+        ];
+
+        function updatePanitiaUI() {
+            const roleEl = document.getElementById('role');
+            if (!roleEl) return;
+            const isPanitia = (roleEl.value === 'panitia');
+
+            const jG = document.getElementById('jabatan-panitia-group');
+            const fG = document.getElementById('fakultas-group');
+            const pG = document.getElementById('prodi-group');
+
+            if (jG) jG.style.display = isPanitia ? 'flex' : 'none';
+            if (fG) fG.style.display = isPanitia ? 'none' : 'flex';
+            if (pG) pG.style.display = isPanitia ? 'none' : 'flex';
+
+            if (isPanitia && window.jQuery && typeof window.jQuery.fn.select2 !== 'undefined') {
+                const $j = window.jQuery('#jabatan_panitia');
+                if ($j.length) {
+                    const currentVal = $j.val() || "{{ old('jabatan_panitia') }}";
+                    if ($j.data('select2')) {
+                        $j.select2('destroy');
+                    }
+                    $j.empty();
+                    jabatanPanitiaOptions.forEach(function(item) {
+                        const isSelected = (item.id === currentVal && currentVal !== '');
+                        $j.append(new Option(item.text, item.id, false, isSelected));
+                    });
+                    $j.select2({
+                        theme: 'bootstrap-5',
+                        placeholder: '-- Cari & Pilih Jabatan Panitia (Opsional) --',
+                        allowClear: true,
+                        width: '100%'
+                    });
+                    if (currentVal) {
+                        $j.val(currentVal).trigger('change.select2');
+                    }
+                    $j.next('.select2-container').css('width', '100%');
+                }
+            }
+        }
+
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.id === 'role') {
+                updatePanitiaUI();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', updatePanitiaUI);
+        window.addEventListener('load', updatePanitiaUI);
     </script>
 @endsection

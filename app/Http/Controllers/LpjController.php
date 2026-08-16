@@ -17,7 +17,7 @@ class LpjController extends Controller
      */
     public function index(LpjDataTable $dataTable)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi', 'panitia'])) {
             abort(403);
         }
 
@@ -29,12 +29,12 @@ class LpjController extends Controller
      */
     public function create()
     {
-        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi', 'panitia'])) {
             abort(403);
         }
 
         $attachments = LpjAttachment::latest()->get();
-        $users = User::where('role', 'timevaluasi')->orderBy('name')->get();
+        $users = User::whereIn('role', ['admin', 'timevaluasi', 'panitia'])->orderBy('name')->get();
 
         return view('pages.lpj.create', compact('attachments', 'users'));
     }
@@ -44,7 +44,7 @@ class LpjController extends Controller
      */
     public function store(LpjRequest $request)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi', 'panitia'])) {
             abort(403);
         }
 
@@ -62,7 +62,7 @@ class LpjController extends Controller
      */
     public function edit(string $id)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi', 'panitia'])) {
             abort(403);
         }
 
@@ -75,7 +75,7 @@ class LpjController extends Controller
      */
     public function update(LpjRequest $request, string $id)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi', 'panitia'])) {
             abort(403);
         }
 
@@ -94,7 +94,7 @@ class LpjController extends Controller
      */
     public function destroy(string $id)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi', 'panitia'])) {
             abort(403);
         }
 

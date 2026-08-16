@@ -358,10 +358,10 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
-            if ($('#user_id, .select2').length) {
-                $('#user_id, .select2').select2({
+            if ($('#user_id').length && !$('#user_id').hasClass('select2-hidden-accessible')) {
+                $('#user_id').select2({
                     theme: 'bootstrap-5',
-                    placeholder: 'Cari / Pilih Pengguna...',
+                    placeholder: $('#user_id').data('placeholder') || 'Cari / Pilih Pengguna...',
                     allowClear: true,
                     width: '100%'
                 });

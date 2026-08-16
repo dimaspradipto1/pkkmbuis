@@ -153,6 +153,19 @@ class Userseeder extends Seeder
                 'program_studi' => 'S1 TEKNIK INFORMATIKA',
                 'is_active' => true,
             ],
+
+            // Panitia
+            [
+                'name' => 'Panitia PKKMB',
+                'id_pendaftar' => 'PAN2026001',
+                'email' => 'panitia@uis.ac.id',
+                'no_wa' => '6281234567999',
+                'password' => Hash::make('password'),
+                'role' => 'panitia',
+                'fakultas' => 'FAKULTAS Sains dan Teknologi (FST)',
+                'program_studi' => 'S1 TEKNIK INFORMATIKA',
+                'is_active' => true,
+            ],
         ];
 
         // 15 Dummy Mahasiswa

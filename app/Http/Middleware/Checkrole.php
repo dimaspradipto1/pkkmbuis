@@ -22,8 +22,9 @@ class Checkrole
             Auth::user()->role == 'kakakpendamping' ||
             Auth::user()->role == 'dosenpendamping' ||
             Auth::user()->role == 'timevaluasi' ||
-            Auth::user()-> role == 'stafbaak' ||
-            Auth::user()->role == 'pimpinan'  
+            Auth::user()->role == 'stafbaak' ||
+            Auth::user()->role == 'pimpinan' ||
+            Auth::user()->role == 'panitia'  
         ) {
             return $next($request);
         } else {

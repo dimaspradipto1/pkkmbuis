@@ -52,7 +52,16 @@ class UsersDataTable extends DataTable
                     </div>
                 ';
             })
-            ->rawColumns(['DT_RowIndex', 'checkbox', 'action', 'is_active']);
+            ->editColumn('role', function($item){
+                if ($item->role == 'panitia') {
+                    if (!empty($item->jabatan_panitia)) {
+                        return '<span class="badge bg-primary">Panitia</span><br><small class="text-muted fw-semibold">' . e($item->jabatan_panitia) . '</small>';
+                    }
+                    return '<span class="badge bg-primary">Panitia</span>';
+                }
+                return ucfirst($item->role);
+            })
+            ->rawColumns(['DT_RowIndex', 'checkbox', 'action', 'is_active', 'role']);
     }
 
     /**

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'role',
         'fakultas',
         'program_studi',
+        'jabatan_panitia',
         'kelompok_id',
         'is_active',
         'kelulusan_is_active',
