@@ -250,6 +250,11 @@
                             <i class="bi bi-circle"></i><span>Rekapitulasi Evaluasi TCR</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('rekapobservasi.index') }}" class="{{ request()->routeIs('rekapobservasi.*') ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Rekapitulasi Observasi Acara</span>
+                        </a>
+                    </li>
                 </ul>
             </li>
 

@@ -1635,134 +1635,136 @@
                             </div>
                         </div>
 
-                        {{-- SECTION 3: SERTIFIKAT KELULUSAN --}}
-                        <div class="col-12 mb-3 mt-2">
-                            <div class="d-flex align-items-center justify-content-between border-bottom pb-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="badge bg-warning bg-opacity-10 text-warning p-2 rounded-3"><i class="bi bi-award fs-6"></i></span>
-                                    <div>
-                                        <h6 class="fw-bold text-dark mb-0">Sertifikat Kelulusan Peserta</h6>
-                                        <span class="text-muted extra-small">Daftar penerbitan nomor sertifikat dan link unduh PNG sertifikat per mahasiswa</span>
+                        @if (Auth::user()->role !== 'timevaluasi')
+                            {{-- SECTION 3: SERTIFIKAT KELULUSAN --}}
+                            <div class="col-12 mb-3 mt-2">
+                                <div class="d-flex align-items-center justify-content-between border-bottom pb-2">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-warning bg-opacity-10 text-warning p-2 rounded-3"><i class="bi bi-award fs-6"></i></span>
+                                        <div>
+                                            <h6 class="fw-bold text-dark mb-0">Sertifikat Kelulusan Peserta</h6>
+                                            <span class="text-muted extra-small">Daftar penerbitan nomor sertifikat dan link unduh PNG sertifikat per mahasiswa</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {{-- Card: Hub Sertifikat Mahasiswa --}}
-                        <div class="col-12">
-                            <div class="card border-0 shadow-sm mb-4 overflow-hidden" id="sertifikatPane">
-                                <div class="card-body p-3 p-xl-4">
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-                                        <div>
-                                            <h5 class="card-title mb-0 fs-5">Hub Sertifikat Mahasiswa <span>| E-Sertifikat PNG</span></h5>
-                                            <p class="text-muted extra-small mb-0 opacity-75">Status nomor sertifikat resmi dan link download sertifikat PNG masing-masing mahasiswa.</p>
+                            {{-- Card: Hub Sertifikat Mahasiswa --}}
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm mb-4 overflow-hidden" id="sertifikatPane">
+                                    <div class="card-body p-3 p-xl-4">
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                                            <div>
+                                                <h5 class="card-title mb-0 fs-5">Hub Sertifikat Mahasiswa <span>| E-Sertifikat PNG</span></h5>
+                                                <p class="text-muted extra-small mb-0 opacity-75">Status nomor sertifikat resmi dan link download sertifikat PNG masing-masing mahasiswa.</p>
+                                            </div>
+
+                                            <div class="d-flex align-items-center flex-wrap gap-2 ms-xl-auto w-100 w-xl-auto">
+                                                {{-- Manage dropdown --}}
+                                                @if (in_array(Auth::user()->role, ['admin', 'stafbaak']))
+                                                    <div class="dropdown me-md-2 mb-2 mb-md-0">
+                                                        <button class="btn btn-outline-warning text-dark btn-sm rounded-pill px-3 py-2 fw-bold extra-small dropdown-toggle shadow-none"
+                                                            type="button" data-bs-toggle="dropdown" style="border-color: rgba(245, 158, 11, 0.4);">
+                                                            <i class="bi bi-gear-fill me-1"></i> Manage
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-4 extra-small">
+                                                            <li><a class="dropdown-item py-2" href="{{ route('sertifikatsetting.index') }}"><i class="bi bi-sliders me-2"></i> Pengaturan & Template</a></li>
+                                                            <li><a class="dropdown-item py-2" href="{{ route('rekapkeseluruhan.index') }}"><i class="bi bi-people me-2"></i> Rekap Kelulusan</a></li>
+                                                        </ul>
+                                                    </div>
+                                                @endif
+
+                                                {{-- Search Input --}}
+                                                <div class="position-relative w-100 w-md-auto mb-2 mb-md-0">
+                                                    <input type="text" id="sertifikatSearch"
+                                                        class="form-control form-control-sm rounded-pill px-4 ps-5 w-100 shadow-none border-light"
+                                                        placeholder="Cari nama mahasiswa..."
+                                                        style="background: #f8fafc; min-width: 220px; height: 38px;">
+                                                    <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted opacity-50"
+                                                        style="left: 0;"></i>
+                                                </div>
+                                            </div>
                                         </div>
 
-                                        <div class="d-flex align-items-center flex-wrap gap-2 ms-xl-auto w-100 w-xl-auto">
-                                            {{-- Manage dropdown --}}
-                                            @if (in_array(Auth::user()->role, ['admin', 'stafbaak', 'timevaluasi']))
-                                                <div class="dropdown me-md-2 mb-2 mb-md-0">
-                                                    <button class="btn btn-outline-warning text-dark btn-sm rounded-pill px-3 py-2 fw-bold extra-small dropdown-toggle shadow-none"
-                                                        type="button" data-bs-toggle="dropdown" style="border-color: rgba(245, 158, 11, 0.4);">
-                                                        <i class="bi bi-gear-fill me-1"></i> Manage
-                                                    </button>
-                                                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-4 extra-small">
-                                                        <li><a class="dropdown-item py-2" href="{{ route('sertifikatsetting.index') }}"><i class="bi bi-sliders me-2"></i> Pengaturan & Template</a></li>
-                                                        <li><a class="dropdown-item py-2" href="{{ route('rekapkeseluruhan.index') }}"><i class="bi bi-people me-2"></i> Rekap Kelulusan</a></li>
-                                                    </ul>
-                                                </div>
-                                            @endif
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-hover align-middle mb-0 sertifikat-table">
+                                                <thead>
+                                                    <tr class="text-uppercase extra-small fw-bold"
+                                                        style="background: #f8fafc; color: #012970;">
+                                                        <th class="ps-3 py-2" style="width: 50px;">NO</th>
+                                                        <th>NAMA MAHASISWA</th>
+                                                        <th>KELOMPOK</th>
+                                                        <th>NO. SERTIFIKAT</th>
+                                                        <th class="text-end pe-3" style="width: 170px;">SERTIFIKAT PNG</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @forelse($allSertifikatMahasiswa as $index => $mhs)
+                                                        <tr class="extra-small border-bottom border-light">
+                                                            <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
+                                                            <td class="text-nowrap">
+                                                                <span class="fw-bold text-dark search-target d-block">{{ $mhs->name }}</span>
+                                                                <span class="text-muted extra-small">{{ $mhs->id_pendaftar }} &bull; {{ $mhs->program_studi ?? '-' }}</span>
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                <span class="badge bg-light text-dark border extra-small">
+                                                                    {{ $mhs->kelompok->nama_kelompok ?? 'Tanpa Kelompok' }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @if ($mhs->nomor_sertifikat)
+                                                                    <span class="badge text-white fw-bold px-2 py-1" style="background-color: #00A551;">
+                                                                        #{{ str_pad($mhs->nomor_sertifikat, 4, '0', STR_PAD_LEFT) }}/{{ $sertifikatSetting->kode_surat ?? 'PKKMB/UIS' }}
+                                                                    </span>
+                                                                @elseif ($mhs->kelulusan_is_active)
+                                                                    <span class="badge bg-info text-white fw-bold px-2 py-1">
+                                                                        Lulus (Siap Terbit)
+                                                                    </span>
+                                                                @else
+                                                                    <span class="text-muted opacity-50">-</span>
+                                                                @endif
+                                                            </td>
+                                                            <td class="text-end pe-3 text-nowrap">
+                                                                @if ($mhs->nomor_sertifikat)
+                                                                    <a href="{{ \Illuminate\Support\Facades\URL::signedRoute('sertifikat.verifikasi', ['user' => $mhs->id]) }}"
+                                                                        target="_blank"
+                                                                        class="btn btn-sm btn-success rounded-pill px-3 py-1 extra-small fw-bold shadow-sm d-inline-flex align-items-center gap-1"
+                                                                        style="background-color: #00A551; border-color: #00A551;">
+                                                                        <i class="bi bi-download"></i> Unduh PNG
+                                                                    </a>
+                                                                @elseif ($mhs->kelulusan_is_active)
+                                                                    <span class="badge bg-light text-warning border border-warning border-opacity-25 px-2 py-1 extra-small">
+                                                                        <i class="bi bi-hourglass-split me-1"></i> Siap Diterbitkan
+                                                                    </span>
+                                                                @else
+                                                                    <span class="badge bg-light text-muted border px-2 py-1 extra-small opacity-75">
+                                                                        <i class="bi bi-lock me-1"></i> Belum Terbit
+                                                                    </span>
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr class="empty-row">
+                                                            <td colspan="5" class="text-center py-4 text-muted small">Belum ada data mahasiswa</td>
+                                                        </tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="table-pagination-wrapper"></div>
 
-                                            {{-- Search Input --}}
-                                            <div class="position-relative w-100 w-md-auto mb-2 mb-md-0">
-                                                <input type="text" id="sertifikatSearch"
-                                                    class="form-control form-control-sm rounded-pill px-4 ps-5 w-100 shadow-none border-light"
-                                                    placeholder="Cari nama mahasiswa..."
-                                                    style="background: #f8fafc; min-width: 220px; height: 38px;">
-                                                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted opacity-50"
-                                                    style="left: 0;"></i>
+                                        <div class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-2">
+                                            <div class="extra-small text-muted fw-semibold me-2 opacity-75 d-flex align-items-center">
+                                                KETERANGAN:</div>
+                                            <div class="d-flex align-items-center gap-2 extra-small flex-wrap justify-content-center">
+                                                <span class="badge bg-success text-white py-1 px-2">Hijau: Sertifikat Resmi Siap Diunduh</span>
+                                                <span class="badge bg-secondary text-white py-1 px-2">Abu-abu: Belum Diterbitkan</span>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-hover align-middle mb-0 sertifikat-table">
-                                            <thead>
-                                                <tr class="text-uppercase extra-small fw-bold"
-                                                    style="background: #f8fafc; color: #012970;">
-                                                    <th class="ps-3 py-2" style="width: 50px;">NO</th>
-                                                    <th>NAMA MAHASISWA</th>
-                                                    <th>KELOMPOK</th>
-                                                    <th>NO. SERTIFIKAT</th>
-                                                    <th class="text-end pe-3" style="width: 170px;">SERTIFIKAT PNG</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse($allSertifikatMahasiswa as $index => $mhs)
-                                                    <tr class="extra-small border-bottom border-light">
-                                                        <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
-                                                        <td class="text-nowrap">
-                                                            <span class="fw-bold text-dark search-target d-block">{{ $mhs->name }}</span>
-                                                            <span class="text-muted extra-small">{{ $mhs->id_pendaftar }} &bull; {{ $mhs->program_studi ?? '-' }}</span>
-                                                        </td>
-                                                        <td class="text-nowrap">
-                                                            <span class="badge bg-light text-dark border extra-small">
-                                                                {{ $mhs->kelompok->nama_kelompok ?? 'Tanpa Kelompok' }}
-                                                            </span>
-                                                        </td>
-                                                        <td class="text-nowrap">
-                                                            @if ($mhs->nomor_sertifikat)
-                                                                <span class="badge text-white fw-bold px-2 py-1" style="background-color: #00A551;">
-                                                                    #{{ str_pad($mhs->nomor_sertifikat, 4, '0', STR_PAD_LEFT) }}/{{ $sertifikatSetting->kode_surat ?? 'PKKMB/UIS' }}
-                                                                </span>
-                                                            @elseif ($mhs->kelulusan_is_active)
-                                                                <span class="badge bg-info text-white fw-bold px-2 py-1">
-                                                                    Lulus (Siap Terbit)
-                                                                </span>
-                                                            @else
-                                                                <span class="text-muted opacity-50">-</span>
-                                                            @endif
-                                                        </td>
-                                                        <td class="text-end pe-3 text-nowrap">
-                                                            @if ($mhs->nomor_sertifikat)
-                                                                <a href="{{ \Illuminate\Support\Facades\URL::signedRoute('sertifikat.verifikasi', ['user' => $mhs->id]) }}"
-                                                                    target="_blank"
-                                                                    class="btn btn-sm btn-success rounded-pill px-3 py-1 extra-small fw-bold shadow-sm d-inline-flex align-items-center gap-1"
-                                                                    style="background-color: #00A551; border-color: #00A551;">
-                                                                    <i class="bi bi-download"></i> Unduh PNG
-                                                                </a>
-                                                            @elseif ($mhs->kelulusan_is_active)
-                                                                <span class="badge bg-light text-warning border border-warning border-opacity-25 px-2 py-1 extra-small">
-                                                                    <i class="bi bi-hourglass-split me-1"></i> Siap Diterbitkan
-                                                                </span>
-                                                            @else
-                                                                <span class="badge bg-light text-muted border px-2 py-1 extra-small opacity-75">
-                                                                    <i class="bi bi-lock me-1"></i> Belum Terbit
-                                                                </span>
-                                                            @endif
-                                                        </td>
-                                                    </tr>
-                                                @empty
-                                                    <tr class="empty-row">
-                                                        <td colspan="5" class="text-center py-4 text-muted small">Belum ada data mahasiswa</td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="table-pagination-wrapper"></div>
-
-                                    <div class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-2">
-                                        <div class="extra-small text-muted fw-semibold me-2 opacity-75 d-flex align-items-center">
-                                            KETERANGAN:</div>
-                                        <div class="d-flex align-items-center gap-2 extra-small flex-wrap justify-content-center">
-                                            <span class="badge bg-success text-white py-1 px-2">Hijau: Sertifikat Resmi Siap Diunduh</span>
-                                            <span class="badge bg-secondary text-white py-1 px-2">Abu-abu: Belum Diterbitkan</span>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
 
                         {{-- SECTION 4: ANALISIS & GRAFIK PROGRESS --}}
                         <div class="col-12 mb-3 mt-2">
