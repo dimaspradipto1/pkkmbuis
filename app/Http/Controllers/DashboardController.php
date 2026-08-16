@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Kelompok;
 use App\Models\AbsenPertama;
 use App\Models\AbsenKedua;
 use App\Models\AbsenKetiga;
@@ -12,63 +13,169 @@ use App\Models\KedisiplinanPertama;
 use App\Models\KedisiplinanKedua;
 use App\Models\KedisiplinanKetiga;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Counts
-        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+        $authUser = Auth::user();
+        $isPendamping = in_array($authUser->role, ['kakakpendamping', 'dosenpendamping']);
 
-        // Attendance Stats (Hadir if either pagi or sore is filled)
-        $absen1 = AbsenPertama::where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen')->count();
-        $absen2 = AbsenKedua::where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen')->count();
-        $absen3 = AbsenKetiga::where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen')->count();
+        if ($isPendamping) {
+            if ($authUser->role === 'kakakpendamping') {
+                $myKelompokIds = Kelompok::where('pendamping_id', $authUser->id)
+                    ->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))
+                    ->pluck('id');
+            } else { // dosenpendamping
+                $myKelompokIds = Kelompok::whereHas('dosenPendampings', fn($q) => $q->where('users.id', $authUser->id))
+                    ->pluck('id');
+            }
 
-        // Test Stats (Count unique users who have filled)
-        $pretestCount = HasilTest::where('type', 'pretest')->distinct('user_id')->count();
-        $posttestCount = HasilTest::where('type', 'posttest')->distinct('user_id')->count();
-        $tugasCount = SoalTugasKelompok::count();
+            $myKelompokList = Kelompok::whereIn('id', $myKelompokIds)->get();
+            $myKelompokNama = $myKelompokList->pluck('nama_kelompok')->implode(', ');
+            $myKelompokSlug = $myKelompokList->first()?->slug;
+            $targetUserIds = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->pluck('id');
+            $totalMahasiswa = $targetUserIds->count();
 
-        // Complete Snapshots for Dashboard Tables
-        $recentUsers = User::latest()->take(5)->get();
+            // Attendance Stats
+            $absen1 = AbsenPertama::whereIn('user_id', $targetUserIds)->where(function ($q) {
+                $q->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen');
+            })->count();
+            $absen2 = AbsenKedua::whereIn('user_id', $targetUserIds)->where(function ($q) {
+                $q->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen');
+            })->count();
+            $absen3 = AbsenKetiga::whereIn('user_id', $targetUserIds)->where(function ($q) {
+                $q->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen');
+            })->count();
 
-        // Fetch more for comprehensive dashboard view
-        $allAbsen1 = AbsenPertama::with('user')->latest('updated_at')->take(10)->get();
-        $allAbsen2 = AbsenKedua::with('user')->latest('updated_at')->take(10)->get();
-        $allAbsen3 = AbsenKetiga::with('user')->latest('updated_at')->take(10)->get();
+            // 6 Pillars Penuntasan Akademik Counts for Kelompok
+            $absenCount = User::whereIn('id', $targetUserIds)
+                ->where(function ($q) {
+                    $q->whereHas('absenPertama', fn($sub) => $sub->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen'))
+                      ->orWhereHas('absenKedua', fn($sub) => $sub->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen'))
+                      ->orWhereHas('absenKetiga', fn($sub) => $sub->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen'));
+                })->count();
 
-        // Fetch Discipline Snapshots
-        $allDis1 = KedisiplinanPertama::with('user')->latest('updated_at')->take(10)->get();
-        $allDis2 = KedisiplinanKedua::with('user')->latest('updated_at')->take(10)->get();
-        $allDis3 = KedisiplinanKetiga::with('user')->latest('updated_at')->take(10)->get();
+            $disiplinCount = User::whereIn('id', $targetUserIds)
+                ->where(function ($q) {
+                    $q->whereHas('kedisiplinanPertama')
+                      ->orWhereHas('kedisiplinanKedua')
+                      ->orWhereHas('kedisiplinanKetiga');
+                })->count();
 
-        $allPretest = HasilTest::with('user')->where('type', 'pretest')->latest()->take(10)->get();
-        $allPosttest = HasilTest::with('user')->where('type', 'posttest')->latest()->take(10)->get();
-        $allTugas = SoalTugasKelompok::with('user')->latest()->take(10)->get();
+            $pretestCount = HasilTest::where('type', 'pretest')->whereIn('user_id', $targetUserIds)->distinct('user_id')->count('user_id');
+            $posttestCount = HasilTest::where('type', 'posttest')->whereIn('user_id', $targetUserIds)->distinct('user_id')->count('user_id');
+            $tugasCount = SoalTugasKelompok::whereIn('user_id', $targetUserIds)->distinct('user_id')->count('user_id');
+            $hasilTestTuntasCount = HasilTest::where('skor', '>=', 65)->whereIn('user_id', $targetUserIds)->distinct('user_id')->count('user_id');
 
-        // Specific Module Snapshots
-        $allM1 = User::whereHas('hasilTests', fn($q) => $q->where('modul', 1))
-                    ->with(['hasilTests' => fn($q) => $q->where('modul', 1)])
-                    ->take(10)->get();
-        $allM2 = User::whereHas('hasilTests', fn($q) => $q->where('modul', 2))
-                    ->with(['hasilTests' => fn($q) => $q->where('modul', 2)])
-                    ->take(10)->get();
-        $allM3 = User::whereHas('hasilTests', fn($q) => $q->where('modul', 3))
-                    ->with(['hasilTests' => fn($q) => $q->where('modul', 3)])
-                    ->take(10)->get();
-        $allM4 = User::whereHas('hasilTests', fn($q) => $q->where('modul', 4))
-                    ->with(['hasilTests' => fn($q) => $q->where('modul', 4)])
-                    ->take(10)->get();
+            // Complete Snapshots for Kelompok Members
+            $recentUsers = User::whereIn('id', $targetUserIds)->latest()->take(5)->get();
+
+            $allAbsen1 = AbsenPertama::whereIn('user_id', $targetUserIds)->with('user')->latest('updated_at')->get();
+            $allAbsen2 = AbsenKedua::whereIn('user_id', $targetUserIds)->with('user')->latest('updated_at')->get();
+            $allAbsen3 = AbsenKetiga::whereIn('user_id', $targetUserIds)->with('user')->latest('updated_at')->get();
+
+            $allDis1 = KedisiplinanPertama::whereIn('user_id', $targetUserIds)->with('user')->latest('updated_at')->get();
+            $allDis2 = KedisiplinanKedua::whereIn('user_id', $targetUserIds)->with('user')->latest('updated_at')->get();
+            $allDis3 = KedisiplinanKetiga::whereIn('user_id', $targetUserIds)->with('user')->latest('updated_at')->get();
+
+            $allPretest = HasilTest::whereIn('user_id', $targetUserIds)->with('user')->where('type', 'pretest')->latest()->get();
+            $allPosttest = HasilTest::whereIn('user_id', $targetUserIds)->with('user')->where('type', 'posttest')->latest()->get();
+            $allTugas = SoalTugasKelompok::whereIn('user_id', $targetUserIds)->with('user')->latest()->get();
+
+            $allM1 = User::whereIn('id', $targetUserIds)
+                        ->whereHas('hasilTests', fn($q) => $q->where('modul', 1))
+                        ->with(['hasilTests' => fn($q) => $q->where('modul', 1)])
+                        ->get();
+            $allM2 = User::whereIn('id', $targetUserIds)
+                        ->whereHas('hasilTests', fn($q) => $q->where('modul', 2))
+                        ->with(['hasilTests' => fn($q) => $q->where('modul', 2)])
+                        ->get();
+            $allM3 = User::whereIn('id', $targetUserIds)
+                        ->whereHas('hasilTests', fn($q) => $q->where('modul', 3))
+                        ->with(['hasilTests' => fn($q) => $q->where('modul', 3)])
+                        ->get();
+            $allM4 = User::whereIn('id', $targetUserIds)
+                        ->whereHas('hasilTests', fn($q) => $q->where('modul', 4))
+                        ->with(['hasilTests' => fn($q) => $q->where('modul', 4)])
+                        ->get();
+        } else {
+            $myKelompokNama = null;
+            $myKelompokSlug = null;
+            // Global Counts
+            $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+
+            // Attendance Stats (Hadir if either pagi or sore is filled)
+            $absen1 = AbsenPertama::where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen')->count();
+            $absen2 = AbsenKedua::where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen')->count();
+            $absen3 = AbsenKetiga::where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen')->count();
+
+            // 6 Pillars Penuntasan Akademik Counts
+            $absenCount = User::where('role', 'mahasiswa')
+                ->where(function ($q) {
+                    $q->whereHas('absenPertama', fn($sub) => $sub->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen'))
+                      ->orWhereHas('absenKedua', fn($sub) => $sub->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen'))
+                      ->orWhereHas('absenKetiga', fn($sub) => $sub->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen'));
+                })->count();
+
+            $disiplinCount = User::where('role', 'mahasiswa')
+                ->where(function ($q) {
+                    $q->whereHas('kedisiplinanPertama')
+                      ->orWhereHas('kedisiplinanKedua')
+                      ->orWhereHas('kedisiplinanKetiga');
+                })->count();
+
+            $pretestCount = HasilTest::where('type', 'pretest')->distinct('user_id')->count('user_id');
+            $posttestCount = HasilTest::where('type', 'posttest')->distinct('user_id')->count('user_id');
+            $tugasCount = SoalTugasKelompok::distinct('user_id')->count('user_id');
+            $hasilTestTuntasCount = HasilTest::where('skor', '>=', 65)->distinct('user_id')->count('user_id');
+
+            // Complete Snapshots for Dashboard Tables
+            $recentUsers = User::latest()->take(5)->get();
+
+            // Fetch more for comprehensive dashboard view with pagination
+            $allAbsen1 = AbsenPertama::with('user')->latest('updated_at')->get();
+            $allAbsen2 = AbsenKedua::with('user')->latest('updated_at')->get();
+            $allAbsen3 = AbsenKetiga::with('user')->latest('updated_at')->get();
+
+            // Fetch Discipline Snapshots
+            $allDis1 = KedisiplinanPertama::with('user')->latest('updated_at')->get();
+            $allDis2 = KedisiplinanKedua::with('user')->latest('updated_at')->get();
+            $allDis3 = KedisiplinanKetiga::with('user')->latest('updated_at')->get();
+
+            $allPretest = HasilTest::with('user')->where('type', 'pretest')->latest()->get();
+            $allPosttest = HasilTest::with('user')->where('type', 'posttest')->latest()->get();
+            $allTugas = SoalTugasKelompok::with('user')->latest()->get();
+
+            // Specific Module Snapshots
+            $allM1 = User::whereHas('hasilTests', fn($q) => $q->where('modul', 1))
+                        ->with(['hasilTests' => fn($q) => $q->where('modul', 1)])
+                        ->get();
+            $allM2 = User::whereHas('hasilTests', fn($q) => $q->where('modul', 2))
+                        ->with(['hasilTests' => fn($q) => $q->where('modul', 2)])
+                        ->get();
+            $allM3 = User::whereHas('hasilTests', fn($q) => $q->where('modul', 3))
+                        ->with(['hasilTests' => fn($q) => $q->where('modul', 3)])
+                        ->get();
+            $allM4 = User::whereHas('hasilTests', fn($q) => $q->where('modul', 4))
+                        ->with(['hasilTests' => fn($q) => $q->where('modul', 4)])
+                        ->get();
+        }
 
         return view('dashboard.index', compact(
             'totalMahasiswa',
+            'myKelompokNama',
+            'myKelompokSlug',
             'absen1',
             'absen2',
             'absen3',
+            'absenCount',
+            'disiplinCount',
             'pretestCount',
             'posttestCount',
             'tugasCount',
+            'hasilTestTuntasCount',
             'recentUsers',
             'allAbsen1',
             'allAbsen2',

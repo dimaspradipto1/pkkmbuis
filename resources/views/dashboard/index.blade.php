@@ -714,12 +714,104 @@
         @endif
 
 
+        @if (Auth::user()->role != 'mahasiswa')
+            {{-- KPI Summary Stats Row --}}
+            <div class="row g-3 mb-4">
+                {{-- Total Mahasiswa --}}
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 p-3" style="background: linear-gradient(135deg, #ffffff, #f0fdf4); border-left: 4px solid #00A551 !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">
+                                    {{ $myKelompokNama ? 'Anggota Kelompok' : 'Total Mahasiswa' }}
+                                </span>
+                                <h3 class="fw-bold text-dark mb-0 mt-1">{{ number_format($totalMahasiswa) }}</h3>
+                                <span class="badge bg-success text-white extra-small mt-1 text-truncate shadow-sm" style="max-width: 170px; background-color: #00A551 !important;" title="{{ $myKelompokNama ?: 'Terdaftar Aktif' }}">
+                                    <i class="bi bi-people me-1"></i> {{ $myKelompokNama ?: 'Terdaftar Aktif' }}
+                                </span>
+                            </div>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #00A551, #007A3B); color: #fff;">
+                                <i class="bi bi-people-fill fs-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Total Kehadiran --}}
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 p-3" style="background: linear-gradient(135deg, #ffffff, #f0f9ff); border-left: 4px solid #0284c7 !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Presensi Kehadiran</span>
+                                <h3 class="fw-bold text-dark mb-0 mt-1">{{ number_format($absen1 + $absen2 + $absen3) }}</h3>
+                                <span class="text-muted extra-small mt-1 d-block">
+                                    H1: <b>{{ $absen1 }}</b> | H2: <b>{{ $absen2 }}</b> | H3: <b>{{ $absen3 }}</b>
+                                </span>
+                            </div>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff;">
+                                <i class="bi bi-calendar-check-fill fs-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Partisipasi Test --}}
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 p-3" style="background: linear-gradient(135deg, #ffffff, #eef2ff); border-left: 4px solid #6366f1 !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Partisipasi Ujian</span>
+                                <h3 class="fw-bold text-dark mb-0 mt-1">{{ number_format($pretestCount + $posttestCount) }}</h3>
+                                <span class="text-muted extra-small mt-1 d-block">
+                                    Pre: <b>{{ $pretestCount }}</b> | Post: <b>{{ $posttestCount }}</b>
+                                </span>
+                            </div>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff;">
+                                <i class="bi bi-clipboard-check-fill fs-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Tugas Kelompok --}}
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card border-0 shadow-sm rounded-4 h-100 p-3" style="background: linear-gradient(135deg, #ffffff, #fffbeb); border-left: 4px solid #f59e0b !important;">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Tugas Kelompok</span>
+                                <h3 class="fw-bold text-dark mb-0 mt-1">{{ number_format($tugasCount) }}</h3>
+                                <span class="badge bg-warning bg-opacity-10 text-warning extra-small mt-1">
+                                    <i class="bi bi-journal-text me-1"></i> Terkumpul
+                                </span>
+                            </div>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;">
+                                <i class="bi bi-journal-bookmark-fill fs-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <div class="row">
             {{-- Main Content Area --}}
             <div class="col-lg-8">
                 <div class="row">
                     @if (Auth::user()->role != 'mahasiswa')
-                        {{-- Main Attendance Hub: Multi-Day --}}
+                        {{-- SECTION 1: PRESENSI & KEDISIPLINAN --}}
+                        <div class="col-12 mb-3">
+                            <div class="d-flex align-items-center justify-content-between border-bottom pb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-success bg-opacity-10 text-success p-2 rounded-3"><i class="bi bi-person-check fs-6"></i></span>
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-0">Presensi & Kedisiplinan Peserta</h6>
+                                        <span class="text-muted extra-small">Monitoring absensi harian dan rekap kedisiplinan atribut & perilaku</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Card 1: Main Attendance Hub: Multi-Day --}}
                         <div class="col-12">
                             <div class="card border-0 shadow-sm mb-4 overflow-hidden">
                                 <div class="card-body p-3 p-xl-4">
@@ -838,7 +930,7 @@
                                                                 </td>
                                                             </tr>
                                                         @empty
-                                                            <tr>
+                                                            <tr class="empty-row">
                                                                 <td colspan="4" class="text-center py-3 text-muted">No
                                                                     data</td>
                                                             </tr>
@@ -846,6 +938,7 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            <div class="table-pagination-wrapper"></div>
                                         </div>
 
                                         {{-- Day 2 Pane --}}
@@ -901,7 +994,7 @@
                                                                 </td>
                                                             </tr>
                                                         @empty
-                                                            <tr>
+                                                            <tr class="empty-row">
                                                                 <td colspan="4" class="text-center py-3 text-muted">No
                                                                     data</td>
                                                             </tr>
@@ -909,6 +1002,7 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            <div class="table-pagination-wrapper"></div>
                                         </div>
 
                                         {{-- Day 3 Pane --}}
@@ -964,7 +1058,7 @@
                                                                 </td>
                                                             </tr>
                                                         @empty
-                                                            <tr>
+                                                            <tr class="empty-row">
                                                                 <td colspan="4" class="text-center py-3 text-muted">No
                                                                     data</td>
                                                             </tr>
@@ -972,6 +1066,7 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            <div class="table-pagination-wrapper"></div>
                                         </div>
                                     </div>
 
@@ -979,7 +1074,7 @@
                                         class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-2">
                                         <div
                                             class="extra-small text-muted fw-semibold me-2 opacity-75 d-flex align-items-center text-uppercase">
-                                            Absensi Legend:</div>
+                                            KETERANGAN:</div>
                                         <div class="d-flex align-items-center gap-1 extra-small">
                                             <span class="badge bg-success py-1 px-2">H: Hadir</span>
                                             <span class="badge bg-warning py-1 px-2">I: Izin</span>
@@ -991,7 +1086,7 @@
                             </div>
                         </div>
 
-                        {{-- Main Discipline Hub: Multi-Day --}}
+                        {{-- Card 2: Main Discipline Hub: Multi-Day --}}
                         <div class="col-12">
                             <div class="card border-0 shadow-sm mb-4 overflow-hidden">
                                 <div class="card-body p-3 p-xl-4">
@@ -1149,7 +1244,7 @@
                                                                     </td>
                                                                 </tr>
                                                             @empty
-                                                                <tr>
+                                                                <tr class="empty-row">
                                                                     <td colspan="5"
                                                                         class="text-center py-3 text-muted">No data</td>
                                                                 </tr>
@@ -1157,6 +1252,7 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
+                                                <div class="table-pagination-wrapper"></div>
                                             </div>
                                         @endforeach
                                     </div>
@@ -1164,7 +1260,7 @@
                                         class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-2">
                                         <div
                                             class="extra-small text-muted fw-semibold me-2 opacity-75 d-flex align-items-center">
-                                            KEDISIPLINAN:</div>
+                                            KETERANGAN:</div>
                                         <div
                                             class="d-flex align-items-center gap-1 extra-small flex-wrap justify-content-center">
                                             <span class="badge bg-success py-1 px-2">A: Lengkap</span>
@@ -1180,15 +1276,191 @@
                             </div>
                         </div>
 
-                        {{-- Main Test Hub: Multi-Module --}}
+                        {{-- SECTION 2: EVALUASI AKADEMIK & PENUGASAN --}}
+                        <div class="col-12 mb-3 mt-2">
+                            <div class="d-flex align-items-center justify-content-between border-bottom pb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3"><i class="bi bi-award fs-6"></i></span>
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-0">Evaluasi Nilai & Capaian Akademik</h6>
+                                        <span class="text-muted extra-small">Snapshot nilai pre-test, post-test, penugasan kelompok, dan modul</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Card 3: Main Snapshot Hub: Pre-Test, Post-Test & Tugas Kelompok --}}
                         <div class="col-12">
                             <div class="card border-0 shadow-sm mb-4 overflow-hidden">
                                 <div class="card-body p-3 p-xl-4">
                                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
                                         <div>
-                                            <h5 class="card-title mb-0 fs-5">Hub Hasil Test <span>| Pre & Post</span></h5>
-                                            <p class="text-muted extra-small mb-0 opacity-75">Monitoring hasil pretest,
-                                                posttest dan tugas kelompok mahasiswa.</p>
+                                            <h5 class="card-title mb-0 fs-5">Hub Snapshot Nilai & Tugas <span>| Pre, Post & Tugas</span></h5>
+                                            <p class="text-muted extra-small mb-0 opacity-75">Monitoring capaian nilai pre-test, post-test, dan link pengumpulan tugas mahasiswa.</p>
+                                        </div>
+
+                                        <div class="d-flex align-items-center flex-wrap gap-2 ms-xl-auto w-100 w-xl-auto">
+                                            {{-- Detail Link --}}
+                                            <div class="dropdown me-md-2 mb-2 mb-md-0">
+                                                <button
+                                                    class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 fw-bold extra-small dropdown-toggle shadow-none"
+                                                    type="button" data-bs-toggle="dropdown">
+                                                    <i class="bi bi-box-arrow-up-right me-1"></i> Manage
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-4 extra-small">
+                                                    <li><a class="dropdown-item py-2" href="{{ route('hasiltest.index') }}"><i class="bi bi-clipboard-data me-2"></i> Hasil Test (Pre / Post)</a></li>
+                                                    <li><a class="dropdown-item py-2" href="{{ route('soaltugaskelompok.index') }}"><i class="bi bi-book-half me-2"></i> Tugas Kelompok</a></li>
+                                                </ul>
+                                            </div>
+
+                                            {{-- Search Input --}}
+                                            <div class="position-relative w-100 w-md-auto mb-2 mb-md-0">
+                                                <input type="text" id="snapshotSearch"
+                                                    class="form-control form-control-sm rounded-pill px-4 ps-5 w-100 shadow-none border-light"
+                                                    placeholder="Cari nama..."
+                                                    style="background: #f8fafc; min-width: 200px; height: 38px;">
+                                                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted opacity-50"
+                                                    style="left: 0;"></i>
+                                            </div>
+
+                                            {{-- Tabs --}}
+                                            <ul class="nav nav-pills nav-pills-custom gap-1 flex-nowrap overflow-auto pb-1"
+                                                id="snapshotTab" role="tablist">
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link active btn-sm extra-small px-3 py-2 fw-bold"
+                                                        id="snap-pre-tab" data-bs-toggle="tab" data-bs-target="#snap-pre"
+                                                        type="button" role="tab">Pre-Test</button>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
+                                                        id="snap-post-tab" data-bs-toggle="tab" data-bs-target="#snap-post"
+                                                        type="button" role="tab">Post-Test</button>
+                                                </li>
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
+                                                        id="snap-tugas-tab" data-bs-toggle="tab" data-bs-target="#snap-tugas"
+                                                        type="button" role="tab">Kelompok / Tugas</button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="tab-content pt-2" id="snapshotTabContent">
+                                        {{-- Pre-Test Tab Pane --}}
+                                        <div class="tab-pane fade show active" id="snap-pre" role="tabpanel">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover align-middle mb-0 snapshot-table">
+                                                    <thead>
+                                                        <tr class="text-uppercase extra-small fw-bold"
+                                                            style="background: #f8fafc; color: #012970;">
+                                                            <th class="ps-3 py-2" style="width: 60px;">NO</th>
+                                                            <th>NAMA MAHASISWA</th>
+                                                            <th class="text-end pe-3" style="width: 140px;">SKOR PRE-TEST</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @forelse($allPretest as $index => $pre)
+                                                            <tr class="extra-small border-bottom border-light">
+                                                                <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
+                                                                <td class="text-nowrap"><span
+                                                                        class="fw-bold text-dark search-target">{{ $pre->user->name ?? '-' }}</span>
+                                                                </td>
+                                                                <td class="text-end pe-3"><span
+                                                                        class="badge bg-info text-white fs-6 px-3 py-1">{{ $pre->skor }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        @empty
+                                                            <tr class="empty-row">
+                                                                <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Pre-Test</td>
+                                                            </tr>
+                                                        @endforelse
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="table-pagination-wrapper"></div>
+                                        </div>
+
+                                        {{-- Post-Test Tab Pane --}}
+                                        <div class="tab-pane fade" id="snap-post" role="tabpanel">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover align-middle mb-0 snapshot-table">
+                                                    <thead>
+                                                        <tr class="text-uppercase extra-small fw-bold"
+                                                            style="background: #f8fafc; color: #012970;">
+                                                            <th class="ps-3 py-2" style="width: 60px;">NO</th>
+                                                            <th>NAMA MAHASISWA</th>
+                                                            <th class="text-end pe-3" style="width: 140px;">SKOR POST-TEST</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @forelse($allPosttest as $index => $post)
+                                                            <tr class="extra-small border-bottom border-light">
+                                                                <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
+                                                                <td class="text-nowrap"><span
+                                                                        class="fw-bold text-dark search-target">{{ $post->user->name ?? '-' }}</span>
+                                                                </td>
+                                                                <td class="text-end pe-3"><span
+                                                                        class="badge bg-primary fs-6 px-3 py-1">{{ $post->skor }}</span></td>
+                                                            </tr>
+                                                        @empty
+                                                            <tr class="empty-row">
+                                                                <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Post-Test</td>
+                                                            </tr>
+                                                        @endforelse
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="table-pagination-wrapper"></div>
+                                        </div>
+
+                                        {{-- Kelompok / Tugas Tab Pane --}}
+                                        <div class="tab-pane fade" id="snap-tugas" role="tabpanel">
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-hover align-middle mb-0 snapshot-table">
+                                                    <thead>
+                                                        <tr class="text-uppercase extra-small fw-bold"
+                                                            style="background: #f8fafc; color: #012970;">
+                                                            <th class="ps-3 py-2" style="width: 60px;">NO</th>
+                                                            <th>NAMA MAHASISWA</th>
+                                                            <th class="text-end pe-3" style="width: 140px;">LINK TUGAS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @forelse($allTugas as $index => $tug)
+                                                            <tr class="extra-small border-bottom border-light">
+                                                                <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
+                                                                <td class="text-nowrap"><span
+                                                                        class="fw-bold text-dark search-target">{{ $tug->user->name ?? '-' }}</span>
+                                                                </td>
+                                                                <td class="text-end pe-3">
+                                                                    <a href="{{ $tug->link_tugas }}" target="_blank"
+                                                                        class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 extra-small fw-bold"><i
+                                                                            class="bi bi-link-45deg me-1"></i> Buka Link</a>
+                                                                </td>
+                                                            </tr>
+                                                        @empty
+                                                            <tr class="empty-row">
+                                                                <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Tugas Kelompok</td>
+                                                            </tr>
+                                                        @endforelse
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="table-pagination-wrapper"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Card 4: Main Test Hub: Multi-Module --}}
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+                                <div class="card-body p-3 p-xl-4">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                                        <div>
+                                            <h5 class="card-title mb-0 fs-5">Hub Hasil Test Modul <span>| M-1 s/d M-5</span></h5>
+                                            <p class="text-muted extra-small mb-0 opacity-75">Detail perolehan nilai pretest & posttest per materi modul.</p>
                                         </div>
 
                                         <div class="d-flex align-items-center flex-wrap gap-2 ms-xl-auto w-100 w-xl-auto">
@@ -1301,7 +1573,7 @@
                                                                     </td>
                                                                 </tr>
                                                             @empty
-                                                                <tr>
+                                                                <tr class="empty-row">
                                                                     <td colspan="4" class="text-center py-3 text-muted">
                                                                         No data</td>
                                                                 </tr>
@@ -1309,6 +1581,7 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
+                                                <div class="table-pagination-wrapper"></div>
                                             </div>
                                         @endforeach
 
@@ -1336,7 +1609,7 @@
                                                                 </td>
                                                             </tr>
                                                         @empty
-                                                            <tr>
+                                                            <tr class="empty-row">
                                                                 <td colspan="3" class="text-center py-3 text-muted">No
                                                                     data</td>
                                                             </tr>
@@ -1344,6 +1617,7 @@
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            <div class="table-pagination-wrapper"></div>
                                         </div>
                                     </div>
                                     <div
@@ -1361,178 +1635,46 @@
                             </div>
                         </div>
 
-                        {{-- Academic Bar Chart Hub --}}
+                        {{-- SECTION 3: ANALISIS & GRAFIK PROGRESS --}}
+                        <div class="col-12 mb-3 mt-2">
+                            <div class="d-flex align-items-center justify-content-between border-bottom pb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="badge bg-info bg-opacity-10 text-info p-2 rounded-3"><i class="bi bi-bar-chart-line fs-6"></i></span>
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-0">Grafik Progress Penuntasan</h6>
+                                        <span class="text-muted extra-small">Visualisasi komparasi penyelesaian pre-test, post-test, dan tugas kelompok</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Card 5: Academic Bar Chart Hub --}}
                         <div class="col-12 mb-4">
                             <div class="card border-0 shadow-sm overflow-hidden">
                                 <div class="card-body p-4">
-                                    <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <div>
-                                            <h5 class="card-title mb-0 fs-5">Progress Penuntasan Akademik <span>| Global
-                                                    Admin</span></h5>
-                                            <p class="text-muted extra-small mb-0 opacity-75">Statistik partisipasi
-                                                mahasiswa dalam rangkaian tes dan penugasan.</p>
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                                        <div class="pe-md-3" style="max-width: 620px;">
+                                            <h5 class="card-title mb-0 fs-5">Progress Penuntasan Akademik <span>| 6 Pilar Utama</span></h5>
+                                            <p class="text-muted extra-small mb-0 opacity-75">Statistik komparasi penuntasan: Absensi, Kedisiplinan, Pre-Test, Post-Test, Tugas Kelompok, dan Ketuntasan Hasil Test.</p>
                                         </div>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <a href="{{ route('rekapkeseluruhan.index') }}"
-                                                class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 fw-bold extra-small shadow-none">
+                                        <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-auto">
+                                            @php
+                                                $detailTargetUrl = route('rekapkeseluruhan.index');
+                                                if (in_array(Auth::user()->role, ['kakakpendamping', 'dosenpendamping'])) {
+                                                    $detailTargetUrl = $myKelompokSlug ? route('kelompok.show', $myKelompokSlug) : route('kelompok.index');
+                                                }
+                                            @endphp
+                                            <a href="{{ $detailTargetUrl }}"
+                                                class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 fw-bold extra-small shadow-none text-nowrap d-inline-flex align-items-center">
                                                 <i class="bi bi-person-lines-fill me-1"></i> Detail
                                             </a>
                                             <div
-                                                class="bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold extra-small">
+                                                class="bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold extra-small text-nowrap">
                                                 Total: {{ $totalMahasiswa }}
                                             </div>
                                         </div>
                                     </div>
                                     <div id="academicBarChart" style="min-height: 300px;"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Academic Snapshot row --}}
-                        <div class="col-12 mb-4">
-                            <div class="card border-0 shadow-sm h-100">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h5 class="card-title mb-0">Pre-Test</h5>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <input type="text"
-                                                class="form-control form-control-sm rounded-pill search-input"
-                                                data-target="pretest-table" placeholder="Cari nama..."
-                                                style="width: 200px; font-size: 0.8rem;">
-                                            <a href="{{ route('hasiltest.index') }}"
-                                                class="btn btn-outline-info btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center"
-                                                style="width: 32px; height: 32px;"><i
-                                                    class="bi bi-eye-fill"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-hover align-middle mb-0 pretest-table">
-                                            <thead>
-                                                <tr class="text-uppercase extra-small fw-bold"
-                                                    style="background: #f8fafc; color: #012970;">
-                                                    <th class="ps-3 py-2" style="width: 60px;">NO</th>
-                                                    <th>NAMA MAHASISWA</th>
-                                                    <th class="text-end pe-3" style="width: 120px;">SKOR PRE-TEST</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse($allPretest as $index => $pre)
-                                                    <tr class="extra-small border-bottom border-light">
-                                                        <td class="ps-3 py-2">{{ $index + 1 }}</td>
-                                                        <td class="text-nowrap"><span
-                                                                class="fw-bold text-dark search-target">{{ $pre->user->name }}</span>
-                                                        </td>
-                                                        <td class="text-end pe-3"><span
-                                                                class="badge bg-info text-white fs-6 px-3 py-1">{{ $pre->skor }}</span>
-                                                        </td>
-                                                    </tr>
-                                                @empty
-                                                    <tr>
-                                                        <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Pre-Test</td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 mb-4">
-                            <div class="card border-0 shadow-sm h-100">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h5 class="card-title mb-0">Post-Test</h5>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <input type="text"
-                                                class="form-control form-control-sm rounded-pill search-input"
-                                                data-target="posttest-table" placeholder="Cari nama..."
-                                                style="width: 200px; font-size: 0.8rem;">
-                                            <a href="{{ route('hasiltest.index') }}"
-                                                class="btn btn-outline-primary btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center"
-                                                style="width: 32px; height: 32px;"><i
-                                                    class="bi bi-eye-fill"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-hover align-middle mb-0 posttest-table">
-                                            <thead>
-                                                <tr class="text-uppercase extra-small fw-bold"
-                                                    style="background: #f8fafc; color: #012970;">
-                                                    <th class="ps-3 py-2" style="width: 60px;">NO</th>
-                                                    <th>NAMA MAHASISWA</th>
-                                                    <th class="text-end pe-3" style="width: 120px;">SKOR POST-TEST</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse($allPosttest as $index => $post)
-                                                    <tr class="extra-small border-bottom border-light">
-                                                        <td class="ps-3 py-2">{{ $index + 1 }}</td>
-                                                        <td class="text-nowrap"><span
-                                                                class="fw-bold text-dark search-target">{{ $post->user->name }}</span>
-                                                        </td>
-                                                        <td class="text-end pe-3"><span
-                                                                class="badge bg-primary fs-6 px-3 py-1">{{ $post->skor }}</span></td>
-                                                    </tr>
-                                                @empty
-                                                    <tr>
-                                                        <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Post-Test</td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 mb-4">
-                            <div class="card border-0 shadow-sm h-100">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h5 class="card-title mb-0">Kelompok / Tugas</h5>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <input type="text"
-                                                class="form-control form-control-sm rounded-pill search-input"
-                                                data-target="tugas-table" placeholder="Cari nama..."
-                                                style="width: 200px; font-size: 0.8rem;">
-                                            <a href="{{ route('soaltugaskelompok.index') }}"
-                                                class="btn btn-outline-success btn-sm rounded-circle p-0 d-flex align-items-center justify-content-center"
-                                                style="width: 32px; height: 32px;"><i
-                                                    class="bi bi-eye-fill"></i></a>
-                                        </div>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-hover align-middle mb-0 tugas-table">
-                                            <thead>
-                                                <tr class="text-uppercase extra-small fw-bold"
-                                                    style="background: #f8fafc; color: #012970;">
-                                                    <th class="ps-3 py-2" style="width: 60px;">NO</th>
-                                                    <th>NAMA MAHASISWA</th>
-                                                    <th class="text-end pe-3" style="width: 120px;">LINK TUGAS</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @forelse($allTugas as $index => $tug)
-                                                    <tr class="extra-small border-bottom border-light">
-                                                        <td class="ps-3 py-2">{{ $index + 1 }}</td>
-                                                        <td class="text-nowrap"><span
-                                                                class="fw-bold text-dark search-target">{{ $tug->user->name }}</span>
-                                                        </td>
-                                                        <td class="text-end pe-3">
-                                                            <a href="{{ $tug->link_tugas }}" target="_blank"
-                                                                class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 extra-small fw-bold"><i
-                                                                    class="bi bi-link-45deg me-1"></i> Buka Link</a>
-                                                        </td>
-                                                    </tr>
-                                                @empty
-                                                    <tr>
-                                                        <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Tugas Kelompok</td>
-                                                    </tr>
-                                                @endforelse
-                                            </tbody>
-                                        </table>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1769,18 +1911,21 @@
                     {{-- ADMIN SIDEBAR --}}
                     <div class="card shadow-sm border-0 mb-4">
                         <div class="card-body">
-                            <h5 class="card-title">Penuntasan Test <span>| Radial Metrics</span></h5>
+                            <h5 class="card-title">Penuntasan Mahasiswa <span>| 6 Metrik</span></h5>
                             <div id="testStatusRadial"></div>
                             <script>
                                 document.addEventListener("DOMContentLoaded", () => {
                                     new ApexCharts(document.querySelector("#testStatusRadial"), {
                                         series: [
+                                            Math.round(({{ $absenCount }} / ({{ $totalMahasiswa ?: 1 }})) * 100),
+                                            Math.round(({{ $disiplinCount }} / ({{ $totalMahasiswa ?: 1 }})) * 100),
                                             Math.round(({{ $pretestCount }} / ({{ $totalMahasiswa ?: 1 }})) * 100),
                                             Math.round(({{ $posttestCount }} / ({{ $totalMahasiswa ?: 1 }})) * 100),
-                                            Math.round(({{ $tugasCount }} / ({{ $totalMahasiswa ?: 1 }})) * 100)
+                                            Math.round(({{ $tugasCount }} / ({{ $totalMahasiswa ?: 1 }})) * 100),
+                                            Math.round(({{ $hasilTestTuntasCount }} / ({{ $totalMahasiswa ?: 1 }})) * 100)
                                         ],
                                         chart: {
-                                            height: 350,
+                                            height: 360,
                                             type: 'radialBar'
                                         },
                                         plotOptions: {
@@ -1788,18 +1933,18 @@
                                                 dataLabels: {
                                                     total: {
                                                         show: true,
-                                                        label: 'Completion',
+                                                        label: 'Rata-rata',
                                                         formatter: function (w) {
                                                             let sum = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
                                                             let avg = sum / w.globals.seriesTotals.length;
-                                                            return avg.toFixed(2) + '%';
+                                                            return avg.toFixed(1) + '%';
                                                         }
                                                     }
                                                 }
                                             }
                                         },
-                                        labels: ['Pre-Test %', 'Post-Test %', 'Tugas %'],
-                                        colors: ['#00A551', '#f9b115', '#087C39']
+                                        labels: ['Absensi %', 'Disiplin %', 'Pre-Test %', 'Post-Test %', 'Tugas %', 'Hasil Test %'],
+                                        colors: ['#0284c7', '#06b6d4', '#6366f1', '#8b5cf6', '#f59e0b', '#00A551']
                                     }).render();
                                 });
                             </script>
@@ -2405,17 +2550,28 @@
         <script>
 
 
-            // Academic Bar Chart: Comparative
+            // Academic Bar Chart: 6 Pillars Penuntasan Komparatif
             document.addEventListener("DOMContentLoaded", () => {
                 new ApexCharts(document.querySelector("#academicBarChart"), {
                     series: [{
-                        name: 'Sudah Penuntasan',
-                        data: [{{ $pretestCount }}, {{ $posttestCount }}, {{ $tugasCount }}]
+                        name: 'Sudah Tuntas / Mengikuti',
+                        data: [
+                            {{ $absenCount }},
+                            {{ $disiplinCount }},
+                            {{ $pretestCount }},
+                            {{ $posttestCount }},
+                            {{ $tugasCount }},
+                            {{ $hasilTestTuntasCount }}
+                        ]
                     }, {
-                        name: 'Belum Penuntasan',
-                        data: [{{ $totalMahasiswa - $pretestCount }},
-                            {{ $totalMahasiswa - $posttestCount }},
-                            {{ $totalMahasiswa - $tugasCount }}
+                        name: 'Belum Tuntas / Belum Isi',
+                        data: [
+                            {{ max(0, $totalMahasiswa - $absenCount) }},
+                            {{ max(0, $totalMahasiswa - $disiplinCount) }},
+                            {{ max(0, $totalMahasiswa - $pretestCount) }},
+                            {{ max(0, $totalMahasiswa - $posttestCount) }},
+                            {{ max(0, $totalMahasiswa - $tugasCount) }},
+                            {{ max(0, $totalMahasiswa - $hasilTestTuntasCount) }}
                         ]
                     }],
                     chart: {
@@ -2430,7 +2586,7 @@
                     plotOptions: {
                         bar: {
                             borderRadius: 6,
-                            columnWidth: '45%',
+                            columnWidth: '55%',
                             dataLabels: {
                                 position: 'top'
                             }
@@ -2444,7 +2600,7 @@
                         },
                         offsetY: -20
                     },
-                    colors: ['#00A551', '#FFF742'], // Emerald Green for Success, UIS Yellow for Pending
+                    colors: ['#00A551', '#f59e0b'], // Emerald Green for Tuntas, Amber for Belum
                     legend: {
                         position: 'top',
                         horizontalAlign: 'right',
@@ -2454,7 +2610,7 @@
                         }
                     },
                     xaxis: {
-                        categories: ['Pre-Test', 'Post-Test', 'Tugas Kelompok'],
+                        categories: ['Absensi', 'Kedisiplinan', 'Pre-Test', 'Post-Test', 'Kelompok', 'Hasil Test'],
                     },
                     yaxis: {
                         labels: {
@@ -2471,69 +2627,217 @@
                 }).render();
             });
 
-            // Dashboard Live Search Filtering
-            if (document.getElementById('attendanceSearch')) {
-                document.getElementById('attendanceSearch').addEventListener('keyup', function() {
-                    let filter = this.value.toLowerCase();
-                    let activePane = document.querySelector('.tab-content .tab-pane.active');
-                    let rows = activePane.querySelectorAll('.attendance-table tbody tr');
+            // Universal Table Client-side Pagination (10 items per page)
+            function setupTablePagination(paneElement, pageSize = 10) {
+                if (!paneElement) return;
+                const table = paneElement.querySelector('table');
+                const paginationWrapper = paneElement.querySelector('.table-pagination-wrapper');
+                if (!table || !paginationWrapper) return;
 
-                    rows.forEach(row => {
-                        let nameCell = row.querySelector('.search-target');
-                        if (nameCell) {
-                            let text = nameCell.textContent.toLowerCase();
-                            row.style.display = text.includes(filter) ? '' : 'none';
+                let currentPage = 1;
+
+                function renderPagination() {
+                    const allRows = Array.from(table.querySelectorAll('tbody tr:not(.empty-row)'));
+                    const visibleRows = allRows.filter(row => row.dataset.searchHidden !== 'true');
+                    const totalRows = visibleRows.length;
+                    const totalPages = Math.ceil(totalRows / pageSize) || 1;
+
+                    if (currentPage > totalPages) currentPage = totalPages;
+                    if (currentPage < 1) currentPage = 1;
+
+                    const startIndex = (currentPage - 1) * pageSize;
+                    const endIndex = startIndex + pageSize;
+
+                    let matchCount = 0;
+                    allRows.forEach(row => {
+                        if (row.dataset.searchHidden === 'true') {
+                            row.style.display = 'none';
+                        } else {
+                            if (matchCount >= startIndex && matchCount < endIndex) {
+                                row.style.display = '';
+                            } else {
+                                row.style.display = 'none';
+                            }
+                            matchCount++;
                         }
                     });
+
+                    // Show/hide empty row indicator if all rows filtered out or no data
+                    const emptyRow = table.querySelector('tbody tr.empty-row');
+                    if (emptyRow) {
+                        emptyRow.style.display = (totalRows === 0) ? '' : 'none';
+                    }
+
+                    if (totalRows === 0) {
+                        paginationWrapper.innerHTML = '';
+                        return;
+                    }
+
+                    const showStart = startIndex + 1;
+                    const showEnd = Math.min(endIndex, totalRows);
+
+                    let html = `
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-2 border-top border-light w-100">
+                            <div class="extra-small text-muted">
+                                Menampilkan <span class="fw-bold text-dark">${showStart}-${showEnd}</span> dari <span class="fw-bold text-dark">${totalRows}</span> data
+                            </div>
+                    `;
+
+                    if (totalPages > 1) {
+                        html += `<nav aria-label="Pagination"><ul class="pagination pagination-sm mb-0 gap-1">`;
+                        
+                        // Prev
+                        html += `
+                            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                                <button class="page-link rounded px-2 py-1 extra-small btn-prev" type="button" ${currentPage === 1 ? 'disabled' : ''}>
+                                    <i class="bi bi-chevron-left"></i>
+                                </button>
+                            </li>
+                        `;
+
+                        let startP = Math.max(1, currentPage - 2);
+                        let endP = Math.min(totalPages, startP + 4);
+                        if (endP - startP < 4) {
+                            startP = Math.max(1, endP - 4);
+                        }
+
+                        for (let p = startP; p <= endP; p++) {
+                            html += `
+                                <li class="page-item ${p === currentPage ? 'active' : ''}">
+                                    <button class="page-link rounded px-2 py-1 extra-small btn-page" type="button" data-page="${p}">${p}</button>
+                                </li>
+                            `;
+                        }
+
+                        // Next
+                        html += `
+                            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                                <button class="page-link rounded px-2 py-1 extra-small btn-next" type="button" ${currentPage === totalPages ? 'disabled' : ''}>
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </li>
+                        `;
+
+                        html += `</ul></nav>`;
+                    }
+
+                    html += `</div>`;
+                    paginationWrapper.innerHTML = html;
+
+                    // Listeners
+                    const prevBtn = paginationWrapper.querySelector('.btn-prev');
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', () => {
+                            if (currentPage > 1) {
+                                currentPage--;
+                                renderPagination();
+                            }
+                        });
+                    }
+
+                    const nextBtn = paginationWrapper.querySelector('.btn-next');
+                    if (nextBtn) {
+                        nextBtn.addEventListener('click', () => {
+                            if (currentPage < totalPages) {
+                                currentPage++;
+                                renderPagination();
+                            }
+                        });
+                    }
+
+                    paginationWrapper.querySelectorAll('.btn-page').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            currentPage = parseInt(btn.getAttribute('data-page'));
+                            renderPagination();
+                        });
+                    });
+                }
+
+                table._renderPagination = renderPagination;
+                table._resetPage = () => { currentPage = 1; };
+                renderPagination();
+            }
+
+            function bindTabSearch(inputId, tabContentId) {
+                const input = document.getElementById(inputId);
+                const tabContent = document.getElementById(tabContentId);
+                if (!input || !tabContent) return;
+
+                input.addEventListener('input', function() {
+                    const filter = this.value.toLowerCase().trim();
+                    const activePane = tabContent.querySelector('.tab-pane.active');
+                    if (!activePane) return;
+
+                    const table = activePane.querySelector('table');
+                    if (!table) return;
+
+                    const rows = table.querySelectorAll('tbody tr:not(.empty-row)');
+                    rows.forEach(row => {
+                        const nameCell = row.querySelector('.search-target');
+                        if (nameCell) {
+                            const text = nameCell.textContent.toLowerCase();
+                            if (text.includes(filter)) {
+                                delete row.dataset.searchHidden;
+                            } else {
+                                row.dataset.searchHidden = 'true';
+                            }
+                        }
+                    });
+
+                    if (table._resetPage) table._resetPage();
+                    if (table._renderPagination) table._renderPagination();
                 });
             }
 
-            // Dashboard Live Search Filtering: Discipline
-            if (document.getElementById('disciplineSearch')) {
-                document.getElementById('disciplineSearch').addEventListener('keyup', function() {
-                    let filter = this.value.toLowerCase();
-                    let activePane = document.getElementById('disciplineTabContent').querySelector('.tab-pane.active');
-                    let rows = activePane.querySelectorAll('.discipline-table tbody tr');
-
-                    rows.forEach(row => {
-                        let nameCell = row.querySelector('.search-target');
-                        if (nameCell) {
-                            let text = nameCell.textContent.toLowerCase();
-                            row.style.display = text.includes(filter) ? '' : 'none';
-                        }
-                    });
+            document.addEventListener('DOMContentLoaded', () => {
+                // Initialize pagination on all tab panes
+                document.querySelectorAll('.tab-pane').forEach(pane => {
+                    setupTablePagination(pane, 10);
                 });
-            }
 
-            // Dashboard Live Search Filtering: Test Results
-            if (document.getElementById('testSearch')) {
-                document.getElementById('testSearch').addEventListener('keyup', function() {
-                    let filter = this.value.toLowerCase();
-                    let activePane = document.getElementById('testTabContent').querySelector('.tab-pane.active');
-                    let rows = activePane.querySelectorAll('.test-table tbody tr');
+                // Bind searches
+                bindTabSearch('attendanceSearch', 'attendanceTabContent');
+                bindTabSearch('disciplineSearch', 'disciplineTabContent');
+                bindTabSearch('testSearch', 'testTabContent');
+                bindTabSearch('snapshotSearch', 'snapshotTabContent');
 
-                    rows.forEach(row => {
-                        let nameCell = row.querySelector('.search-target');
-                        if (nameCell) {
-                            let text = nameCell.textContent.toLowerCase();
-                            row.style.display = text.includes(filter) ? '' : 'none';
-                        }
-                    });
-                });
-            }
+                // On tab change, re-render pagination and apply any existing search
+                document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tabBtn => {
+                    tabBtn.addEventListener('shown.bs.tab', (e) => {
+                        const targetSelector = e.target.getAttribute('data-bs-target');
+                        if (targetSelector) {
+                            const targetPane = document.querySelector(targetSelector);
+                            if (targetPane) {
+                                const table = targetPane.querySelector('table');
+                                if (table && table._renderPagination) {
+                                    const parentTabContent = targetPane.closest('.tab-content');
+                                    if (parentTabContent) {
+                                        let searchInput = null;
+                                        if (parentTabContent.id === 'attendanceTabContent') searchInput = document.getElementById('attendanceSearch');
+                                        else if (parentTabContent.id === 'disciplineTabContent') searchInput = document.getElementById('disciplineSearch');
+                                        else if (parentTabContent.id === 'testTabContent') searchInput = document.getElementById('testSearch');
+                                        else if (parentTabContent.id === 'snapshotTabContent') searchInput = document.getElementById('snapshotSearch');
 
-            // Small Local Searches
-            document.querySelectorAll('.search-input').forEach(input => {
-                input.addEventListener('keyup', function() {
-                    let filter = this.value.toLowerCase();
-                    let targetTable = this.getAttribute('data-target');
-                    let rows = document.querySelectorAll(`.${targetTable} tbody tr`);
-
-                    rows.forEach(row => {
-                        let nameCell = row.querySelector('.search-target');
-                        if (nameCell) {
-                            let text = nameCell.textContent.toLowerCase();
-                            row.style.display = text.includes(filter) ? '' : 'none';
+                                        if (searchInput && searchInput.value.trim() !== '') {
+                                            const filter = searchInput.value.toLowerCase().trim();
+                                            const rows = table.querySelectorAll('tbody tr:not(.empty-row)');
+                                            rows.forEach(row => {
+                                                const nameCell = row.querySelector('.search-target');
+                                                if (nameCell) {
+                                                    const text = nameCell.textContent.toLowerCase();
+                                                    if (text.includes(filter)) delete row.dataset.searchHidden;
+                                                    else row.dataset.searchHidden = 'true';
+                                                }
+                                            });
+                                        } else {
+                                            const rows = table.querySelectorAll('tbody tr:not(.empty-row)');
+                                            rows.forEach(row => delete row.dataset.searchHidden);
+                                        }
+                                    }
+                                    if (table._resetPage) table._resetPage();
+                                    table._renderPagination();
+                                }
+                            }
                         }
                     });
                 });
