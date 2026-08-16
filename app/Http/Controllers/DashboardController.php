@@ -12,6 +12,7 @@ use App\Models\SoalTugasKelompok;
 use App\Models\KedisiplinanPertama;
 use App\Models\KedisiplinanKedua;
 use App\Models\KedisiplinanKetiga;
+use App\Models\SertifikatSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,6 +22,29 @@ class DashboardController extends Controller
     {
         $authUser = Auth::user();
         $isPendamping = in_array($authUser->role, ['kakakpendamping', 'dosenpendamping']);
+
+        // Auto-assign sequential certificate numbers for any students with kelulusan_is_active whose certificate has not been numbered yet
+        $lulusWithoutNomor = User::where('role', 'mahasiswa')
+            ->where('kelulusan_is_active', true)
+            ->whereNull('nomor_sertifikat')
+            ->orderBy('id')
+            ->get();
+
+        if ($lulusWithoutNomor->isNotEmpty()) {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($lulusWithoutNomor) {
+                $setting = SertifikatSetting::firstOrCreate(['id' => 1]);
+                $lockedSetting = SertifikatSetting::where('id', 1)->lockForUpdate()->first();
+                $lastNum = $lockedSetting->nomor_urut_terakhir ?? 0;
+                foreach ($lulusWithoutNomor as $lu) {
+                    $lastNum++;
+                    $lu->update([
+                        'nomor_sertifikat' => $lastNum,
+                        'sertifikat_issued_at' => now(),
+                    ]);
+                }
+                $lockedSetting->update(['nomor_urut_terakhir' => $lastNum]);
+            });
+        }
 
         if ($isPendamping) {
             if ($authUser->role === 'kakakpendamping') {
@@ -100,11 +124,17 @@ class DashboardController extends Controller
                         ->whereHas('hasilTests', fn($q) => $q->where('modul', 4))
                         ->with(['hasilTests' => fn($q) => $q->where('modul', 4)])
                         ->get();
+            $sertifikatSetting = SertifikatSetting::current();
+            $sertifikatCount = User::whereIn('id', $targetUserIds)->whereNotNull('nomor_sertifikat')->count();
+            $allSertifikatMahasiswa = User::where('role', 'mahasiswa')->whereIn('id', $targetUserIds)->with('kelompok')->orderBy('name')->get();
         } else {
             $myKelompokNama = null;
             $myKelompokSlug = null;
             // Global Counts
             $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+            $sertifikatSetting = SertifikatSetting::current();
+            $sertifikatCount = User::where('role', 'mahasiswa')->whereNotNull('nomor_sertifikat')->count();
+            $allSertifikatMahasiswa = User::where('role', 'mahasiswa')->with('kelompok')->orderBy('name')->get();
 
             // Attendance Stats (Hadir if either pagi or sore is filled)
             $absen1 = AbsenPertama::where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen')->count();
@@ -189,7 +219,10 @@ class DashboardController extends Controller
             'allM1',
             'allM2',
             'allM3',
-            'allM4'
+            'allM4',
+            'allSertifikatMahasiswa',
+            'sertifikatSetting',
+            'sertifikatCount'
         ));
     }
 }

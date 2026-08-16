@@ -29,6 +29,7 @@
     <meta name="twitter:description" content="Selamat Datang CAMABA UIS 2026. Siapkan diri Anda menjadi bagian dari Civitas Akademika Universitas Ibnu Sina yang berprestasi dan berakhlak mulia.">
     <meta name="twitter:image" content="{{ asset('assets/img/og_share_thumbnail.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -48,7 +49,7 @@
             background: #ffffff;
             border-radius: 16px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
-            padding: 36px 32px;
+            padding: 36px 32px 32px;
             text-align: center;
         }
 
@@ -94,13 +95,15 @@
 
         .verifikasi-row {
             display: flex;
+            align-items: flex-start;
             gap: 10px;
-            padding: 4px 0;
+            padding: 5px 0;
             font-size: 0.9rem;
+            width: 100%;
         }
 
         .verifikasi-row-label {
-            width: 160px;
+            width: 150px;
             flex-shrink: 0;
             white-space: nowrap;
             font-weight: 700;
@@ -113,8 +116,37 @@
         }
 
         .verifikasi-row-value {
-            color: #b91c1c;
+            color: #1e293b;
             font-weight: 600;
+            flex: 1 1 auto;
+            min-width: 0;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 576px) {
+            .verifikasi-card {
+                padding: 24px 16px;
+            }
+            .verifikasi-info-box {
+                padding: 16px;
+            }
+            .verifikasi-row {
+                flex-direction: column;
+                gap: 2px;
+                margin-bottom: 8px;
+            }
+            .verifikasi-row-label {
+                width: 100%;
+                font-size: 0.8rem;
+                color: #64748b;
+            }
+            .verifikasi-row-sep {
+                display: none;
+            }
+            .verifikasi-row-value {
+                font-size: 0.9rem;
+            }
         }
 
         .verifikasi-row-value.is-lulus {
@@ -129,25 +161,64 @@
             color: #b45309;
         }
 
-        .verifikasi-toggle-btn {
-            margin-top: 26px;
-            display: inline-flex;
+        .verifikasi-btn-group {
+            margin-top: 28px;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            background: #14532d;
-            color: #fff;
-            border: none;
-            border-radius: 999px;
-            padding: 12px 28px;
-            font-weight: 800;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            cursor: pointer;
-            text-transform: uppercase;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
         }
 
-        .verifikasi-toggle-btn:hover {
+        .verifikasi-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: none;
+            border-radius: 999px;
+            padding: 14px 28px;
+            min-width: 290px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.25s ease-in-out;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+            text-decoration: none;
+            line-height: 1;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 640px) {
+            .verifikasi-btn {
+                width: 100%;
+                min-width: unset;
+            }
+        }
+
+        .verifikasi-btn-primary {
+            background: #14532d;
+            color: #ffffff;
+        }
+
+        .verifikasi-btn-primary:hover {
             background: #0f6b32;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(20, 83, 45, 0.25);
+        }
+
+        .verifikasi-btn-success {
+            background: #00A551;
+            color: #ffffff;
+        }
+
+        .verifikasi-btn-success:hover {
+            background: #008f45;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 165, 81, 0.25);
         }
 
         .verifikasi-cert-wrapper {
@@ -229,9 +300,16 @@
             </div>
         </div>
 
-        <button type="button" class="verifikasi-toggle-btn" onclick="toggleSertifikatDigital()">
-            <span id="verifikasiToggleLabel">Tampilkan Sertifikat Digital</span>
-        </button>
+        <div class="verifikasi-btn-group">
+            <button type="button" class="verifikasi-btn verifikasi-btn-primary" onclick="toggleSertifikatDigital()">
+                <i class="bi bi-eye-fill"></i>
+                <span id="verifikasiToggleLabel">Tampilkan Sertifikat Digital</span>
+            </button>
+            <button type="button" class="verifikasi-btn verifikasi-btn-success" onclick="downloadSertifikatVerifikasi(this)">
+                <i class="bi bi-download"></i>
+                <span>Unduh Sertifikat PNG</span>
+            </button>
+        </div>
     </div>
 
     <div class="verifikasi-cert-wrapper" id="verifikasiCertWrapper">
@@ -279,6 +357,7 @@
     <p class="verifikasi-footer">Halaman ini menampilkan status keaslian sertifikat secara otomatis berdasarkan data
         sistem PKKMB Universitas Ibnu Sina.</p>
 
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
         function toggleSertifikatDigital() {
             var wrapper = document.getElementById('verifikasiCertWrapper');
@@ -286,11 +365,61 @@
             var isOpen = wrapper.classList.toggle('is-open');
             label.textContent = isOpen ? 'Tutup Sertifikat Digital' : 'Tampilkan Sertifikat Digital';
             if (isOpen) {
+                setTimeout(function() {
+                    if (window.__sertifikatFit && window.__sertifikatFit['sertifikatVerifikasiCanvas']) {
+                        window.__sertifikatFit['sertifikatVerifikasiCanvas']();
+                    }
+                }, 50);
                 wrapper.scrollIntoView({
                     behavior: 'smooth',
                     block: 'start'
                 });
             }
+        }
+
+        function downloadSertifikatVerifikasi(btn) {
+            var wrapper = document.getElementById('verifikasiCertWrapper');
+            var wasClosed = !wrapper.classList.contains('is-open');
+            if (wasClosed) {
+                wrapper.classList.add('is-open');
+            }
+
+            var target = document.getElementById('sertifikatVerifikasiCanvas');
+            if (!target || typeof html2canvas !== 'function') return;
+
+            var originalLabel = btn ? btn.innerHTML : null;
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = 'Memproses...';
+            }
+
+            var originalTransform = target.style.transform;
+            target.style.transform = 'none';
+
+            html2canvas(target, {
+                scale: 4,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                width: 1000,
+                height: 707
+            }).then(function (canvas) {
+                var link = document.createElement('a');
+                link.download = 'Sertifikat-PKKMB-{{ \Illuminate\Support\Str::slug($user->name) }}.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(function (err) {
+                console.error('Download sertifikat gagal:', err);
+                alert('Gagal membuat file gambar sertifikat. Silakan coba lagi.');
+            }).finally(function () {
+                target.style.transform = originalTransform;
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalLabel;
+                }
+                if (window.__sertifikatFit && window.__sertifikatFit['sertifikatVerifikasiCanvas']) {
+                    window.__sertifikatFit['sertifikatVerifikasiCanvas']();
+                }
+            });
         }
     </script>
 </body>

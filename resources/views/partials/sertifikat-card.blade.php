@@ -256,7 +256,19 @@
 
         function fitSertifikatScale() {
             if (canvas.dataset.zoomed === '1') return;
-            var scale = outer.clientWidth / 1000;
+            var w = outer.clientWidth || outer.offsetWidth;
+            if (!w || w <= 0) {
+                var p = outer.parentElement;
+                while (p && (!w || w <= 0)) {
+                    if (p.clientWidth > 0) w = p.clientWidth;
+                    p = p.parentElement;
+                }
+            }
+            if (!w || w <= 0) {
+                w = Math.min(window.innerWidth - 48, 1000);
+            }
+            var scale = w / 1000;
+            if (scale > 1) scale = 1;
             canvas.style.transform = 'scale(' + scale + ')';
         }
 

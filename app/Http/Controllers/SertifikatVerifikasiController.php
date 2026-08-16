@@ -18,8 +18,29 @@ class SertifikatVerifikasiController extends Controller
      */
     public function show(User $user)
     {
-        if ($user->role !== 'mahasiswa' || !$user->nomor_sertifikat) {
+        if ($user->role !== 'mahasiswa') {
             abort(404, 'Sertifikat tidak ditemukan.');
+        }
+
+        if (!$user->nomor_sertifikat && $user->kelulusan_is_active) {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($user) {
+                $setting = SertifikatSetting::firstOrCreate(['id' => 1]);
+                $lockedSetting = SertifikatSetting::where('id', 1)->lockForUpdate()->first();
+                $lockedUser = User::where('id', $user->id)->lockForUpdate()->first();
+                if ($lockedUser && !$lockedUser->nomor_sertifikat) {
+                    $nextNumber = ($lockedSetting->nomor_urut_terakhir ?? 0) + 1;
+                    $lockedSetting->update(['nomor_urut_terakhir' => $nextNumber]);
+                    $lockedUser->update([
+                        'nomor_sertifikat' => $nextNumber,
+                        'sertifikat_issued_at' => now(),
+                    ]);
+                }
+            });
+            $user->refresh();
+        }
+
+        if (!$user->nomor_sertifikat) {
+            abort(404, 'Sertifikat belum diterbitkan.');
         }
 
         $setting = SertifikatSetting::current();
