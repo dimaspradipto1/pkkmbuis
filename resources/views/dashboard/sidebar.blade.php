@@ -82,7 +82,7 @@
 
         {{-- 3. EVALUASI & OBSERVASI --}}
         @php
-            $canSeeEvaluasi = !in_array(Auth::user()->role, ['kakakpendamping', 'dosenpendamping', 'timevaluasi']);
+            $canSeeEvaluasi = !in_array(Auth::user()->role, ['kakakpendamping', 'dosenpendamping']);
             $canSeeObservasi = in_array(Auth::user()->role, ['admin', 'stafbaak', 'timevaluasi']);
         @endphp
 
@@ -267,7 +267,7 @@
                 </a>
             </li>
 
-            @if (Auth::user()->role == 'admin')
+            @if (in_array(Auth::user()->role, ['admin', 'timevaluasi']))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('lpj.*') ? '' : 'collapsed' }}" href="{{ route('lpj.index') }}">
                         <i class="bi bi-file-earmark-text"></i>
@@ -291,22 +291,24 @@
         </li>
 
         {{-- 7. PENGATURAN SYSTEM --}}
-        @if (in_array(Auth::user()->role, ['admin', 'stafbaak']))
+        @if (in_array(Auth::user()->role, ['admin', 'stafbaak', 'timevaluasi']))
             <li class="nav-heading">Pengaturan System</li>
 
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('users.*') ? '' : 'collapsed' }}" href="{{ route('users.index') }}">
-                    <i class="bi bi-person-lines-fill"></i>
-                    <span>Data Pengguna</span>
-                </a>
-            </li>
+            @if (in_array(Auth::user()->role, ['admin', 'stafbaak']))
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('users.*') ? '' : 'collapsed' }}" href="{{ route('users.index') }}">
+                        <i class="bi bi-person-lines-fill"></i>
+                        <span>Data Pengguna</span>
+                    </a>
+                </li>
 
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('chatbot-faq.*') ? '' : 'collapsed' }}" href="{{ route('chatbot-faq.index') }}">
-                    <i class="bi bi-chat-dots-fill text-primary"></i>
-                    <span>Pengaturan Chatbot & WA</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('chatbot-faq.*') ? '' : 'collapsed' }}" href="{{ route('chatbot-faq.index') }}">
+                        <i class="bi bi-chat-dots-fill text-primary"></i>
+                        <span>Pengaturan Chatbot & WA</span>
+                    </a>
+                </li>
+            @endif
 
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('evaluasimenu.*') ? '' : 'collapsed' }}" href="{{ route('evaluasimenu.index') }}">
@@ -315,23 +317,25 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link {{ (request()->routeIs('sertifikatsetting.*') || request()->routeIs('kelulusan.*')) ? '' : 'collapsed' }}" data-bs-target="#sertifikat-nav" data-bs-toggle="collapse" href="#">
-                    <i class="bi bi-patch-check-fill text-primary"></i><span>Sertifikat & Kelulusan</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="sertifikat-nav" class="nav-content collapse {{ (request()->routeIs('sertifikatsetting.*') || request()->routeIs('kelulusan.*')) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
-                    <li>
-                        <a href="{{ route('sertifikatsetting.index') }}" class="{{ request()->routeIs('sertifikatsetting.*') ? 'active' : '' }}">
-                            <i class="bi bi-circle"></i><span>Pengaturan Template Sertifikat</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('kelulusan.index') }}" class="{{ request()->routeIs('kelulusan.*') ? 'active' : '' }}">
-                            <i class="bi bi-circle"></i><span>Status Kelulusan & Buka Sertifikat</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+            @if (in_array(Auth::user()->role, ['admin', 'stafbaak']))
+                <li class="nav-item">
+                    <a class="nav-link {{ (request()->routeIs('sertifikatsetting.*') || request()->routeIs('kelulusan.*')) ? '' : 'collapsed' }}" data-bs-target="#sertifikat-nav" data-bs-toggle="collapse" href="#">
+                        <i class="bi bi-patch-check-fill text-primary"></i><span>Sertifikat & Kelulusan</span><i class="bi bi-chevron-down ms-auto"></i>
+                    </a>
+                    <ul id="sertifikat-nav" class="nav-content collapse {{ (request()->routeIs('sertifikatsetting.*') || request()->routeIs('kelulusan.*')) ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                        <li>
+                            <a href="{{ route('sertifikatsetting.index') }}" class="{{ request()->routeIs('sertifikatsetting.*') ? 'active' : '' }}">
+                                <i class="bi bi-circle"></i><span>Pengaturan Template Sertifikat</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('kelulusan.index') }}" class="{{ request()->routeIs('kelulusan.*') ? 'active' : '' }}">
+                                <i class="bi bi-circle"></i><span>Status Kelulusan & Buka Sertifikat</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
         @endif
 
     </ul>

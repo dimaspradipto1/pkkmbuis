@@ -17,7 +17,7 @@ class LpjController extends Controller
      */
     public function index(LpjDataTable $dataTable)
     {
-        if (Auth::user()->role != 'admin') {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -29,7 +29,7 @@ class LpjController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->role != 'admin') {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -44,7 +44,7 @@ class LpjController extends Controller
      */
     public function store(LpjRequest $request)
     {
-        if (Auth::user()->role != 'admin') {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -62,7 +62,7 @@ class LpjController extends Controller
      */
     public function edit(string $id)
     {
-        if (Auth::user()->role != 'admin') {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -75,7 +75,7 @@ class LpjController extends Controller
      */
     public function update(LpjRequest $request, string $id)
     {
-        if (Auth::user()->role != 'admin') {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -94,7 +94,7 @@ class LpjController extends Controller
      */
     public function destroy(string $id)
     {
-        if (Auth::user()->role != 'admin') {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
             abort(403);
         }
 

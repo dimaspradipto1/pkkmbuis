@@ -12,7 +12,7 @@ class LpjAttachmentController extends Controller
 {
     public function store(Request $request)
     {
-        if (Auth::user()->role != 'admin') {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -55,7 +55,7 @@ class LpjAttachmentController extends Controller
 
     public function edit($id)
     {
-        if (Auth::user()->role != 'admin') {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -67,7 +67,7 @@ class LpjAttachmentController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (Auth::user()->role != 'admin') {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -121,7 +121,7 @@ class LpjAttachmentController extends Controller
 
     public function destroy($id)
     {
-        if (Auth::user()->role != 'admin') {
+        if (!in_array(Auth::user()->role, ['admin', 'timevaluasi'])) {
             abort(403);
         }
 

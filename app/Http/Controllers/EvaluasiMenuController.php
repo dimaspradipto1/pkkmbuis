@@ -32,7 +32,7 @@ class EvaluasiMenuController extends Controller
 
     public function index()
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'stafbaak') {
+        if (!in_array(Auth::user()->role, ['admin', 'stafbaak', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -42,7 +42,7 @@ class EvaluasiMenuController extends Controller
 
     public function bulkToggle(Request $request)
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'stafbaak') {
+        if (!in_array(Auth::user()->role, ['admin', 'stafbaak', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -60,7 +60,7 @@ class EvaluasiMenuController extends Controller
 
     public function toggle($id)
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'stafbaak') {
+        if (!in_array(Auth::user()->role, ['admin', 'stafbaak', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -76,7 +76,7 @@ class EvaluasiMenuController extends Controller
 
     public function questions($id)
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'stafbaak') {
+        if (!in_array(Auth::user()->role, ['admin', 'stafbaak', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -103,7 +103,7 @@ class EvaluasiMenuController extends Controller
 
     public function updateQuestions(Request $request, $id)
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'stafbaak') {
+        if (!in_array(Auth::user()->role, ['admin', 'stafbaak', 'timevaluasi'])) {
             abort(403);
         }
 
@@ -149,7 +149,7 @@ class EvaluasiMenuController extends Controller
 
     public function resetQuestions($id)
     {
-        if (Auth::user()->role != 'admin' && Auth::user()->role != 'stafbaak') {
+        if (!in_array(Auth::user()->role, ['admin', 'stafbaak', 'timevaluasi'])) {
             abort(403);
         }
 
