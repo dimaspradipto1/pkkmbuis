@@ -24,7 +24,7 @@ class RekapObservasiController extends Controller
                 'title'     => 'Observasi Acara Hari 1',
                 'subtitle'  => 'PKKMB Universitas - Hari Pertama',
                 'badge'     => 'Hari 1',
-                'color'     => 'primary',
+                'color'     => '#0d6efd',
                 'model'     => ObservasiAcara::class,
                 'manageUrl' => route('observasiacara.index'),
                 'addUrl'    => route('observasiacara.create'),
@@ -34,7 +34,7 @@ class RekapObservasiController extends Controller
                 'title'     => 'Observasi Acara Hari 2',
                 'subtitle'  => 'PKKMB Universitas - Hari Kedua',
                 'badge'     => 'Hari 2',
-                'color'     => 'info',
+                'color'     => '#0284c7',
                 'model'     => ObservasiAcara2::class,
                 'manageUrl' => route('observasiacara2.index'),
                 'addUrl'    => route('observasiacara2.create'),
@@ -44,7 +44,7 @@ class RekapObservasiController extends Controller
                 'title'     => 'Observasi Acara FEB',
                 'subtitle'  => 'Fakultas Ekonomi & Bisnis',
                 'badge'     => 'FEB',
-                'color'     => 'warning',
+                'color'     => '#F5A524',
                 'model'     => ObservasiAcaraFeb::class,
                 'manageUrl' => route('observasiacarafeb.index'),
                 'addUrl'    => route('observasiacarafeb.create'),
@@ -54,7 +54,7 @@ class RekapObservasiController extends Controller
                 'title'     => 'Observasi Acara FST',
                 'subtitle'  => 'Fakultas Sains & Teknologi',
                 'badge'     => 'FST',
-                'color'     => 'success',
+                'color'     => '#9F1521',
                 'model'     => ObservasiAcaraFst::class,
                 'manageUrl' => route('observasiacarafst.index'),
                 'addUrl'    => route('observasiacarafst.create'),
@@ -64,7 +64,7 @@ class RekapObservasiController extends Controller
                 'title'     => 'Observasi Acara FIKes',
                 'subtitle'  => 'Fakultas Ilmu Kesehatan',
                 'badge'     => 'FIKes',
-                'color'     => 'danger',
+                'color'     => '#823ca2',
                 'model'     => ObservasiAcaraFikes::class,
                 'manageUrl' => route('observasiacarafikes.index'),
                 'addUrl'    => route('observasiacarafikes.create'),
@@ -92,24 +92,42 @@ class RekapObservasiController extends Controller
                 $totalItemsWithSkor += $count;
             }
 
-            // Count documentation links
+            // Count documentation links and parse aspects into separate items
             $docCount = 0;
+            $eventMaxAspek = 2; // Default minimum 2 aspect columns
+
             foreach ($items as $item) {
                 if (!empty($item->link_dokumen)) {
                     $links = array_filter(array_map('trim', explode("\n", $item->link_dokumen)));
                     $docCount += count($links);
                 }
+
+                $aspekList = [];
+                if (!empty($item->aspek_observasi)) {
+                    $lines = array_filter(array_map('trim', explode("\n", $item->aspek_observasi)));
+                    foreach ($lines as $line) {
+                        $cleaned = preg_replace('/^\d+[\.\)]\s*/', '', $line);
+                        if ($cleaned !== '') {
+                            $aspekList[] = $cleaned;
+                        }
+                    }
+                }
+                $item->aspek_list = $aspekList;
+                if (count($aspekList) > $eventMaxAspek) {
+                    $eventMaxAspek = count($aspekList);
+                }
             }
             $totalDokumen += $docCount;
 
             $rekapData[$ev['id']] = [
-                'config'    => $ev,
-                'items'     => $items,
-                'count'     => $count,
-                'avgSkala'  => $avgSkala,
-                'tcr'       => $tcr,
-                'kategori'  => $this->getKategoriObservasi($tcr),
-                'docCount'  => $docCount,
+                'config'        => $ev,
+                'items'         => $items,
+                'count'         => $count,
+                'avgSkala'      => $avgSkala,
+                'tcr'           => $tcr,
+                'kategori'      => $this->getKategoriObservasi($tcr),
+                'docCount'      => $docCount,
+                'maxAspek'      => $eventMaxAspek,
             ];
         }
 
