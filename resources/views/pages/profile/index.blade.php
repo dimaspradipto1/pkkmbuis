@@ -25,6 +25,11 @@
                                 <span class="badge bg-light text-dark border px-2 py-1"><i class="bi bi-person-vcard text-primary me-1"></i>NIM: {{ $user->nim }}</span>
                             </div>
                         @endif
+                        @if($user->nup)
+                            <div class="mb-1">
+                                <span class="badge bg-light text-dark border px-2 py-1"><i class="bi bi-person-badge text-warning me-1"></i>NUP: {{ $user->nup }}</span>
+                            </div>
+                        @endif
                         @if($user->no_wa)
                             <p class="text-muted mb-2 small"><i class="bi bi-whatsapp text-success me-1"></i>{{ $user->no_wa }}</p>
                         @endif
@@ -79,6 +84,20 @@
                                         @enderror
                                     </div>
                                     <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>NIM dapat digunakan untuk login ke sistem.</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="nup" class="col-md-4 col-form-label fw-bold">NUP</label>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-warning"><i class="bi bi-person-vcard-fill"></i></span>
+                                        <input name="nup" type="text" class="form-control @error('nup') is-invalid @enderror" id="nup" value="{{ old('nup', $user->nup) }}" placeholder="Contoh: 12345678 (opsional)">
+                                        @error('nup')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Nomor Urut Pendidik / Pegawai (dapat digunakan untuk login).</span>
                                 </div>
                             </div>
 

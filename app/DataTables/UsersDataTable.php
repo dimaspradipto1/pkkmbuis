@@ -126,6 +126,9 @@ class UsersDataTable extends DataTable
             Column::make('nim')
                 ->title('NIM')
                 ->defaultContent('-'),
+            Column::make('nup')
+                ->title('NUP')
+                ->defaultContent('-'),
             Column::make('email')
                 ->title('Email'),
             Column::make('no_wa')

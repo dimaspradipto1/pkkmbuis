@@ -106,9 +106,9 @@
                     @csrf
                     <div class="modal-body p-4">
                         <div class="alert alert-info py-2 small mb-3">
-                            Format header: <strong>name</strong>, <strong>email</strong>, <strong>password</strong>, <strong>id_pendaftar</strong>, <strong>role</strong>, <strong>fakultas</strong>, <strong>program_studi</strong>.
+                            Format header: <strong>name</strong>, <strong>email</strong>, <strong>no_wa</strong>, <strong>password</strong>, <strong>id_pendaftar</strong>, <strong>nim</strong>, <strong>nup</strong>, <strong>role</strong>, <strong>fakultas</strong>, <strong>program_studi</strong>.
                             <br>
-                            <a href="{{ route('users.template') }}" class="fw-bold"><i class="bi bi-cloud-download me-1"></i> Download Template</a>
+                            <a href="{{ route('users.template') }}" class="fw-bold"><i class="bi bi-cloud-download me-1"></i> Download Template Excel</a>
                         </div>
                         <div class="mb-3">
                             <label for="file" class="form-label fw-bold small">Pilih File Excel (.xlsx, .xls, .csv)</label>

@@ -33,6 +33,7 @@ class AuthController extends Controller
             ->where('email', $input)
             ->orWhere('id_pendaftar', $input)
             ->orWhere('nim', $input)
+            ->orWhere('nup', $input)
             ->orWhere('no_wa', $input)
             ->orWhere('no_wa', $waInput)
             ->first();
@@ -53,7 +54,7 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'login' => 'Login gagal, silakan periksa kembali Email / NIM / ID Pendaftar / No. WhatsApp dan Password Anda.',
+            'login' => 'Login gagal, silakan periksa kembali Email / NIM / NUP / ID Pendaftar / No. WhatsApp dan Password Anda.',
         ])->onlyInput('login');
     }
 }

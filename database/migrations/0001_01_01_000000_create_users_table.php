@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('id_pendaftar')->unique()->nullable();
             $table->string('nim')->unique()->nullable();
+            $table->string('nup')->unique()->nullable();
             $table->string('email')->unique()->nullable();
             $table->string('no_wa')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();

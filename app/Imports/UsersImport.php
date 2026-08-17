@@ -17,10 +17,10 @@ use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 class UsersImport implements ToModel, WithHeadingRow, SkipsEmptyRows
 {
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
     public function model(array $row)
     {
         $rawWa = isset($row['no_wa']) ? (string)$row['no_wa'] : null;
@@ -75,5 +75,3 @@ class UsersImport implements ToModel, WithHeadingRow, SkipsEmptyRows
         return $user;
     }
 }
-
-

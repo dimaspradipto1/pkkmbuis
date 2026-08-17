@@ -53,6 +53,13 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
+                                <label for="nup" class="col-sm-2 col-form-label">NUP</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="nup" class="form-control" id="nup" value="{{ old('nup', $user->nup) }}" placeholder="Opsional / jika sudah ada">
+                                    <small class="text-muted" style="font-size: 0.75rem;">Nomor Urut Pendidik / Pegawai (opsional, dapat digunakan untuk login).</small>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
                                 <label for="email" class="col-sm-2 col-form-label">Email</label>
                                 <div class="col-sm-10">
                                     <input type="email" name="email" class="form-control" id="email" value="{{ old('email', $user->email) }}" required>

@@ -40,6 +40,12 @@ class ProfileController extends Controller
                 'max:50',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'nup' => [
+                'nullable',
+                'string',
+                'max:50',
+                Rule::unique('users')->ignore($user->id),
+            ],
             'email' => [
                 'required',
                 'string',
@@ -56,9 +62,10 @@ class ProfileController extends Controller
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
             'id_pendaftar.unique' => 'ID Pendaftar sudah terdaftar.',
+            'nim.unique' => 'NIM sudah terdaftar.',
+            'nup.unique' => 'NUP sudah terdaftar.',
             'email.required' => 'Email wajib diisi.',
             'email.unique' => 'Email sudah terdaftar.',
-            'nim.unique' => 'NIM sudah terdaftar.',
             'no_wa.unique' => 'Nomor WhatsApp sudah digunakan.',
         ]);
 
