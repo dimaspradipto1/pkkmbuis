@@ -41,7 +41,7 @@
                             <div class="row mb-3">
                                 <label for="id_pendaftar" class="col-sm-2 col-form-label">ID Pendaftar</label>
                                 <div class="col-sm-10">
-                                    <input type="text" name="id_pendaftar" class="form-control" id="id_pendaftar" value="{{ old('id_pendaftar') }}" required>
+                                    <input type="text" name="id_pendaftar" class="form-control" id="id_pendaftar" value="{{ old('id_pendaftar') }}" placeholder="Opsional / jika ada">
                                 </div>
                             </div>
                             <div class="row mb-3">

@@ -48,7 +48,7 @@ class UsersController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'id_pendaftar' => 'required|string|unique:users,id_pendaftar',
+            'id_pendaftar' => 'nullable|string|unique:users,id_pendaftar',
             'nim' => 'nullable|string|max:50|unique:users,nim',
             'email' => 'required|string|email|max:255|unique:users,email',
             'no_wa' => 'nullable|string|max:25|unique:users,no_wa',
@@ -159,7 +159,7 @@ class UsersController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'id_pendaftar' => [
-                'required',
+                'nullable',
                 'string',
                 Rule::unique('users')->ignore($user->id),
             ],

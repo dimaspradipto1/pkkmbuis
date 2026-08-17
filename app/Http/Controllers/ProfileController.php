@@ -28,17 +28,23 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => [
-                'required',
+            'id_pendaftar' => [
+                'nullable',
                 'string',
-                'email',
-                'max:255',
+                'max:50',
                 Rule::unique('users')->ignore($user->id),
             ],
             'nim' => [
                 'nullable',
                 'string',
                 'max:50',
+                Rule::unique('users')->ignore($user->id),
+            ],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
             'no_wa' => [
@@ -49,6 +55,7 @@ class ProfileController extends Controller
             ],
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
+            'id_pendaftar.unique' => 'ID Pendaftar sudah terdaftar.',
             'email.required' => 'Email wajib diisi.',
             'email.unique' => 'Email sudah terdaftar.',
             'nim.unique' => 'NIM sudah terdaftar.',

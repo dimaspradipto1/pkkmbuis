@@ -97,10 +97,16 @@
                             </div>
 
                             <div class="row mb-3">
-                                <label class="col-md-4 col-form-label fw-bold">ID Pendaftar</label>
+                                <label for="id_pendaftar" class="col-md-4 col-form-label fw-bold">ID Pendaftar</label>
                                 <div class="col-md-8">
-                                    <input type="text" class="form-control bg-light" value="{{ $user->id_pendaftar }}" readonly disabled>
-                                    <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>ID pendaftar tidak dapat diubah.</span>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-secondary"><i class="bi bi-person-badge"></i></span>
+                                        <input name="id_pendaftar" type="text" class="form-control @error('id_pendaftar') is-invalid @enderror" id="id_pendaftar" value="{{ old('id_pendaftar', $user->id_pendaftar) }}" placeholder="Contoh: 231061201146 (opsional)">
+                                        @error('id_pendaftar')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>ID Pendaftar saat registrasi (dapat digunakan untuk login).</span>
                                 </div>
                             </div>
 
