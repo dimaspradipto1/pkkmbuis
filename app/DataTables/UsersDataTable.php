@@ -123,6 +123,9 @@ class UsersDataTable extends DataTable
                 ->title('Nama'),
             Column::make('id_pendaftar')
                 ->title('ID Pendaftar'),
+            Column::make('nim')
+                ->title('NIM')
+                ->defaultContent('-'),
             Column::make('email')
                 ->title('Email'),
             Column::make('no_wa')

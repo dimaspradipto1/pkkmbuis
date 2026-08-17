@@ -20,6 +20,11 @@
                         <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=00A551&color=fff&size=120&rounded=true" alt="Profile" class="rounded-circle mb-3 shadow-sm border border-3 border-success">
                         <h4 class="fw-bold mb-1" style="color: #012970;">{{ $user->name }}</h4>
                         <p class="text-muted mb-1">{{ $user->email ?? '-' }}</p>
+                        @if($user->nim)
+                            <div class="mb-1">
+                                <span class="badge bg-light text-dark border px-2 py-1"><i class="bi bi-person-vcard text-primary me-1"></i>NIM: {{ $user->nim }}</span>
+                            </div>
+                        @endif
                         @if($user->no_wa)
                             <p class="text-muted mb-2 small"><i class="bi bi-whatsapp text-success me-1"></i>{{ $user->no_wa }}</p>
                         @endif
@@ -60,6 +65,20 @@
                                     @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="nim" class="col-md-4 col-form-label fw-bold">NIM</label>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-primary"><i class="bi bi-card-text"></i></span>
+                                        <input name="nim" type="text" class="form-control @error('nim') is-invalid @enderror" id="nim" value="{{ old('nim', $user->nim) }}" placeholder="Contoh: 241061201001 (opsional)">
+                                        @error('nim')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>NIM dapat digunakan untuk login ke sistem.</span>
                                 </div>
                             </div>
 

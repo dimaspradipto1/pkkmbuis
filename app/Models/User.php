@@ -23,6 +23,7 @@ class User extends Authenticatable
         'no_wa',
         'password',
         'id_pendaftar',
+        'nim',
         'role',
         'fakultas',
         'program_studi',

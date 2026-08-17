@@ -49,6 +49,7 @@ class UsersController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'id_pendaftar' => 'required|string|unique:users,id_pendaftar',
+            'nim' => 'nullable|string|max:50|unique:users,nim',
             'email' => 'required|string|email|max:255|unique:users,email',
             'no_wa' => 'nullable|string|max:25|unique:users,no_wa',
             'password' => 'required|string|min:8',
@@ -58,11 +59,12 @@ class UsersController extends Controller
             'jabatan_panitia' => 'nullable|string|max:255',
         ], [
             'id_pendaftar.unique' => 'ID pendaftar sudah terdaftar.',
+            'nim.unique' => 'NIM sudah terdaftar.',
             'email.unique' => 'Email sudah digunakan.',
             'no_wa.unique' => 'Nomor WhatsApp sudah digunakan.',
         ]);
 
-        $validated = $request->only(['name', 'id_pendaftar', 'email', 'no_wa', 'password', 'role', 'fakultas', 'program_studi', 'jabatan_panitia']);
+        $validated = $request->only(['name', 'id_pendaftar', 'nim', 'email', 'no_wa', 'password', 'role', 'fakultas', 'program_studi', 'jabatan_panitia']);
 
         if ($validated['role'] === 'panitia') {
             $validated['fakultas'] = '-';
@@ -161,6 +163,12 @@ class UsersController extends Controller
                 'string',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'nim' => [
+                'nullable',
+                'string',
+                'max:50',
+                Rule::unique('users')->ignore($user->id),
+            ],
             'email' => [
                 'required',
                 'string',
@@ -178,6 +186,11 @@ class UsersController extends Controller
             'fakultas' => 'nullable|string|max:255',
             'program_studi' => 'nullable|string|max:255',
             'jabatan_panitia' => 'nullable|string|max:255',
+        ], [
+            'id_pendaftar.unique' => 'ID pendaftar sudah terdaftar.',
+            'nim.unique' => 'NIM sudah terdaftar.',
+            'email.unique' => 'Email sudah digunakan.',
+            'no_wa.unique' => 'Nomor WhatsApp sudah digunakan.',
         ]);
 
         if ($validated['role'] === 'panitia') {
@@ -271,9 +284,9 @@ class UsersController extends Controller
 
     public function downloadTemplate()
     {
-        $headers = ['name', 'email', 'no_wa', 'password', 'id_pendaftar', 'role', 'fakultas', 'program_studi'];
+        $headers = ['name', 'email', 'no_wa', 'password', 'id_pendaftar', 'nim', 'role', 'fakultas', 'program_studi'];
         $data = [
-            ['Jhon Doe', 'jhon@example.com', '6281234567890', 'password123', 'REG001', 'mahasiswa', 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'S1 TEKNIK INFORMATIKA'],
+            ['Jhon Doe', 'jhon@example.com', '6281234567890', 'password123', 'REG001', '241061201001', 'mahasiswa', 'FAKULTAS SAINS DAN TEKNOLOGI (FST)', 'S1 TEKNIK INFORMATIKA'],
         ];
 
         return Excel::download(new class($headers, $data) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {

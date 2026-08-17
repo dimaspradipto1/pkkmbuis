@@ -46,6 +46,13 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
+                                <label for="nim" class="col-sm-2 col-form-label">NIM</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="nim" class="form-control" id="nim" value="{{ old('nim', $user->nim) }}" placeholder="Opsional / jika sudah ada">
+                                    <small class="text-muted" style="font-size: 0.75rem;">Nomor Induk Mahasiswa (opsional, dapat digunakan untuk login).</small>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
                                 <label for="email" class="col-sm-2 col-form-label">Email</label>
                                 <div class="col-sm-10">
                                     <input type="email" name="email" class="form-control" id="email" value="{{ old('email', $user->email) }}" required>

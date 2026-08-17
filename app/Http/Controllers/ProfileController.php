@@ -35,6 +35,12 @@ class ProfileController extends Controller
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'nim' => [
+                'nullable',
+                'string',
+                'max:50',
+                Rule::unique('users')->ignore($user->id),
+            ],
             'no_wa' => [
                 'nullable',
                 'string',
@@ -45,6 +51,7 @@ class ProfileController extends Controller
             'name.required' => 'Nama lengkap wajib diisi.',
             'email.required' => 'Email wajib diisi.',
             'email.unique' => 'Email sudah terdaftar.',
+            'nim.unique' => 'NIM sudah terdaftar.',
             'no_wa.unique' => 'Nomor WhatsApp sudah digunakan.',
         ]);
 
