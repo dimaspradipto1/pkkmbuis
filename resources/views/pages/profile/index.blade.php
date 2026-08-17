@@ -19,7 +19,10 @@
                     <div class="card-body profile-card d-flex flex-column align-items-center justify-content-center">
                         <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=00A551&color=fff&size=120&rounded=true" alt="Profile" class="rounded-circle mb-3 shadow-sm border border-3 border-success">
                         <h4 class="fw-bold mb-1" style="color: #012970;">{{ $user->name }}</h4>
-                        <p class="text-muted mb-2">{{ $user->email ?? '-' }}</p>
+                        <p class="text-muted mb-1">{{ $user->email ?? '-' }}</p>
+                        @if($user->no_wa)
+                            <p class="text-muted mb-2 small"><i class="bi bi-whatsapp text-success me-1"></i>{{ $user->no_wa }}</p>
+                        @endif
                         
                         <div class="mt-2">
                             <span class="badge bg-success text-uppercase px-3 py-2 fs-7 rounded-pill shadow-sm">
@@ -57,6 +60,20 @@
                                     @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="no_wa" class="col-md-4 col-form-label fw-bold">Nomor WhatsApp</label>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light text-success"><i class="bi bi-whatsapp"></i></span>
+                                        <input name="no_wa" type="text" class="form-control @error('no_wa') is-invalid @enderror" id="no_wa" value="{{ old('no_wa', $user->no_wa) }}" placeholder="Contoh: 081234567890">
+                                        @error('no_wa')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <span class="text-muted small"><i class="bi bi-info-circle me-1"></i>Nomor WhatsApp aktif untuk koordinasi dan notifikasi.</span>
                                 </div>
                             </div>
 

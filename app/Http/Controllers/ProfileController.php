@@ -35,6 +35,17 @@ class ProfileController extends Controller
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+            'no_wa' => [
+                'nullable',
+                'string',
+                'max:25',
+                Rule::unique('users')->ignore($user->id),
+            ],
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'no_wa.unique' => 'Nomor WhatsApp sudah digunakan.',
         ]);
 
         $user->update($validated);
