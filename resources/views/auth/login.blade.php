@@ -460,10 +460,13 @@
             <form action="{{ route('login.post') }}" method="POST">
                 @csrf
                 <div class="form-group-custom">
-                    <label class="form-label-custom">NIM / ID PENDAFTAR / EMAIL / NO. WHATSAPP (628...)</label>
+                    <label class="form-label-custom">NIM / ID PENDAFTAR / EMAIL / NO. WHATSAPP</label>
                     <div class="input-wrapper-custom">
                         <i class="bi bi-person-fill input-icon-left"></i>
-                        <input type="text" name="login" class="input-custom" value="{{ old('login') }}" placeholder="Contoh: 241061201001, REG001, 628123456789, atau email" required autofocus>
+                        <input type="text" name="login" class="input-custom" value="{{ old('login') }}" placeholder="Contoh: 241061201001 atau 628123456789" required autofocus>
+                    </div>
+                    <div class="form-hint mt-1" style="font-size: 0.72rem; color: #64748b;">
+                        <i class="bi bi-info-circle text-success me-1"></i>Bisa berupa <strong>NIM</strong>, <strong>ID Pendaftar</strong>, <strong>No. WA (628...)</strong>, atau <strong>Email</strong>
                     </div>
                 </div>
 
