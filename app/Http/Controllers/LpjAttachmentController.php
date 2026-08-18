@@ -50,7 +50,7 @@ class LpjAttachmentController extends Controller
             ->toToast()
             ->autoClose(3000);
 
-        return redirect()->back();
+        return redirect()->route('lpj.index');
     }
 
     public function edit($id)
