@@ -17,8 +17,8 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Daftar Dokumen
-                            @if(Auth::user()->role == 'admin')
-                            <a href="{{ route('dokumen.create') }}" class="btn btn-primary float-end">Tambah Dokumen</a>
+                            @if (Auth::user()->role == 'admin')
+                                <a href="{{ route('dokumen.create') }}" class="btn btn-primary float-end">Tambah Dokumen</a>
                             @endif
                         </h5>
                         <div class="table-responsive">
@@ -32,5 +32,9 @@
 @endsection
 
 @push('scripts')
-    {{ $dataTable->scripts() }}
+    @if (app()->environment('production'))
+        {!! str_replace('http:', 'https:', $dataTable->scripts()) !!}
+    @else
+        {!! $dataTable->scripts() !!}
+    @endif
 @endpush
