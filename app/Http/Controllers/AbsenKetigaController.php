@@ -26,9 +26,91 @@ class AbsenKetigaController extends Controller
 
     public function index(AbsenKetigaDataTable $dataTable)
     {
+        $authUser = Auth::user();
+        if ($authUser->role == 'kakakpendamping') {
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)
+                ->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))
+                ->pluck('id');
+            $targetUserIds = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->pluck('id');
+            $totalMahasiswa = $targetUserIds->count();
+
+            $sudahDatang = AbsenKetiga::whereIn('user_id', $targetUserIds)
+                ->where('hadir_pagi', '!=', 'Belum Absen')
+                ->whereNotNull('hadir_pagi')
+                ->count();
+
+            $sudahPulang = AbsenKetiga::whereIn('user_id', $targetUserIds)
+                ->where('hadir_sore', '!=', 'Belum Absen')
+                ->whereNotNull('hadir_sore')
+                ->count();
+
+            $sudahAbsen = AbsenKetiga::whereIn('user_id', $targetUserIds)
+                ->where(function($q) {
+                    $q->where(function($sub) {
+                        $sub->where('hadir_pagi', '!=', 'Belum Absen')->whereNotNull('hadir_pagi');
+                    })->orWhere(function($sub) {
+                        $sub->where('hadir_sore', '!=', 'Belum Absen')->whereNotNull('hadir_sore');
+                    });
+                })->count();
+
+            $belumAbsen = max(0, $totalMahasiswa - $sudahAbsen);
+        } elseif ($authUser->role == 'dosenpendamping') {
+            $myKelompokIds = \App\Models\Kelompok::whereHas('dosenPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
+            $targetUserIds = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->pluck('id');
+            $totalMahasiswa = $targetUserIds->count();
+
+            $sudahDatang = AbsenKetiga::whereIn('user_id', $targetUserIds)
+                ->where('hadir_pagi', '!=', 'Belum Absen')
+                ->whereNotNull('hadir_pagi')
+                ->count();
+
+            $sudahPulang = AbsenKetiga::whereIn('user_id', $targetUserIds)
+                ->where('hadir_sore', '!=', 'Belum Absen')
+                ->whereNotNull('hadir_sore')
+                ->count();
+
+            $sudahAbsen = AbsenKetiga::whereIn('user_id', $targetUserIds)
+                ->where(function($q) {
+                    $q->where(function($sub) {
+                        $sub->where('hadir_pagi', '!=', 'Belum Absen')->whereNotNull('hadir_pagi');
+                    })->orWhere(function($sub) {
+                        $sub->where('hadir_sore', '!=', 'Belum Absen')->whereNotNull('hadir_sore');
+                    });
+                })->count();
+
+            $belumAbsen = max(0, $totalMahasiswa - $sudahAbsen);
+        } elseif ($authUser->role == 'mahasiswa') {
+            $totalMahasiswa = 1;
+            $absen = AbsenKetiga::where('user_id', $authUser->id)->first();
+            $sudahDatang = ($absen && $absen->hadir_pagi != 'Belum Absen' && !empty($absen->hadir_pagi)) ? 1 : 0;
+            $sudahPulang = ($absen && $absen->hadir_sore != 'Belum Absen' && !empty($absen->hadir_sore)) ? 1 : 0;
+            $belumAbsen = ($sudahDatang == 0 && $sudahPulang == 0) ? 1 : 0;
+        } else {
+            $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+            
+            $sudahDatang = AbsenKetiga::where('hadir_pagi', '!=', 'Belum Absen')
+                ->whereNotNull('hadir_pagi')
+                ->count();
+
+            $sudahPulang = AbsenKetiga::where('hadir_sore', '!=', 'Belum Absen')
+                ->whereNotNull('hadir_sore')
+                ->count();
+
+            $sudahAbsen = AbsenKetiga::where(function($q) {
+                    $q->where(function($sub) {
+                        $sub->where('hadir_pagi', '!=', 'Belum Absen')->whereNotNull('hadir_pagi');
+                    })->orWhere(function($sub) {
+                        $sub->where('hadir_sore', '!=', 'Belum Absen')->whereNotNull('hadir_sore');
+                    });
+                })
+                ->count();
+
+            $belumAbsen = max(0, $totalMahasiswa - $sudahAbsen);
+        }
+
         $attachments = \App\Models\AbsenAttachment::where('category', 'absenketiga')->latest()->get();
         $notes = \App\Models\AbsenNote::where('category', 'absenketiga')->latest()->get();
-        return $dataTable->render('pages.absenketiga.index', compact('attachments', 'notes'));
+        return $dataTable->render('pages.absenketiga.index', compact('attachments', 'notes', 'totalMahasiswa', 'sudahDatang', 'sudahPulang', 'belumAbsen'));
     }
 
     /**

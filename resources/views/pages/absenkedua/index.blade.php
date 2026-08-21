@@ -12,6 +12,69 @@
     </div>
 
     <section class="section">
+        <!-- Attendance Stat Cards -->
+        <div class="row g-3 mb-4">
+            <!-- Total Mahasiswa -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #3b82f6 !important; transition: all 0.2s ease;">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white shadow-sm" style="width: 48px; height: 48px; min-width: 48px; background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                            <i class="bi bi-people-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">TOTAL MAHASISWA</div>
+                            <div class="fs-4 fw-bold text-dark lh-1 mt-1">{{ number_format($totalMahasiswa ?? 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sudah Absensi Datang -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #10b981 !important; transition: all 0.2s ease;">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white shadow-sm" style="width: 48px; height: 48px; min-width: 48px; background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="bi bi-box-arrow-in-right fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">SUDAH ABSEN DATANG</div>
+                            <div class="fs-4 fw-bold text-success lh-1 mt-1">{{ number_format($sudahDatang ?? 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sudah Absensi Pulang -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #6366f1 !important; transition: all 0.2s ease;">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white shadow-sm" style="width: 48px; height: 48px; min-width: 48px; background: linear-gradient(135deg, #6366f1, #4338ca);">
+                            <i class="bi bi-box-arrow-right fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">SUDAH ABSEN PULANG</div>
+                            <div class="fs-4 fw-bold lh-1 mt-1" style="color: #4f46e5 !important;">{{ number_format($sudahPulang ?? 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Belum Absensi -->
+            <div class="col-12 col-sm-6 col-xl-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #ef4444 !important; transition: all 0.2s ease;">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white shadow-sm" style="width: 48px; height: 48px; min-width: 48px; background: linear-gradient(135deg, #ef4444, #dc2626);">
+                            <i class="bi bi-person-x-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">BELUM ABSENSI</div>
+                            <div class="fs-4 fw-bold text-danger lh-1 mt-1">{{ number_format($belumAbsen ?? 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-lg-12">
 
