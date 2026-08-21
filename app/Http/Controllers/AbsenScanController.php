@@ -184,10 +184,10 @@ class AbsenScanController extends Controller
                 ], 422);
             }
 
-            // Verify hash with a 1-step grace period
+            // Verify hash with a broader grace period (-1 to +2 steps = 4 minutes window for clock drift & network lag)
             $timeStep = floor(time() / 60);
             $isValid = false;
-            for ($i = 0; $i <= 1; $i++) {
+            for ($i = -1; $i <= 2; $i++) {
                 $checkStep = $timeStep - $i;
                 $expectedHash = md5($sessionCode . '_' . $checkStep . '_' . config('app.key'));
                 if (hash_equals($expectedHash, $scannedHash)) {
