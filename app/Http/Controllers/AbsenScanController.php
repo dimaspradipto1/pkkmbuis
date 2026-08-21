@@ -246,7 +246,18 @@ class AbsenScanController extends Controller
             }
 
             if (Auth::user()->role == 'kakakpendamping') {
-                $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())->pluck('id')->toArray();
+                $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())
+                    ->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', Auth::id()))
+                    ->pluck('id')->toArray();
+                if (!in_array($targetUser->kelompok_id, $myKelompokIds)) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Mahasiswa ' . $targetUser->name . ' bukan anggota kelompok Anda.'
+                    ], 403);
+                }
+            } elseif (Auth::user()->role == 'dosenpendamping') {
+                $myKelompokIds = \App\Models\Kelompok::whereHas('dosenPendampings', fn($q) => $q->where('users.id', Auth::id()))
+                    ->pluck('id')->toArray();
                 if (!in_array($targetUser->kelompok_id, $myKelompokIds)) {
                     return response()->json([
                         'success' => false,

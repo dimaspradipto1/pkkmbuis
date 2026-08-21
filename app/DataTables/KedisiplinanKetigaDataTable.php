@@ -101,7 +101,14 @@ class KedisiplinanKetigaDataTable extends DataTable
         if (Auth::user()->role == 'mahasiswa') {
             $query->where('user_id', Auth::id());
         } elseif (Auth::user()->role == 'kakakpendamping') {
-            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())->pluck('id');
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', Auth::id())
+                ->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', Auth::id()))
+                ->pluck('id');
+            $query->whereHas('user', function($q) use ($myKelompokIds) {
+                $q->whereIn('kelompok_id', $myKelompokIds);
+            });
+        } elseif (Auth::user()->role == 'dosenpendamping') {
+            $myKelompokIds = \App\Models\Kelompok::whereHas('dosenPendampings', fn($q) => $q->where('users.id', Auth::id()))->pluck('id');
             $query->whereHas('user', function($q) use ($myKelompokIds) {
                 $q->whereIn('kelompok_id', $myKelompokIds);
             });
