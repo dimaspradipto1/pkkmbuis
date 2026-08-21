@@ -26,6 +26,8 @@ class DashboardController extends Controller
         }
         $isPendamping = in_array($authUser->role, ['kakakpendamping', 'dosenpendamping']);
 
+        // SEMENTARA DINONAKTIFKAN / DIKOMENTARI AGAR DASHBOARD CEPAT & TIDAK TIMEOUT/ERROR
+        /*
         // Auto-assign sequential certificate numbers for any students with kelulusan_is_active whose certificate has not been numbered yet
         $lulusWithoutNomor = User::where('role', 'mahasiswa')
             ->where('kelulusan_is_active', true)
@@ -50,7 +52,40 @@ class DashboardController extends Controller
                 $lockedSetting->update(['nomor_urut_terakhir' => $lastNum]);
             });
         }
+        */
 
+        $myKelompokNama = null;
+        $myKelompokSlug = null;
+        $totalMahasiswa = 0;
+        $absen1 = 0;
+        $absen2 = 0;
+        $absen3 = 0;
+        $absenCount = 0;
+        $disiplinCount = 0;
+        $pretestCount = 0;
+        $posttestCount = 0;
+        $tugasCount = 0;
+        $hasilTestTuntasCount = 0;
+        $sertifikatCount = 0;
+        $sertifikatSetting = SertifikatSetting::current();
+
+        $recentUsers = collect();
+        $allAbsen1 = collect();
+        $allAbsen2 = collect();
+        $allAbsen3 = collect();
+        $allDis1 = collect();
+        $allDis2 = collect();
+        $allDis3 = collect();
+        $allPretest = collect();
+        $allPosttest = collect();
+        $allTugas = collect();
+        $allM1 = collect();
+        $allM2 = collect();
+        $allM3 = collect();
+        $allM4 = collect();
+        $allSertifikatMahasiswa = collect();
+
+        /*
         if ($isPendamping) {
             if ($authUser->role === 'kakakpendamping') {
                 $myKelompokIds = Kelompok::where('pendamping_id', $authUser->id)
@@ -137,15 +172,11 @@ class DashboardController extends Controller
                         ->select('id', 'name', 'kelompok_id')
                         ->take(10)
                         ->get();
-            $sertifikatSetting = SertifikatSetting::current();
             $sertifikatCount = User::whereIn('id', $targetUserIds)->whereNotNull('nomor_sertifikat')->count();
             $allSertifikatMahasiswa = User::where('role', 'mahasiswa')->whereIn('id', $targetUserIds)->with('kelompok:id,nama_kelompok')->select('id', 'name', 'id_pendaftar', 'program_studi', 'kelompok_id', 'nomor_sertifikat', 'kelulusan_is_active')->orderBy('name')->take(10)->get();
         } else {
-            $myKelompokNama = null;
-            $myKelompokSlug = null;
             // Global Counts
             $totalMahasiswa = User::where('role', 'mahasiswa')->count();
-            $sertifikatSetting = SertifikatSetting::current();
             $sertifikatCount = User::where('role', 'mahasiswa')->whereNotNull('nomor_sertifikat')->count();
             $allSertifikatMahasiswa = User::where('role', 'mahasiswa')->with('kelompok:id,nama_kelompok')->select('id', 'name', 'id_pendaftar', 'program_studi', 'kelompok_id', 'nomor_sertifikat', 'kelulusan_is_active')->orderBy('name')->take(10)->get();
 
@@ -217,6 +248,7 @@ class DashboardController extends Controller
                         ->take(10)
                         ->get();
         }
+        */
 
         return view('dashboard.index', compact(
             'totalMahasiswa',
