@@ -32,7 +32,7 @@ class DashboardController extends Controller
             ->whereNull('nomor_sertifikat')
             ->select('id', 'nomor_sertifikat', 'sertifikat_issued_at')
             ->orderBy('id')
-            ->limit(100)
+            ->limit(10)
             ->get();
 
         if ($lulusWithoutNomor->isNotEmpty()) {
@@ -101,45 +101,45 @@ class DashboardController extends Controller
             // Complete Snapshots for Kelompok Members
             $recentUsers = User::whereIn('id', $targetUserIds)->latest()->take(5)->get();
 
-            $allAbsen1 = AbsenPertama::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
-            $allAbsen2 = AbsenKedua::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
-            $allAbsen3 = AbsenKetiga::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
+            $allAbsen1 = AbsenPertama::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
+            $allAbsen2 = AbsenKedua::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
+            $allAbsen3 = AbsenKetiga::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
 
-            $allDis1 = KedisiplinanPertama::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
-            $allDis2 = KedisiplinanKedua::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
-            $allDis3 = KedisiplinanKetiga::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
+            $allDis1 = KedisiplinanPertama::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
+            $allDis2 = KedisiplinanKedua::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
+            $allDis3 = KedisiplinanKetiga::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
 
-            $allPretest = HasilTest::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->where('type', 'pretest')->latest()->take(50)->get();
-            $allPosttest = HasilTest::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->where('type', 'posttest')->latest()->take(50)->get();
-            $allTugas = SoalTugasKelompok::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest()->take(50)->get();
+            $allPretest = HasilTest::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->where('type', 'pretest')->latest()->take(10)->get();
+            $allPosttest = HasilTest::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->where('type', 'posttest')->latest()->take(10)->get();
+            $allTugas = SoalTugasKelompok::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->latest()->take(10)->get();
 
             $allM1 = User::whereIn('id', $targetUserIds)
                         ->whereHas('hasilTests', fn($q) => $q->where('modul', 1))
                         ->with(['hasilTests' => fn($q) => $q->where('modul', 1)->select('id', 'user_id', 'modul', 'type', 'skor')])
                         ->select('id', 'name', 'kelompok_id')
-                        ->take(50)
+                        ->take(10)
                         ->get();
             $allM2 = User::whereIn('id', $targetUserIds)
                         ->whereHas('hasilTests', fn($q) => $q->where('modul', 2))
                         ->with(['hasilTests' => fn($q) => $q->where('modul', 2)->select('id', 'user_id', 'modul', 'type', 'skor')])
                         ->select('id', 'name', 'kelompok_id')
-                        ->take(50)
+                        ->take(10)
                         ->get();
             $allM3 = User::whereIn('id', $targetUserIds)
                         ->whereHas('hasilTests', fn($q) => $q->where('modul', 3))
                         ->with(['hasilTests' => fn($q) => $q->where('modul', 3)->select('id', 'user_id', 'modul', 'type', 'skor')])
                         ->select('id', 'name', 'kelompok_id')
-                        ->take(50)
+                        ->take(10)
                         ->get();
             $allM4 = User::whereIn('id', $targetUserIds)
                         ->whereHas('hasilTests', fn($q) => $q->where('modul', 4))
                         ->with(['hasilTests' => fn($q) => $q->where('modul', 4)->select('id', 'user_id', 'modul', 'type', 'skor')])
                         ->select('id', 'name', 'kelompok_id')
-                        ->take(50)
+                        ->take(10)
                         ->get();
             $sertifikatSetting = SertifikatSetting::current();
             $sertifikatCount = User::whereIn('id', $targetUserIds)->whereNotNull('nomor_sertifikat')->count();
-            $allSertifikatMahasiswa = User::where('role', 'mahasiswa')->whereIn('id', $targetUserIds)->with('kelompok:id,nama_kelompok')->select('id', 'name', 'id_pendaftar', 'program_studi', 'kelompok_id', 'nomor_sertifikat', 'kelulusan_is_active')->orderBy('name')->take(50)->get();
+            $allSertifikatMahasiswa = User::where('role', 'mahasiswa')->whereIn('id', $targetUserIds)->with('kelompok:id,nama_kelompok')->select('id', 'name', 'id_pendaftar', 'program_studi', 'kelompok_id', 'nomor_sertifikat', 'kelulusan_is_active')->orderBy('name')->take(10)->get();
         } else {
             $myKelompokNama = null;
             $myKelompokSlug = null;
@@ -147,7 +147,7 @@ class DashboardController extends Controller
             $totalMahasiswa = User::where('role', 'mahasiswa')->count();
             $sertifikatSetting = SertifikatSetting::current();
             $sertifikatCount = User::where('role', 'mahasiswa')->whereNotNull('nomor_sertifikat')->count();
-            $allSertifikatMahasiswa = User::where('role', 'mahasiswa')->with('kelompok:id,nama_kelompok')->select('id', 'name', 'id_pendaftar', 'program_studi', 'kelompok_id', 'nomor_sertifikat', 'kelulusan_is_active')->orderBy('name')->take(50)->get();
+            $allSertifikatMahasiswa = User::where('role', 'mahasiswa')->with('kelompok:id,nama_kelompok')->select('id', 'name', 'id_pendaftar', 'program_studi', 'kelompok_id', 'nomor_sertifikat', 'kelulusan_is_active')->orderBy('name')->take(10)->get();
 
             // Attendance Stats (Hadir if either pagi or sore is filled)
             $absen1 = AbsenPertama::where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen')->count();
@@ -178,43 +178,43 @@ class DashboardController extends Controller
             $recentUsers = User::latest()->take(5)->get();
 
             // Fetch snapshots with limit for fast loading
-            $allAbsen1 = AbsenPertama::with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
-            $allAbsen2 = AbsenKedua::with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
-            $allAbsen3 = AbsenKetiga::with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
+            $allAbsen1 = AbsenPertama::with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
+            $allAbsen2 = AbsenKedua::with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
+            $allAbsen3 = AbsenKetiga::with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
 
             // Fetch Discipline Snapshots
-            $allDis1 = KedisiplinanPertama::with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
-            $allDis2 = KedisiplinanKedua::with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
-            $allDis3 = KedisiplinanKetiga::with('user:id,name,kelompok_id')->latest('updated_at')->take(50)->get();
+            $allDis1 = KedisiplinanPertama::with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
+            $allDis2 = KedisiplinanKedua::with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
+            $allDis3 = KedisiplinanKetiga::with('user:id,name,kelompok_id')->latest('updated_at')->take(10)->get();
 
-            $allPretest = HasilTest::with('user:id,name,kelompok_id')->where('type', 'pretest')->latest()->take(50)->get();
-            $allPosttest = HasilTest::with('user:id,name,kelompok_id')->where('type', 'posttest')->latest()->take(50)->get();
-            $allTugas = SoalTugasKelompok::with('user:id,name,kelompok_id')->latest()->take(50)->get();
+            $allPretest = HasilTest::with('user:id,name,kelompok_id')->where('type', 'pretest')->latest()->take(10)->get();
+            $allPosttest = HasilTest::with('user:id,name,kelompok_id')->where('type', 'posttest')->latest()->take(10)->get();
+            $allTugas = SoalTugasKelompok::with('user:id,name,kelompok_id')->latest()->take(10)->get();
 
             // Specific Module Snapshots
             $allM1 = User::where('role', 'mahasiswa')
                         ->whereHas('hasilTests', fn($q) => $q->where('modul', 1))
                         ->with(['hasilTests' => fn($q) => $q->where('modul', 1)->select('id', 'user_id', 'modul', 'type', 'skor')])
                         ->select('id', 'name', 'kelompok_id')
-                        ->take(50)
+                        ->take(10)
                         ->get();
             $allM2 = User::where('role', 'mahasiswa')
                         ->whereHas('hasilTests', fn($q) => $q->where('modul', 2))
                         ->with(['hasilTests' => fn($q) => $q->where('modul', 2)->select('id', 'user_id', 'modul', 'type', 'skor')])
                         ->select('id', 'name', 'kelompok_id')
-                        ->take(50)
+                        ->take(10)
                         ->get();
             $allM3 = User::where('role', 'mahasiswa')
                         ->whereHas('hasilTests', fn($q) => $q->where('modul', 3))
                         ->with(['hasilTests' => fn($q) => $q->where('modul', 3)->select('id', 'user_id', 'modul', 'type', 'skor')])
                         ->select('id', 'name', 'kelompok_id')
-                        ->take(50)
+                        ->take(10)
                         ->get();
             $allM4 = User::where('role', 'mahasiswa')
                         ->whereHas('hasilTests', fn($q) => $q->where('modul', 4))
                         ->with(['hasilTests' => fn($q) => $q->where('modul', 4)->select('id', 'user_id', 'modul', 'type', 'skor')])
                         ->select('id', 'name', 'kelompok_id')
-                        ->take(50)
+                        ->take(10)
                         ->get();
         }
 
