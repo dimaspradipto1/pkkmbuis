@@ -96,7 +96,28 @@ class KedisiplinanKetigaDataTable extends DataTable
      */
     public function query(KedisiplinanKetiga $model): QueryBuilder
     {
-        $query = $model->newQuery()->with('user');
+        $query = $model->newQuery()->whereHas('user', function($q) {
+            $q->where('role', 'mahasiswa');
+        })->with('user')
+        ->where(function($q) {
+            $q->where(function($sub) {
+                $sub->whereNotNull('kelengkapan_atribut')
+                    ->where('kelengkapan_atribut', '!=', '')
+                    ->where('kelengkapan_atribut', '!=', '-');
+            })->orWhere(function($sub) {
+                $sub->whereNotNull('ketepatan_waktu')
+                    ->where('ketepatan_waktu', '!=', '')
+                    ->where('ketepatan_waktu', '!=', '-');
+            })->orWhere(function($sub) {
+                $sub->whereNotNull('perilaku')
+                    ->where('perilaku', '!=', '')
+                    ->where('perilaku', '!=', '-');
+            })->orWhere(function($sub) {
+                $sub->whereNotNull('catatan')
+                    ->where('catatan', '!=', '')
+                    ->where('catatan', '!=', '-');
+            });
+        });
         
         if (Auth::user()->role == 'mahasiswa') {
             $query->where('user_id', Auth::id());
