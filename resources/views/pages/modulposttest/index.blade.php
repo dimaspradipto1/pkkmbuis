@@ -519,28 +519,23 @@
 
                         <div class="module-list">
                             @foreach ($modules as $m)
-                                @php
-                                    $mActive = $moduleStatuses[$m['id']] ?? true;
-                                @endphp
                                 <a href="?modul={{ $m['id'] }}"
-                                    class="text-decoration-none module-item d-flex align-items-center py-3 {{ $id == $m['id'] ? 'active' : '' }} {{ (!$mActive && $isMahasiswa) ? 'opacity-75' : '' }}">
+                                    class="text-decoration-none module-item d-flex align-items-center py-3 {{ $id == $m['id'] ? 'active' : '' }}">
                                     <div
                                         class="module-number me-3 text-white fw-bold d-flex align-items-center justify-content-center shadow-sm"
-                                        style="{{ !$mActive ? 'background-color: #6c757d !important;' : '' }}">
-                                        @if (!$mActive && $isMahasiswa)
-                                            <i class="bi bi-lock-fill"></i>
-                                        @else
-                                            {{ $m['id'] }}
-                                        @endif
+                                        style="{{ !$m['is_active'] ? 'background-color: #6c757d !important;' : '' }}">
+                                        {{ $m['display_num'] }}
                                     </div>
                                     <div class="flex-grow-1">
                                         <div class="d-flex align-items-center justify-content-between">
                                             <div class="fw-bold text-uppercase module-id" style="font-size: 0.75rem;">MODUL
-                                                {{ $m['id'] }}:</div>
-                                            @if ($mActive)
-                                                <span class="badge bg-success bg-opacity-10 text-success extra-small">Aktif</span>
-                                            @else
-                                                <span class="badge bg-secondary bg-opacity-10 text-secondary extra-small">Tutup</span>
+                                                {{ $m['display_num'] }}:</div>
+                                            @if ($isStaff)
+                                                @if ($m['is_active'])
+                                                    <span class="badge bg-success bg-opacity-10 text-success extra-small">Aktif</span>
+                                                @else
+                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary extra-small">Tutup</span>
+                                                @endif
                                             @endif
                                         </div>
                                         <div class="text-muted module-title" style="font-size: 0.85rem;">
