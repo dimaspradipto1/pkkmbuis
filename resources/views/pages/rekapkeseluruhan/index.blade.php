@@ -19,6 +19,106 @@
     </div>
 
     <section class="section">
+        <!-- Summary Cards: Total Mahasiswa per Komponen -->
+        <div class="row g-3 mb-4">
+            <!-- Card 1: Total Mahasiswa -->
+            <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Total Mahasiswa</span>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(2, 132, 199, 0.1); color: #0284c7;">
+                            <i class="bi bi-people-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-dark my-1">{{ number_format($stats['totalMahasiswa']) }}</h3>
+                    <div class="text-muted extra-small mt-1">
+                        <span class="text-secondary">Mahasiswa Terdaftar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Test (10%) -->
+            <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Selesai Test (10%)</span>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(79, 70, 229, 0.1); color: #4f46e5;">
+                            <i class="bi bi-file-earmark-text-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-dark my-1">{{ number_format($stats['countTest']) }}</h3>
+                    <div class="d-flex align-items-center justify-content-between extra-small mt-1">
+                        <span class="text-muted">{{ $stats['pctTest'] }}% partisipasi</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Tugas (10%) -->
+            <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Kumpul Tugas (10%)</span>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(147, 51, 234, 0.1); color: #9333ea;">
+                            <i class="bi bi-folder-check fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-dark my-1">{{ number_format($stats['countTugas']) }}</h3>
+                    <div class="d-flex align-items-center justify-content-between extra-small mt-1">
+                        <span class="text-muted">{{ $stats['pctTugas'] }}% submit tugas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Kehadiran (50%) -->
+            <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Hadir Absen (50%)</span>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(5, 150, 105, 0.1); color: #059669;">
+                            <i class="bi bi-person-check-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-dark my-1">{{ number_format($stats['countAbsensi']) }}</h3>
+                    <div class="d-flex align-items-center justify-content-between extra-small mt-1">
+                        <span class="text-muted">{{ $stats['pctAbsensi'] }}% kehadiran</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Kedisiplinan (30%) -->
+            <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Disiplin (30%)</span>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(217, 119, 6, 0.1); color: #d97706;">
+                            <i class="bi bi-shield-check fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-dark my-1">{{ number_format($stats['countDisiplin']) }}</h3>
+                    <div class="d-flex align-items-center justify-content-between extra-small mt-1">
+                        <span class="text-muted">{{ $stats['pctDisiplin'] }}% tercatat</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: Kelulusan -->
+            <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Status Kelulusan</span>
+                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: rgba(22, 163, 74, 0.1); color: #16a34a;">
+                            <i class="bi bi-patch-check-fill fs-5"></i>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold text-success my-1">{{ number_format($stats['passedCount']) }}</h3>
+                    <div class="d-flex align-items-center justify-content-between extra-small mt-1">
+                        <span class="text-success fw-semibold">{{ $stats['passRate'] }}% Lulus</span>
+                        <span class="text-muted">({{ $stats['notPassedCount'] }} Belum)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Unified Info Legend -->
         <div class="row">
             <div class="col-12">
