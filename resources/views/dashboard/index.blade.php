@@ -1817,22 +1817,6 @@
                     @else
                         {{-- MAHASISWA VIEW: JOURNEY --}}
                         <div class="col-12">
-                            <div class="card shadow-sm border-0 mb-4 h-auto">
-                                <div class="card-body">
-                                    <h5 class="card-title">Panduan Peserta <span>| PKKMB</span></h5>
-                                    <div class="alert alert-info py-2 small border-0 bg-opacity-10 mb-2"
-                                        style="background: rgba(0, 242, 255, 0.05);">
-                                        <i class="bi bi-info-circle me-2"></i> Gunakan menu <strong>Modul</strong>
-                                        untuk mengakses materi dan mengerjakan pretest/posttest.
-                                    </div>
-                                    <div class="alert alert-success py-2 small border-0 bg-opacity-10"
-                                        style="background: rgba(0, 255, 65, 0.05);">
-                                        <i class="bi bi-check-circle me-2"></i> Pastikan anda sudah melakukan scan
-                                        absensi setiap datang dan pulang.
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="row">
                                 {{-- Timeline Kehadiran --}}
                                 <div class="col-lg-6 col-12">
@@ -2164,7 +2148,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>                          </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
