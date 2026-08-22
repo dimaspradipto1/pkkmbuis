@@ -43,11 +43,11 @@
                                 <h4 class="fw-bold mb-0" style="color: #012970;">{{ $modul_title }}</h4>
                                 @if ($isStaff)
                                     @if ($modul_is_active)
-                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill extra-small">
+                                        <span class="badge bg-success text-white px-3 py-1 rounded-pill extra-small shadow-sm">
                                             <i class="bi bi-unlock-fill me-1"></i> Terbuka (Aktif)
                                         </span>
                                     @else
-                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 rounded-pill extra-small">
+                                        <span class="badge bg-danger text-white px-3 py-1 rounded-pill extra-small shadow-sm">
                                             <i class="bi bi-lock-fill me-1"></i> Ditutup (Nonaktif)
                                         </span>
                                     @endif
@@ -55,13 +55,70 @@
                             </div>
 
                             @if ($isStaff)
-                                <form action="{{ route('modulposttest.toggle-modul', $id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm {{ $modul_is_active ? 'btn-outline-danger' : 'btn-success' }} rounded-pill px-3 fw-bold shadow-sm extra-small">
-                                        <i class="bi {{ $modul_is_active ? 'bi-lock-fill' : 'bi-unlock-fill' }} me-1"></i>
-                                        {{ $modul_is_active ? 'Tutup Akses Modul ' . $id : 'Buka Akses Modul ' . $id }}
-                                    </button>
-                                </form>
+                                <div class="d-flex align-items-center flex-wrap gap-2">
+                                    <div class="dropdown d-inline">
+                                        <button class="btn btn-sm btn-primary rounded-pill px-3 fw-bold shadow-sm dropdown-toggle extra-small" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-sliders me-1"></i> Kontrol Global Massal
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-4 p-2" style="min-width: 260px;">
+                                            <li class="dropdown-header text-uppercase extra-small fw-bold text-muted px-3 py-1">Akses Modul 1-5</li>
+                                            <li>
+                                                <form action="{{ route('modulposttest.toggle-all-modul') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="active" value="1">
+                                                    <button type="submit" class="dropdown-item py-2 text-success small rounded-3 fw-semibold"><i class="bi bi-unlock-fill me-2"></i> Buka Semua Modul (1-5)</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form action="{{ route('modulposttest.toggle-all-modul') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="active" value="0">
+                                                    <button type="submit" class="dropdown-item py-2 text-danger small rounded-3 fw-semibold"><i class="bi bi-lock-fill me-2"></i> Tutup Semua Modul (1-5)</button>
+                                                </form>
+                                            </li>
+                                            <li><hr class="dropdown-divider my-1"></li>
+                                            <li class="dropdown-header text-uppercase extra-small fw-bold text-muted px-3 py-1">Akses Pre-Test 1-4</li>
+                                            <li>
+                                                <form action="{{ route('modulposttest.toggle-all-pretest') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="active" value="1">
+                                                    <button type="submit" class="dropdown-item py-2 text-success small rounded-3 fw-semibold"><i class="bi bi-check-circle-fill me-2"></i> Buka Semua Pre-Test</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form action="{{ route('modulposttest.toggle-all-pretest') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="active" value="0">
+                                                    <button type="submit" class="dropdown-item py-2 text-danger small rounded-3 fw-semibold"><i class="bi bi-x-circle-fill me-2"></i> Tutup Semua Pre-Test</button>
+                                                </form>
+                                            </li>
+                                            <li><hr class="dropdown-divider my-1"></li>
+                                            <li class="dropdown-header text-uppercase extra-small fw-bold text-muted px-3 py-1">Akses Post-Test 1-4</li>
+                                            <li>
+                                                <form action="{{ route('modulposttest.toggle-all-posttest') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="active" value="1">
+                                                    <button type="submit" class="dropdown-item py-2 text-success small rounded-3 fw-semibold"><i class="bi bi-check-circle-fill me-2"></i> Buka Semua Post-Test</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form action="{{ route('modulposttest.toggle-all-posttest') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="active" value="0">
+                                                    <button type="submit" class="dropdown-item py-2 text-danger small rounded-3 fw-semibold"><i class="bi bi-x-circle-fill me-2"></i> Tutup Semua Post-Test</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <form action="{{ route('modulposttest.toggle-modul', $id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm {{ $modul_is_active ? 'btn-outline-danger' : 'btn-success' }} rounded-pill px-3 fw-bold shadow-sm extra-small">
+                                            <i class="bi {{ $modul_is_active ? 'bi-lock-fill' : 'bi-unlock-fill' }} me-1"></i>
+                                            {{ $modul_is_active ? 'Tutup Akses Modul ' . $id : 'Buka Akses Modul ' . $id }}
+                                        </button>
+                                    </form>
+                                </div>
                             @endif
                         </div>
 
@@ -222,6 +279,28 @@
                                 <div class="tab-pane fade {{ $activeTab == 'pretest' ? 'show active' : '' }}" id="pretest" role="tabpanel"
                                     aria-labelledby="pretest-tab">
                                     <div class="py-2">
+                                        @if (Auth::user()->role != 'mahasiswa')
+                                            <div class="alert alert-light border border-warning shadow-sm mb-4 rounded-3 p-3">
+                                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                                    <div>
+                                                        <strong class="text-dark"><i class="bi bi-shield-lock-fill text-warning me-1 fs-5"></i> Status Akses Sesi Pre Test Modul {{ $id }}:</strong>
+                                                        @if ($pretest_is_active)
+                                                            <span class="badge bg-success px-3 py-2 ms-2"><i class="bi bi-check-circle-fill me-1"></i> Sesi DIBUKA (Aktif)</span>
+                                                        @else
+                                                            <span class="badge bg-danger px-3 py-2 ms-2"><i class="bi bi-x-circle-fill me-1"></i> Sesi DITUTUP (Nonaktif)</span>
+                                                        @endif
+                                                    </div>
+                                                    <form action="{{ route('modulposttest.toggle-pretest', $id) }}" method="POST" class="d-inline m-0">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm {{ $pretest_is_active ? 'btn-danger' : 'btn-success' }} px-3 rounded shadow-sm fw-bold">
+                                                            <i class="bi {{ $pretest_is_active ? 'bi-lock-fill' : 'bi-unlock-fill' }} me-1"></i>
+                                                            {{ $pretest_is_active ? 'Tutup Sesi Pre Test' : 'Buka Sesi Pre Test' }}
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @endif
+
                                         <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center mb-3">
                                             <i class="bi bi-info-circle-fill fs-4 me-3 text-danger"></i>
                                             <div>
@@ -240,87 +319,102 @@
                                             </div>
                                         @endif
 
-                                        <form action="{{ route('modulposttest.store') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="modul_id" value="{{ $id }}">
-                                            <input type="hidden" name="type" value="pretest">
-                                            
-                                            @foreach ($questions_pre as $index => $q)
-                                                <div class="mb-4 pb-3 border-bottom last-border-none">
-                                                    <p class="fw-bold mb-3">{{ $index + 1 }}. {{ $q->soal }}</p>
-                                                    <div class="row g-3">
-                                                        @php
-                                                            $saved_jawaban = $hasil_pre ? json_decode($hasil_pre->jawaban, true) : null;
-                                                            $user_ans = $saved_jawaban[$q->id] ?? null;
-                                                        @endphp
-                                                        <div class="col-md-6">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="pre_soal_{{ $q->id }}"
-                                                                    id="q{{ $q->id }}_a" value="A"
-                                                                    {{ $user_ans == 'A' ? 'checked' : '' }}
-                                                                    {{ $hasil_pre ? 'disabled' : 'required' }}>
-                                                                <label class="form-check-label text-muted"
-                                                                    for="q{{ $q->id }}_a">
-                                                                    <span class="fw-bold text-dark">A.</span>
-                                                                    {{ $q->pilihan_a }}
-                                                                </label>
+                                        @if (Auth::user()->role == 'mahasiswa' && !$pretest_is_active && !$hasil_pre)
+                                            <div class="text-center py-5">
+                                                <div class="mb-3">
+                                                    <i class="bi bi-shield-lock-fill text-danger" style="font-size: 4rem;"></i>
+                                                </div>
+                                                <h5 class="fw-bold text-dark mb-2">Sesi Pre Test Modul {{ $display_num }} Belum Aktif</h5>
+                                                <p class="text-muted max-w-lg mx-auto mb-4" style="max-width: 480px;">
+                                                    Sesi Pre Test untuk Modul {{ $display_num }} saat ini sedang ditutup/dinonaktifkan oleh Admin. Silakan tunggu hingga sesi ujian dibuka oleh panitia.
+                                                </p>
+                                                <a href="{{ route('modulposttest.index', ['modul' => $id]) }}" class="btn btn-outline-primary btn-sm px-3 rounded-pill">
+                                                    <i class="bi bi-arrow-clockwise me-1"></i> Muat Ulang Halaman
+                                                </a>
+                                            </div>
+                                        @else
+                                            <form action="{{ route('modulposttest.store') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="modul_id" value="{{ $id }}">
+                                                <input type="hidden" name="type" value="pretest">
+                                                
+                                                @foreach ($questions_pre as $index => $q)
+                                                    <div class="mb-4 pb-3 border-bottom last-border-none">
+                                                        <p class="fw-bold mb-3">{{ $index + 1 }}. {{ $q->soal }}</p>
+                                                        <div class="row g-3">
+                                                            @php
+                                                                $saved_jawaban = $hasil_pre ? json_decode($hasil_pre->jawaban, true) : null;
+                                                                $user_ans = $saved_jawaban[$q->id] ?? null;
+                                                            @endphp
+                                                            <div class="col-md-6">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="pre_soal_{{ $q->id }}"
+                                                                        id="q{{ $q->id }}_a" value="A"
+                                                                        {{ $user_ans == 'A' ? 'checked' : '' }}
+                                                                        {{ $hasil_pre ? 'disabled' : 'required' }}>
+                                                                    <label class="form-check-label text-muted"
+                                                                        for="q{{ $q->id }}_a">
+                                                                        <span class="fw-bold text-dark">A.</span>
+                                                                        {{ $q->pilihan_a }}
+                                                                    </label>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="pre_soal_{{ $q->id }}"
-                                                                    id="q{{ $q->id }}_b" value="B"
-                                                                    {{ $user_ans == 'B' ? 'checked' : '' }}
-                                                                    {{ $hasil_pre ? 'disabled' : 'required' }}>
-                                                                <label class="form-check-label text-muted"
-                                                                    for="q{{ $q->id }}_b">
-                                                                    <span class="fw-bold text-dark">B.</span>
-                                                                    {{ $q->pilihan_b }}
-                                                                </label>
+                                                            <div class="col-md-6">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="pre_soal_{{ $q->id }}"
+                                                                        id="q{{ $q->id }}_b" value="B"
+                                                                        {{ $user_ans == 'B' ? 'checked' : '' }}
+                                                                        {{ $hasil_pre ? 'disabled' : 'required' }}>
+                                                                    <label class="form-check-label text-muted"
+                                                                        for="q{{ $q->id }}_b">
+                                                                        <span class="fw-bold text-dark">B.</span>
+                                                                        {{ $q->pilihan_b }}
+                                                                    </label>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="pre_soal_{{ $q->id }}"
-                                                                    id="q{{ $q->id }}_c" value="C"
-                                                                    {{ $user_ans == 'C' ? 'checked' : '' }}
-                                                                    {{ $hasil_pre ? 'disabled' : 'required' }}>
-                                                                <label class="form-check-label text-muted"
-                                                                    for="q{{ $q->id }}_c">
-                                                                    <span class="fw-bold text-dark">C.</span>
-                                                                    {{ $q->pilihan_c }}
-                                                                </label>
+                                                            <div class="col-md-6">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="pre_soal_{{ $q->id }}"
+                                                                        id="q{{ $q->id }}_c" value="C"
+                                                                        {{ $user_ans == 'C' ? 'checked' : '' }}
+                                                                        {{ $hasil_pre ? 'disabled' : 'required' }}>
+                                                                    <label class="form-check-label text-muted"
+                                                                        for="q{{ $q->id }}_c">
+                                                                        <span class="fw-bold text-dark">C.</span>
+                                                                        {{ $q->pilihan_c }}
+                                                                    </label>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio"
-                                                                    name="pre_soal_{{ $q->id }}"
-                                                                    id="q{{ $q->id }}_d" value="D"
-                                                                    {{ $user_ans == 'D' ? 'checked' : '' }}
-                                                                    {{ $hasil_pre ? 'disabled' : 'required' }}>
-                                                                <label class="form-check-label text-muted"
-                                                                    for="q{{ $q->id }}_d">
-                                                                    <span class="fw-bold text-dark">D.</span>
-                                                                    {{ $q->pilihan_d }}
-                                                                </label>
+                                                            <div class="col-md-6">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="pre_soal_{{ $q->id }}"
+                                                                        id="q{{ $q->id }}_d" value="D"
+                                                                        {{ $user_ans == 'D' ? 'checked' : '' }}
+                                                                        {{ $hasil_pre ? 'disabled' : 'required' }}>
+                                                                    <label class="form-check-label text-muted"
+                                                                        for="q{{ $q->id }}_d">
+                                                                        <span class="fw-bold text-dark">D.</span>
+                                                                        {{ $q->pilihan_d }}
+                                                                    </label>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            @endforeach
-                                            @if (count($questions_pre) == 0)
-                                                <p class="text-center text-muted my-5">Belum ada soal pre test.</p>
-                                            @elseif (!$hasil_pre)
-                                                <div class="text-end mt-4">
-                                                    <button type="submit" class="btn btn-primary px-4">Submit
-                                                        JAWABAN PRE TEST</button>
-                                                </div>
-                                            @endif
-                                        </form>
+                                                @endforeach
+                                                @if (count($questions_pre) == 0)
+                                                    <p class="text-center text-muted my-5">Belum ada soal pre test.</p>
+                                                @elseif (!$hasil_pre)
+                                                    <div class="text-end mt-4">
+                                                        <button type="submit" class="btn btn-primary px-4">Submit
+                                                            JAWABAN PRE TEST</button>
+                                                    </div>
+                                                @endif
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -532,9 +626,9 @@
                                                 {{ $m['display_num'] }}:</div>
                                             @if ($isStaff)
                                                 @if ($m['is_active'])
-                                                    <span class="badge bg-success bg-opacity-10 text-success extra-small">Aktif</span>
+                                                    <span class="badge bg-success text-white extra-small px-2 py-1 rounded-pill shadow-sm">Aktif</span>
                                                 @else
-                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary extra-small">Tutup</span>
+                                                    <span class="badge bg-secondary text-white extra-small px-2 py-1 rounded-pill shadow-sm">Tutup</span>
                                                 @endif
                                             @endif
                                         </div>

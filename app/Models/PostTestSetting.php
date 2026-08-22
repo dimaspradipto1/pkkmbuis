@@ -41,4 +41,14 @@ class PostTestSetting extends Model
 
         return (bool) $setting->is_active;
     }
+
+    public static function setAll(bool $active): void
+    {
+        for ($i = 1; $i <= 4; $i++) {
+            static::updateOrCreate(
+                ['modul' => $i],
+                ['is_active' => $active]
+            );
+        }
+    }
 }

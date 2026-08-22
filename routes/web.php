@@ -190,7 +190,11 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::post('modulposttest/reset', [ModulPostTestController::class, 'reset'])->name('modulposttest.reset');
     Route::post('modulposttest/upload-tugas', [ModulPostTestController::class, 'uploadTugasKelompok'])->name('modulposttest.upload-tugas');
     Route::post('modulposttest/toggle-active/{modul}', [ModulPostTestController::class, 'toggleActive'])->name('modulposttest.toggle-active');
+    Route::post('modulposttest/toggle-pretest/{modul}', [ModulPostTestController::class, 'togglePretestActive'])->name('modulposttest.toggle-pretest');
     Route::post('modulposttest/toggle-modul/{modul}', [ModulPostTestController::class, 'toggleModulActive'])->name('modulposttest.toggle-modul');
+    Route::post('modulposttest/toggle-all-modul', [ModulPostTestController::class, 'toggleAllModul'])->name('modulposttest.toggle-all-modul');
+    Route::post('modulposttest/toggle-all-pretest', [ModulPostTestController::class, 'toggleAllPretest'])->name('modulposttest.toggle-all-pretest');
+    Route::post('modulposttest/toggle-all-posttest', [ModulPostTestController::class, 'toggleAllPosttest'])->name('modulposttest.toggle-all-posttest');
     Route::resource('modulposttest', ModulPostTestController::class);
     Route::resource('dokumen', DokumenController::class);
     Route::get('materimodul/{id}/download/{modul}', [MateriModulController::class, 'download'])->name('materimodul.download');

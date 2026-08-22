@@ -110,7 +110,14 @@ class ModulPostTestController extends Controller
         // Ambil hasil test user jika ada
         $hasil_pre  = HasilTest::where('user_id', Auth::id())->where('modul', $id)->where('type', 'pretest')->first();
         $hasil_post = HasilTest::where('user_id', Auth::id())->where('modul', $id)->where('type', 'posttest')->first();
+        $pretest_is_active  = \App\Models\PreTestSetting::isActive($id);
         $posttest_is_active = \App\Models\PostTestSetting::isActive($id);
+        
+        $allPretestStatuses = \App\Models\PreTestSetting::getAllStatuses();
+        $allPosttestStatuses = [];
+        for ($i = 1; $i <= 4; $i++) {
+            $allPosttestStatuses[$i] = \App\Models\PostTestSetting::isActive($i);
+        }
 
         return view('pages.modulposttest.index', compact(
             'questions_pre',
@@ -125,9 +132,12 @@ class ModulPostTestController extends Controller
             'hasil_pre',
             'hasil_post',
             'tugas_kelompok',
+            'pretest_is_active',
             'posttest_is_active',
             'modul_is_active',
-            'moduleStatuses'
+            'moduleStatuses',
+            'allPretestStatuses',
+            'allPosttestStatuses'
         ));
     }
 
@@ -142,6 +152,16 @@ class ModulPostTestController extends Controller
         if (Auth::user()->role == 'mahasiswa' && !\App\Models\ModulSetting::isActive($modul_id)) {
             Alert::error('Akses Ditolak', "Modul {$modul_id} sedang tidak aktif / ditutup oleh Panitia.");
             return redirect()->back();
+        }
+
+        if (Auth::user()->role == 'mahasiswa' && $type == 'pretest' && !\App\Models\PreTestSetting::isActive($modul_id)) {
+            Alert::error('Sesi Ditutup', "Sesi Pre Test Modul {$modul_id} sedang ditutup oleh Panitia.");
+            return redirect()->back()->with('active_tab', 'pretest');
+        }
+
+        if (Auth::user()->role == 'mahasiswa' && $type == 'posttest' && !\App\Models\PostTestSetting::isActive($modul_id)) {
+            Alert::error('Sesi Ditutup', "Sesi Post Test Modul {$modul_id} sedang ditutup oleh Panitia.");
+            return redirect()->back()->with('active_tab', 'posttest');
         }
 
         if ($modul_id == 5) {
@@ -278,6 +298,26 @@ class ModulPostTestController extends Controller
         return redirect()->back()->with('active_tab', 'posttest');
     }
 
+    public function togglePretestActive($modul)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
+        $modulId = (int) $modul;
+        if ($modulId < 1 || $modulId > 4) {
+            Alert::error('Gagal', 'Modul tidak valid.');
+            return redirect()->back();
+        }
+
+        $isActive = \App\Models\PreTestSetting::toggle($modulId);
+        $statusStr = $isActive ? 'DIBUKA (Aktif)' : 'DITUTUP (Nonaktif)';
+
+        Alert::success('Berhasil', "Sesi Pre Test Modul {$modulId} berhasil {$statusStr}.")->toToast()->autoClose(3000);
+
+        return redirect()->back()->with('active_tab', 'pretest');
+    }
+
     public function toggleModulActive($modul)
     {
         if (Auth::user()->role == 'mahasiswa') {
@@ -296,5 +336,47 @@ class ModulPostTestController extends Controller
         Alert::success('Berhasil', "Akses Modul {$modulId} berhasil {$statusStr}.")->toToast()->autoClose(3000);
 
         return redirect()->back();
+    }
+
+    public function toggleAllModul(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
+        $active = (bool) $request->input('active', true);
+        \App\Models\ModulSetting::setAll($active);
+        $statusStr = $active ? 'DIBUKA SEMUA' : 'DITUTUP SEMUA';
+
+        Alert::success('Berhasil', "Seluruh Modul 1-5 berhasil {$statusStr}.")->toToast()->autoClose(3000);
+        return redirect()->back();
+    }
+
+    public function toggleAllPretest(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
+        $active = (bool) $request->input('active', true);
+        \App\Models\PreTestSetting::setAll($active);
+        $statusStr = $active ? 'DIBUKA SEMUA' : 'DITUTUP SEMUA';
+
+        Alert::success('Berhasil', "Seluruh Sesi Pre Test 1-4 berhasil {$statusStr}.")->toToast()->autoClose(3000);
+        return redirect()->back()->with('active_tab', 'pretest');
+    }
+
+    public function toggleAllPosttest(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
+        $active = (bool) $request->input('active', true);
+        \App\Models\PostTestSetting::setAll($active);
+        $statusStr = $active ? 'DIBUKA SEMUA' : 'DITUTUP SEMUA';
+
+        Alert::success('Berhasil', "Seluruh Sesi Post Test 1-4 berhasil {$statusStr}.")->toToast()->autoClose(3000);
+        return redirect()->back()->with('active_tab', 'posttest');
     }
 }

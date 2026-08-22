@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\File;
 
-class ModulSetting
+class PreTestSetting
 {
-    protected static string $filePath = 'modul_settings.json';
+    protected static string $filePath = 'pretest_settings.json';
 
     public static function getFilePath(): string
     {
@@ -20,20 +20,19 @@ class ModulSetting
             $data = json_decode(File::get($file), true);
             if (is_array($data)) {
                 $result = [];
-                for ($i = 1; $i <= 5; $i++) {
+                for ($i = 1; $i <= 4; $i++) {
                     $result[$i] = isset($data[$i]) ? (bool) $data[$i] : true;
                 }
                 return $result;
             }
         }
 
-        // Default: all modules 1-5 active
+        // Default: all pretests 1-4 active
         return [
             1 => true,
             2 => true,
             3 => true,
             4 => true,
-            5 => true,
         ];
     }
 
@@ -65,7 +64,6 @@ class ModulSetting
             2 => $active,
             3 => $active,
             4 => $active,
-            5 => $active,
         ];
 
         $file = static::getFilePath();
@@ -74,27 +72,5 @@ class ModulSetting
             File::makeDirectory($dir, 0755, true);
         }
         File::put($file, json_encode($statuses, JSON_PRETTY_PRINT));
-    }
-
-    public static function getActivePosttestModules(): array
-    {
-        $statuses = static::getAllStatuses();
-        $active = [];
-        for ($i = 1; $i <= 4; $i++) {
-            if ($statuses[$i] ?? true) {
-                $active[] = $i;
-            }
-        }
-        return $active;
-    }
-
-    public static function getActivePosttestCount(): int
-    {
-        return count(static::getActivePosttestModules());
-    }
-
-    public static function isTugasActive(): bool
-    {
-        return static::isActive(5);
     }
 }
