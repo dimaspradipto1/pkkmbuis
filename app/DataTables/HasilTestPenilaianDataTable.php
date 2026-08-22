@@ -37,7 +37,7 @@ class HasilTestPenilaianDataTable extends DataTable
                 return '<span class="text-muted opacity-50">-</span>';
             })
             ->addColumn('nilai_tes', function ($row) {
-                $activeModules = \App\Models\ModulSetting::getActivePosttestModules();
+                $activeModules = \App\Models\PostTestSetting::getActiveModules();
                 $activeCount = count($activeModules);
                 $isM5Active = \App\Models\ModulSetting::isActive(5);
 

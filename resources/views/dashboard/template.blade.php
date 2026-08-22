@@ -275,6 +275,74 @@
                 width: 90px !important;
                 height: 90px !important;
             }
+
+            /* Evaluasi Form Likert Scale Mobile Optimization */
+            .eval-scale-wrapper {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                grid-template-areas: 
+                    "radios radios"
+                    "left right" !important;
+                gap: 10px !important;
+                background: #f8fafc !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 12px !important;
+                padding: 14px 12px !important;
+                max-width: 100% !important;
+                align-items: center !important;
+                margin: 10px 0 0 0 !important;
+            }
+            .eval-radio-options {
+                grid-area: radios !important;
+                display: flex !important;
+                justify-content: space-around !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 4px !important;
+            }
+            .eval-radio-col {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                min-width: 44px !important;
+                padding: 4px 6px !important;
+                cursor: pointer !important;
+            }
+            .eval-radio-col input[type="radio"] {
+                width: 24px !important;
+                height: 24px !important;
+                cursor: pointer !important;
+                margin: 0 !important;
+                margin-top: 4px !important;
+            }
+            .eval-num {
+                font-size: 1rem !important;
+                font-weight: 700 !important;
+                color: #1e293b !important;
+                margin-bottom: 2px !important;
+            }
+            .eval-scale-label.left {
+                grid-area: left !important;
+                text-align: left !important;
+                width: auto !important;
+                min-width: unset !important;
+                padding: 0 !important;
+                font-size: 0.78rem !important;
+                color: #64748b !important;
+                font-weight: 500 !important;
+            }
+            .eval-scale-label.right {
+                grid-area: right !important;
+                text-align: right !important;
+                width: auto !important;
+                min-width: unset !important;
+                padding: 0 !important;
+                font-size: 0.78rem !important;
+                color: #64748b !important;
+                font-weight: 500 !important;
+            }
         }
         /* Night / Evening Session Button Styles */
         .btn-outline-night {

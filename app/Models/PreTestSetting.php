@@ -73,4 +73,20 @@ class PreTestSetting
         }
         File::put($file, json_encode($statuses, JSON_PRETTY_PRINT));
     }
+
+    public static function getActiveModules(): array
+    {
+        $active = [];
+        for ($i = 1; $i <= 4; $i++) {
+            if (\App\Models\ModulSetting::isActive($i) && static::isActive($i)) {
+                $active[] = $i;
+            }
+        }
+        return $active;
+    }
+
+    public static function getActiveCount(): int
+    {
+        return count(static::getActiveModules());
+    }
 }

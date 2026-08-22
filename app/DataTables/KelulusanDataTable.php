@@ -73,14 +73,14 @@ class KelulusanDataTable extends DataTable
                 return '<span class="badge ' . ($complete ? 'bg-success' : 'bg-warning text-dark') . ' rounded-pill">' . $count . '/3</span>';
             })
             ->addColumn('pretest', function (User $row) {
-                $activeModules = \App\Models\ModulSetting::getActivePosttestModules();
+                $activeModules = \App\Models\PreTestSetting::getActiveModules();
                 $totalActive = count($activeModules);
                 $count = $row->hasilTests->where('type', 'pretest')->whereIn('modul', $activeModules)->pluck('modul')->unique()->count();
                 $complete = ($totalActive === 0) || ($count >= $totalActive);
                 return '<span class="badge ' . ($complete ? 'bg-success' : 'bg-warning text-dark') . ' rounded-pill">' . $count . '/' . $totalActive . '</span>';
             })
             ->addColumn('posttest', function (User $row) {
-                $activeModules = \App\Models\ModulSetting::getActivePosttestModules();
+                $activeModules = \App\Models\PostTestSetting::getActiveModules();
                 $totalActive = count($activeModules);
                 $count = $row->hasilTests->where('type', 'posttest')->whereIn('modul', $activeModules)->pluck('modul')->unique()->count();
                 $complete = ($totalActive === 0) || ($count >= $totalActive);
@@ -171,15 +171,19 @@ class KelulusanDataTable extends DataTable
         }
         $disComplete = $disDayCount >= 3;
 
-        $activeModules = \App\Models\ModulSetting::getActivePosttestModules();
-        $totalActive = count($activeModules);
+        $activePreModules = \App\Models\PreTestSetting::getActiveModules();
+        $totalActivePre = count($activePreModules);
+
+        $activePostModules = \App\Models\PostTestSetting::getActiveModules();
+        $totalActivePost = count($activePostModules);
+
         $isM5Active = \App\Models\ModulSetting::isActive(5);
 
-        $pretestCount = $row->hasilTests->where('type', 'pretest')->whereIn('modul', $activeModules)->pluck('modul')->unique()->count();
-        $pretestComplete = ($totalActive === 0) || ($pretestCount >= $totalActive);
+        $pretestCount = $row->hasilTests->where('type', 'pretest')->whereIn('modul', $activePreModules)->pluck('modul')->unique()->count();
+        $pretestComplete = ($totalActivePre === 0) || ($pretestCount >= $totalActivePre);
 
-        $posttestCount = $row->hasilTests->where('type', 'posttest')->whereIn('modul', $activeModules)->pluck('modul')->unique()->count();
-        $posttestComplete = ($totalActive === 0) || ($posttestCount >= $totalActive);
+        $posttestCount = $row->hasilTests->where('type', 'posttest')->whereIn('modul', $activePostModules)->pluck('modul')->unique()->count();
+        $posttestComplete = ($totalActivePost === 0) || ($posttestCount >= $totalActivePost);
 
         $tugasComplete = !$isM5Active || (bool) $row->tugasKelompok;
 
@@ -191,8 +195,10 @@ class KelulusanDataTable extends DataTable
 
         $isAllComplete = $absComplete && $disComplete && $pretestComplete && $posttestComplete && $tugasComplete && $evaluasiComplete;
 
-        $sumTests = $row->hasilTests->whereIn('modul', $activeModules)->sum('skor') + (($isM5Active && $tugasComplete) ? 100 : 0);
-        $totalTestDenominator = ($totalActive * 2) + ($isM5Active ? 1 : 0); // pre + post + tugas
+        $sumPreTests = $row->hasilTests->where('type', 'pretest')->whereIn('modul', $activePreModules)->sum('skor');
+        $sumPostTests = $row->hasilTests->where('type', 'posttest')->whereIn('modul', $activePostModules)->sum('skor');
+        $sumTests = $sumPreTests + $sumPostTests + (($isM5Active && $tugasComplete) ? 100 : 0);
+        $totalTestDenominator = $totalActivePre + $totalActivePost + ($isM5Active ? 1 : 0); // pre + post + tugas
         $scoreTestsRaw = $totalTestDenominator > 0 ? ($sumTests / $totalTestDenominator) : 0;
         $scoreAbsRaw = ($absCount / 6) * 100;
         $scoreDisRaw = ($disPoints / 9) * 100;

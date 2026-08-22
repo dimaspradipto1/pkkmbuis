@@ -64,15 +64,19 @@ class SertifikatVerifikasiController extends Controller
         }
         $disComplete = $disDayCount >= 3;
 
-        $activePosttestModules = \App\Models\ModulSetting::getActivePosttestModules();
-        $totalActivePosttest = count($activePosttestModules);
+        $activePreModules = \App\Models\PreTestSetting::getActiveModules();
+        $totalActivePre = count($activePreModules);
+
+        $activePostModules = \App\Models\PostTestSetting::getActiveModules();
+        $totalActivePost = count($activePostModules);
+
         $isM5Active = \App\Models\ModulSetting::isActive(5);
 
-        $preCount = HasilTest::where('user_id', $user->id)->where('type', 'pretest')->whereIn('modul', $activePosttestModules)->distinct('modul')->count('modul');
-        $pretestComplete = ($totalActivePosttest === 0) || ($preCount >= $totalActivePosttest);
+        $preCount = HasilTest::where('user_id', $user->id)->where('type', 'pretest')->whereIn('modul', $activePreModules)->distinct('modul')->count('modul');
+        $pretestComplete = ($totalActivePre === 0) || ($preCount >= $totalActivePre);
 
-        $postCount = HasilTest::where('user_id', $user->id)->where('type', 'posttest')->whereIn('modul', $activePosttestModules)->distinct('modul')->count('modul');
-        $posttestComplete = ($totalActivePosttest === 0) || ($postCount >= $totalActivePosttest);
+        $postCount = HasilTest::where('user_id', $user->id)->where('type', 'posttest')->whereIn('modul', $activePostModules)->distinct('modul')->count('modul');
+        $posttestComplete = ($totalActivePost === 0) || ($postCount >= $totalActivePost);
 
         $tugasComplete = !$isM5Active || SoalTugasKelompok::where('user_id', $user->id)->exists();
 

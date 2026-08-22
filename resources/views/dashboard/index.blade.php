@@ -2029,13 +2029,15 @@
                                         <h5 class="card-title mb-0">Rapor & Progress Materi <span>| My Academic
                                                 Ledger</span></h5>
                                         @php
-                                            $activePosttestModules = \App\Models\ModulSetting::getActivePosttestModules();
+                                            $activePretestModules = \App\Models\PreTestSetting::getActiveModules();
+                                            $totalActivePretest = count($activePretestModules);
+                                            $activePosttestModules = \App\Models\PostTestSetting::getActiveModules();
                                             $totalActivePosttest = count($activePosttestModules);
                                             $isM5Active = \App\Models\ModulSetting::isActive(5);
 
                                             $myPretests = \App\Models\HasilTest::where('user_id', Auth::id())
                                                 ->where('type', 'pretest')
-                                                ->whereIn('modul', $activePosttestModules)
+                                                ->whereIn('modul', $activePretestModules)
                                                 ->get();
                                             $myPosttests = \App\Models\HasilTest::where('user_id', Auth::id())
                                                 ->where('type', 'posttest')
@@ -2047,7 +2049,7 @@
                                                 ->get();
 
                                             $isComplete =
-                                                ($totalActivePosttest == 0 || $myPretests->pluck('modul')->unique()->count() >= $totalActivePosttest) &&
+                                                ($totalActivePretest == 0 || $myPretests->pluck('modul')->unique()->count() >= $totalActivePretest) &&
                                                 ($totalActivePosttest == 0 || $myPosttests->pluck('modul')->unique()->count() >= $totalActivePosttest) &&
                                                 (!$isM5Active || $myTugas->count() >= 1);
 
@@ -2072,7 +2074,7 @@
                                                 </h6>
                                                 <div class="d-flex flex-wrap gap-2">
                                                     @php $seqPre = 1; @endphp
-                                                    @forelse ($activePosttestModules as $modId)
+                                                    @forelse ($activePretestModules as $modId)
                                                         @php
                                                             $pRec = $myPretests->firstWhere('modul', $modId);
                                                             $displayNum = $seqPre++;
@@ -2317,15 +2319,18 @@
                                 }
                                 $disComplete = ($disDayCount >= 3);
 
-                                // 3. Pre-Test (Dinamis sesuai modul yang dibuka)
-                                $activePosttestModules = \App\Models\ModulSetting::getActivePosttestModules();
+                                // 3. Pre-Test (Dinamis sesuai sesi pretest modul yang dibuka)
+                                $activePretestModules = \App\Models\PreTestSetting::getActiveModules();
+                                $totalActivePretest = count($activePretestModules);
+
+                                // 4. Post-Test (Dinamis sesuai sesi posttest modul yang dibuka)
+                                $activePosttestModules = \App\Models\PostTestSetting::getActiveModules();
                                 $totalActivePosttest = count($activePosttestModules);
                                 $isM5Active = \App\Models\ModulSetting::isActive(5);
 
-                                $pretestCountUser = \App\Models\HasilTest::where('user_id', $userId)->where('type', 'pretest')->whereIn('modul', $activePosttestModules)->distinct('modul')->count();
-                                $pretestComplete = ($totalActivePosttest == 0) || ($pretestCountUser >= $totalActivePosttest);
+                                $pretestCountUser = \App\Models\HasilTest::where('user_id', $userId)->where('type', 'pretest')->whereIn('modul', $activePretestModules)->distinct('modul')->count();
+                                $pretestComplete = ($totalActivePretest == 0) || ($pretestCountUser >= $totalActivePretest);
 
-                                // 4. Post-Test (Dinamis sesuai modul yang dibuka)
                                 $posttestCountUser = \App\Models\HasilTest::where('user_id', $userId)->where('type', 'posttest')->whereIn('modul', $activePosttestModules)->distinct('modul')->count();
                                 $posttestComplete = ($totalActivePosttest == 0) || ($posttestCountUser >= $totalActivePosttest);
 
@@ -2612,7 +2617,7 @@
                                     <div class="d-flex justify-content-between align-items-center mb-2 small">
                                         <span><i class="bi bi-pencil-square me-2 {{ $pretestComplete ? 'text-success' : 'text-muted' }}"></i> Ujian Pre-Test</span>
                                         <span class="badge {{ $pretestComplete ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-2 py-1" style="font-size: 0.75rem;">
-                                            {{ $pretestCountUser }}/{{ $totalActivePosttest }} Tes {!! $pretestComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
+                                            {{ $pretestCountUser }}/{{ $totalActivePretest }} Tes {!! $pretestComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
                                         </span>
                                     </div>
 

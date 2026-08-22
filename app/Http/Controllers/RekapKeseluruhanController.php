@@ -36,7 +36,7 @@ class RekapKeseluruhanController extends Controller
         $countDisiplin = 0;
         $passedCount = 0;
 
-        $activePosttestModules = \App\Models\ModulSetting::getActivePosttestModules();
+        $activePosttestModules = \App\Models\PostTestSetting::getActiveModules();
         $activePosttestCount = count($activePosttestModules);
 
         foreach ($students as $row) {
