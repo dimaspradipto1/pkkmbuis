@@ -103,9 +103,15 @@
 @endsection
 
 @push('scripts')
-    {!! $absensiTable->scripts() !!}
-    {!! $kedisiplinanTable->scripts() !!}
-    {!! $penilaianTable->scripts() !!}
+    @if(app()->environment('production'))
+        {!! str_replace('http:', 'https:', $absensiTable->scripts()) !!}
+        {!! str_replace('http:', 'https:', $kedisiplinanTable->scripts()) !!}
+        {!! str_replace('http:', 'https:', $penilaianTable->scripts()) !!}
+    @else
+        {!! $absensiTable->scripts() !!}
+        {!! $kedisiplinanTable->scripts() !!}
+        {!! $penilaianTable->scripts() !!}
+    @endif
     <script>
         $(document).ready(function() {
             const tableId = '#penilaian-table';

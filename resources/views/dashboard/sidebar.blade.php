@@ -234,6 +234,62 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link {{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'pretest') ? '' : 'collapsed' }}" data-bs-target="#hasil-pretest-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-clipboard2-data-fill"></i><span>Hasil Pretest</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="hasil-pretest-nav" class="nav-content collapse {{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'pretest') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('hasiltest.modul', ['type' => 'pretest', 'modul' => 1]) }}" class="{{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'pretest' && request()->route('modul') == 1) ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Pretest Modul 1</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('hasiltest.modul', ['type' => 'pretest', 'modul' => 2]) }}" class="{{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'pretest' && request()->route('modul') == 2) ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Pretest Modul 2</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('hasiltest.modul', ['type' => 'pretest', 'modul' => 3]) }}" class="{{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'pretest' && request()->route('modul') == 3) ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Pretest Modul 3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('hasiltest.modul', ['type' => 'pretest', 'modul' => 4]) }}" class="{{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'pretest' && request()->route('modul') == 4) ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Pretest Modul 4</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'posttest') ? '' : 'collapsed' }}" data-bs-target="#hasil-posttest-nav" data-bs-toggle="collapse" href="#">
+                    <i class="bi bi-clipboard2-check-fill"></i><span>Hasil Posttest</span><i class="bi bi-chevron-down ms-auto"></i>
+                </a>
+                <ul id="hasil-posttest-nav" class="nav-content collapse {{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'posttest') ? 'show' : '' }}" data-bs-parent="#sidebar-nav">
+                    <li>
+                        <a href="{{ route('hasiltest.modul', ['type' => 'posttest', 'modul' => 1]) }}" class="{{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'posttest' && request()->route('modul') == 1) ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Posttest Modul 1</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('hasiltest.modul', ['type' => 'posttest', 'modul' => 2]) }}" class="{{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'posttest' && request()->route('modul') == 2) ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Posttest Modul 2</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('hasiltest.modul', ['type' => 'posttest', 'modul' => 3]) }}" class="{{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'posttest' && request()->route('modul') == 3) ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Posttest Modul 3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('hasiltest.modul', ['type' => 'posttest', 'modul' => 4]) }}" class="{{ (request()->routeIs('hasiltest.modul') && request()->route('type') === 'posttest' && request()->route('modul') == 4) ? 'active' : '' }}">
+                            <i class="bi bi-circle"></i><span>Posttest Modul 4</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('soaltugaskelompok.*') ? '' : 'collapsed' }}" href="{{ route('soaltugaskelompok.index') }}">
                     <i class="bi bi-book-half"></i>
                     <span>Tugas Modul 5</span>

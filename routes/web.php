@@ -87,6 +87,10 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::post('kelulusan/bulk-toggle', [\App\Http\Controllers\KelulusanController::class, 'bulkToggle'])->name('kelulusan.bulkToggle');
     Route::get('hasiltest/export', [HasilTestController::class, 'export'])->name('hasiltest.export');
     Route::post('hasiltest/bulk-reset', [HasilTestController::class, 'bulkReset'])->name('hasiltest.bulkReset');
+    Route::post('hasiltest/bulk-reset-modul', [HasilTestController::class, 'bulkResetModul'])->name('hasiltest.bulkResetModul');
+    Route::delete('hasiltest/{id}/reset-single', [HasilTestController::class, 'resetSingle'])->name('hasiltest.resetSingle');
+    Route::get('hasiltest/{type}/{modul}/export', [HasilTestController::class, 'exportModul'])->name('hasiltest.exportModul');
+    Route::get('hasiltest/{type}/{modul}', [HasilTestController::class, 'showModul'])->name('hasiltest.modul');
     Route::post('hasiltest/user-reset/{user}', [HasilTestController::class, 'resetByUser'])->name('hasiltest.resetByUser');
     Route::resource('hasiltest', HasilTestController::class);
 
