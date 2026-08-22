@@ -148,7 +148,8 @@ class DashboardController extends Controller
                 $disiplinCount = $disiplinUserIds->count();
 
                 $tugasCount = SoalTugasKelompok::whereIn('user_id', $targetUserIds)
-                    ->where(fn($q) => $q->whereNotNull('link_tugas')->orWhereNotNull('file_tugas'))
+                    ->whereNotNull('link_tugas')
+                    ->where('link_tugas', '!=', '')
                     ->distinct('user_id')
                     ->count('user_id');
                 $hasilTestTuntasCount = HasilTest::where('skor', '>=', 65)->whereIn('user_id', $targetUserIds)->distinct('user_id')->count('user_id');
@@ -198,7 +199,8 @@ class DashboardController extends Controller
                 $allPretest = HasilTest::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->where('type', 'pretest')->latest()->take(10)->get();
                 $allPosttest = HasilTest::whereIn('user_id', $targetUserIds)->with('user:id,name,kelompok_id')->where('type', 'posttest')->latest()->take(10)->get();
                 $allTugas = SoalTugasKelompok::whereIn('user_id', $targetUserIds)
-                    ->where(fn($q) => $q->whereNotNull('link_tugas')->orWhereNotNull('file_tugas'))
+                    ->whereNotNull('link_tugas')
+                    ->where('link_tugas', '!=', '')
                     ->with('user:id,name,kelompok_id')
                     ->latest('updated_at')
                     ->take(10)
@@ -305,7 +307,7 @@ class DashboardController extends Controller
 
             $pretestCount = HasilTest::where('type', 'pretest')->distinct('user_id')->count('user_id');
             $posttestCount = HasilTest::where('type', 'posttest')->distinct('user_id')->count('user_id');
-            $tugasCount = SoalTugasKelompok::where(fn($q) => $q->whereNotNull('link_tugas')->orWhereNotNull('file_tugas'))->distinct('user_id')->count('user_id');
+            $tugasCount = SoalTugasKelompok::whereNotNull('link_tugas')->where('link_tugas', '!=', '')->distinct('user_id')->count('user_id');
             $hasilTestTuntasCount = HasilTest::where('skor', '>=', 65)->distinct('user_id')->count('user_id');
 
             // Complete Snapshots
@@ -345,7 +347,7 @@ class DashboardController extends Controller
 
             $allPretest = HasilTest::with('user:id,name,kelompok_id')->where('type', 'pretest')->latest()->take(10)->get();
             $allPosttest = HasilTest::with('user:id,name,kelompok_id')->where('type', 'posttest')->latest()->take(10)->get();
-            $allTugas = SoalTugasKelompok::where(fn($q) => $q->whereNotNull('link_tugas')->orWhereNotNull('file_tugas'))
+            $allTugas = SoalTugasKelompok::whereNotNull('link_tugas')->where('link_tugas', '!=', '')
                 ->with('user:id,name,kelompok_id')
                 ->latest('updated_at')
                 ->take(10)
