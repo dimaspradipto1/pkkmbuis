@@ -11,23 +11,19 @@ use RealRashid\SweetAlert\Facades\Alert;
 class EvaluasiMenuController extends Controller
 {
     protected static array $menuModelMap = [
-        1  => \App\Models\EvaluasiPengenalanWawasanIbnuSina::class,
-        2  => \App\Models\EvaluasiPelayananKemahasiswaanPusatPrestasi::class,
-        3  => \App\Models\EvaluasiPelayanansistemAkademik::class,
-        4  => \App\Models\EvaluasiPelayanansistemAdministrasiKeuangan::class,
-        5  => \App\Models\EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegara::class,
-        6  => \App\Models\EvaluasiSistemPendidikanTinggidiIndonesia::class,
-        7  => \App\Models\EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri::class,
-        8  => \App\Models\EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkungan::class,
-        9  => \App\Models\Perpustakaan::class,
-        10 => \App\Models\EvaluasiIkaUis::class,
-        11 => \App\Models\EvaluasiKewirausahaan::class,
-        12 => \App\Models\EvaluasiPencarianBakatMahasiswa::class,
-        13 => \App\Models\EvaluasiMotivasiWaliKotaBatam::class,
-        14 => \App\Models\EvaluasiMotivasiGubernurKepulauanRiau::class,
-        15 => \App\Models\EvaluasiFikes::class,
-        16 => \App\Models\EvaluasiFst::class,
-        17 => \App\Models\EvaluasiFeb::class,
+        1  => \App\Models\EvaluasiPelayananKemahasiswaanPusatPrestasi::class,
+        2  => \App\Models\EvaluasiPelayanansistemAkademik::class,
+        3  => \App\Models\EvaluasiPelayanansistemAdministrasiKeuangan::class,
+        4  => \App\Models\EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegara::class,
+        5  => \App\Models\EvaluasiSistemPendidikanTinggidiIndonesia::class,
+        6  => \App\Models\EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri::class,
+        7  => \App\Models\EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkungan::class,
+        8  => \App\Models\Perpustakaan::class,
+        9  => \App\Models\EvaluasiIkaUis::class,
+        10 => \App\Models\EvaluasiMotivasiGubernurKepulauanRiau::class,
+        11 => \App\Models\EvaluasiFikes::class,
+        12 => \App\Models\EvaluasiFst::class,
+        13 => \App\Models\EvaluasiFeb::class,
     ];
 
     public function index()
@@ -36,7 +32,7 @@ class EvaluasiMenuController extends Controller
             abort(403);
         }
 
-        $menus = EvaluasiMenu::orderBy('nomor')->get();
+        $menus = EvaluasiMenu::available()->orderBy('nomor')->get();
         return view('pages.evaluasimenu.index', compact('menus'));
     }
 
@@ -48,10 +44,10 @@ class EvaluasiMenuController extends Controller
 
         $action = $request->input('action');
         if ($action === 'enable_all') {
-            EvaluasiMenu::query()->update(['is_active' => true]);
+            EvaluasiMenu::available()->update(['is_active' => true]);
             Alert::success('Berhasil', 'Seluruh menu evaluasi berhasil dibuka / diaktifkan untuk mahasiswa.')->toToast()->autoClose(3000);
         } elseif ($action === 'disable_all') {
-            EvaluasiMenu::query()->update(['is_active' => false]);
+            EvaluasiMenu::available()->update(['is_active' => false]);
             Alert::success('Berhasil', 'Seluruh menu evaluasi berhasil ditutup / dinonaktifkan untuk mahasiswa.')->toToast()->autoClose(3000);
         }
 
@@ -81,7 +77,7 @@ class EvaluasiMenuController extends Controller
         }
 
         $menu = EvaluasiMenu::findOrFail($id);
-        $modelClass = static::$menuModelMap[$menu->nomor] ?? null;
+        $modelClass = $menu->model_class;
 
         if (!$modelClass || !method_exists($modelClass, 'questions')) {
             Alert::error('Gagal', 'Model evaluasi tidak ditemukan.')->toToast()->autoClose(3000);

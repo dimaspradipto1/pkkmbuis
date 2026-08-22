@@ -83,9 +83,9 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
             <i class="bi bi-table text-primary"></i>
-            Tabel 1: Rekapitulasi Tingkat Capaian Responden (TCR %) Pemateri & Isi Materi (M1 s.d. M17)
+            Tabel 1: Rekapitulasi Tingkat Capaian Responden (TCR %) Pemateri & Isi Materi (M1 s.d. M{{ count($modules) }})
         </h5>
-        <button onclick="downloadTableAsPNG('tabel1Card', 'Tabel_1_Rekapitulasi_Pemateri_M1_M17')" class="btn btn-outline-primary btn-sm rounded-pill px-3 no-print">
+        <button onclick="downloadTableAsPNG('tabel1Card', 'Tabel_1_Rekapitulasi_Pemateri_M1_M{{ count($modules) }}')" class="btn btn-outline-primary btn-sm rounded-pill px-3 no-print">
             <i class="bi bi-download me-1"></i> Download PNG
         </button>
     </div>
@@ -97,7 +97,7 @@
                     <th rowspan="2" style="width: 35px;">No</th>
                     <th rowspan="2" style="width: 90px;">Indikator</th>
                     <th rowspan="2" style="min-width: 260px;">Item Pertanyaan</th>
-                    <th colspan="17">TCR (%) Module Pemateri (M1 s.d. M17)</th>
+                    <th colspan="{{ count($modules) }}">TCR (%) Module Pemateri (M1 s.d. M{{ count($modules) }})</th>
                 </tr>
                 <tr>
                     @foreach($modules as $m)
@@ -157,7 +157,7 @@
                 {{-- Overall Summary Row Table 1 --}}
                 <tr style="background-color: #e0f2fe; font-size: 0.9rem;">
                     <td colspan="3" class="text-end fw-bold text-dark">Rata-Rata TCR Keseluruhan Pemateri:</td>
-                    <td colspan="17" class="fw-bold text-dark text-start ps-3">
+                    <td colspan="{{ count($modules) }}" class="fw-bold text-dark text-start ps-3">
                         <span class="fs-6 text-primary me-3">{{ number_format($overallTcrTable1, 2, ',', '.') }}%</span>
                         Kategori: <span class="tcr-badge tcr-sangat-baik ms-1 fs-6">{{ $overallKatTable1 }}</span>
                     </td>
@@ -254,15 +254,15 @@
         </div>
     </div>
 
-    {{-- Chart 2: Grafik 3D TCR Pemateri (M1 s.d. M17) --}}
+    {{-- Chart 2: Grafik 3D TCR Pemateri (M1 s.d. M13) --}}
     <div class="col-lg-12">
         <div class="rekap-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
                     <i class="bi bi-box-seam-fill text-success"></i>
-                    Grafik 3D Evaluasi TCR Pemateri (M1 s.d. M17)
+                    Grafik 3D Evaluasi TCR Pemateri (M1 s.d. M{{ count($modules) }})
                 </h5>
-                <button onclick="download3DChart(chartPemateri3D, 'Grafik_3D_TCR_Pemateri_M1_M17')" class="btn btn-outline-success btn-sm rounded-pill px-3 no-print">
+                <button onclick="download3DChart(chartPemateri3D, 'Grafik_3D_TCR_Pemateri_M1_M{{ count($modules) }}')" class="btn btn-outline-success btn-sm rounded-pill px-3 no-print">
                     <i class="bi bi-download me-1"></i> Download PNG (3D)
                 </button>
             </div>
@@ -470,11 +470,11 @@
             backgroundColor: '#ffffff'
         },
         title: {
-            text: 'Rata-Rata TCR Pemateri (M1 s.d. M17)',
+            text: 'Rata-Rata TCR Pemateri (M1 s.d. M{{ count($modules) }})',
             style: { fontSize: '18px', fontWeight: 'bold', fontFamily: 'Poppins, sans-serif', color: '#0f172a' }
         },
         subtitle: {
-            text: 'Evaluasi Pemateri M1 s.d. M17'
+            text: 'Evaluasi Pemateri M1 s.d. M{{ count($modules) }}'
         },
         xAxis: {
             categories: labelsChart2,

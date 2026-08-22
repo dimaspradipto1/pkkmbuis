@@ -18,35 +18,31 @@ class KelulusanDataTable extends DataTable
      * and the student-facing card always agree.
      */
     protected array $evaluasiMap = [
-        1 => \App\Models\EvaluasiPengenalanWawasanIbnuSina::class,
-        2 => \App\Models\EvaluasiPelayananKemahasiswaanPusatPrestasi::class,
-        3 => \App\Models\EvaluasiPelayanansistemAkademik::class,
-        4 => \App\Models\EvaluasiPelayanansistemAdministrasiKeuangan::class,
-        5 => \App\Models\EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegara::class,
-        6 => \App\Models\EvaluasiSistemPendidikanTinggidiIndonesia::class,
-        7 => \App\Models\EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri::class,
-        8 => \App\Models\EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkungan::class,
-        9 => \App\Models\Perpustakaan::class,
-        10 => \App\Models\EvaluasiIkaUis::class,
-        11 => \App\Models\EvaluasiKewirausahaan::class,
-        12 => \App\Models\EvaluasiPencarianBakatMahasiswa::class,
-        13 => \App\Models\EvaluasiMotivasiWaliKotaBatam::class,
-        14 => \App\Models\EvaluasiMotivasiGubernurKepulauanRiau::class,
-        15 => \App\Models\EvaluasiFikes::class,
-        16 => \App\Models\EvaluasiFst::class,
-        17 => \App\Models\EvaluasiFeb::class,
+        1  => \App\Models\EvaluasiPelayananKemahasiswaanPusatPrestasi::class,
+        2  => \App\Models\EvaluasiPelayanansistemAkademik::class,
+        3  => \App\Models\EvaluasiPelayanansistemAdministrasiKeuangan::class,
+        4  => \App\Models\EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegara::class,
+        5  => \App\Models\EvaluasiSistemPendidikanTinggidiIndonesia::class,
+        6  => \App\Models\EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri::class,
+        7  => \App\Models\EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkungan::class,
+        8  => \App\Models\Perpustakaan::class,
+        9  => \App\Models\EvaluasiIkaUis::class,
+        10 => \App\Models\EvaluasiMotivasiGubernurKepulauanRiau::class,
+        11 => \App\Models\EvaluasiFikes::class,
+        12 => \App\Models\EvaluasiFst::class,
+        13 => \App\Models\EvaluasiFeb::class,
     ];
 
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        $activeMenus = EvaluasiMenu::where('is_active', true)->get();
+        $activeMenus = EvaluasiMenu::available()->where('is_active', true)->get();
         $requiredEvaluasiTotal = $activeMenus->count();
 
         // One query per active evaluasi model instead of one per student row.
         $completedUserIdSets = [];
         foreach ($activeMenus as $menu) {
-            if (isset($this->evaluasiMap[$menu->nomor])) {
-                $modelClass = $this->evaluasiMap[$menu->nomor];
+            $modelClass = $menu->model_class;
+            if ($modelClass) {
                 $completedUserIdSets[] = $modelClass::pluck('user_id')->flip();
             }
         }

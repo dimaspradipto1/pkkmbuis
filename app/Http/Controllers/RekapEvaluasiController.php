@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EvaluasiPengenalanWawasanIbnuSina;
 use App\Models\EvaluasiPelayananKemahasiswaanPusatPrestasi;
 use App\Models\EvaluasiPelayanansistemAkademik;
 use App\Models\EvaluasiPelayanansistemAdministrasiKeuangan;
@@ -12,9 +11,6 @@ use App\Models\EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri;
 use App\Models\EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkungan;
 use App\Models\Perpustakaan;
 use App\Models\EvaluasiIkaUis;
-use App\Models\EvaluasiKewirausahaan;
-use App\Models\EvaluasiPencarianBakatMahasiswa;
-use App\Models\EvaluasiMotivasiWaliKotaBatam;
 use App\Models\EvaluasiMotivasiGubernurKepulauanRiau;
 use App\Models\EvaluasiFikes;
 use App\Models\EvaluasiFst;
@@ -30,25 +26,21 @@ class RekapEvaluasiController extends Controller
             abort(403, 'Akses khusus administrator.');
         }
 
-        // List of 17 Modules (M1 to M17)
+        // List of 13 Modules (M1 to M13)
         $modules = [
-            ['code' => 'M1',  'name' => 'Pengenalan Wawasan Ibnu Sina', 'model' => EvaluasiPengenalanWawasanIbnuSina::class],
-            ['code' => 'M2',  'name' => 'Pelayanan Kemahasiswaan Pusat Prestasi', 'model' => EvaluasiPelayananKemahasiswaanPusatPrestasi::class],
-            ['code' => 'M3',  'name' => 'Pelayanan Sistem Akademik', 'model' => EvaluasiPelayanansistemAkademik::class],
-            ['code' => 'M4',  'name' => 'Pelayanan Administrasi Keuangan', 'model' => EvaluasiPelayanansistemAdministrasiKeuangan::class],
-            ['code' => 'M5',  'name' => 'Bela Negara', 'model' => EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegara::class],
-            ['code' => 'M6',  'name' => 'Sistem Pendidikan Tinggi di Indonesia', 'model' => EvaluasiSistemPendidikanTinggidiIndonesia::class],
-            ['code' => 'M7',  'name' => 'Pendidikan Tinggi Era Digital', 'model' => EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri::class],
-            ['code' => 'M8',  'name' => 'K3L', 'model' => EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkungan::class],
-            ['code' => 'M9',  'name' => 'Perpustakaan', 'model' => Perpustakaan::class],
-            ['code' => 'M10', 'name' => 'IKA UIS', 'model' => EvaluasiIkaUis::class],
-            ['code' => 'M11', 'name' => 'Kewirausahaan', 'model' => EvaluasiKewirausahaan::class],
-            ['code' => 'M12', 'name' => 'Pencarian Bakat Mahasiswa', 'model' => EvaluasiPencarianBakatMahasiswa::class],
-            ['code' => 'M13', 'name' => 'Motivasi Wali Kota Batam', 'model' => EvaluasiMotivasiWaliKotaBatam::class],
-            ['code' => 'M14', 'name' => 'Motivasi Gubernur Kepri', 'model' => EvaluasiMotivasiGubernurKepulauanRiau::class],
-            ['code' => 'M15', 'name' => 'FIKes', 'model' => EvaluasiFikes::class],
-            ['code' => 'M16', 'name' => 'FST', 'model' => EvaluasiFst::class],
-            ['code' => 'M17', 'name' => 'FEB', 'model' => EvaluasiFeb::class],
+            ['code' => 'M1',  'name' => 'Pelayanan Kemahasiswaan Pusat Prestasi', 'model' => EvaluasiPelayananKemahasiswaanPusatPrestasi::class],
+            ['code' => 'M2',  'name' => 'Pelayanan Sistem Akademik', 'model' => EvaluasiPelayanansistemAkademik::class],
+            ['code' => 'M3',  'name' => 'Pelayanan Administrasi Keuangan', 'model' => EvaluasiPelayanansistemAdministrasiKeuangan::class],
+            ['code' => 'M4',  'name' => 'Bela Negara', 'model' => EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegara::class],
+            ['code' => 'M5',  'name' => 'Sistem Pendidikan Tinggi di Indonesia', 'model' => EvaluasiSistemPendidikanTinggidiIndonesia::class],
+            ['code' => 'M6',  'name' => 'Pendidikan Tinggi Era Digital', 'model' => EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri::class],
+            ['code' => 'M7',  'name' => 'K3L', 'model' => EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkungan::class],
+            ['code' => 'M8',  'name' => 'Perpustakaan', 'model' => Perpustakaan::class],
+            ['code' => 'M9',  'name' => 'IKA UIS', 'model' => EvaluasiIkaUis::class],
+            ['code' => 'M10', 'name' => 'Motivasi Gubernur Kepri', 'model' => EvaluasiMotivasiGubernurKepulauanRiau::class],
+            ['code' => 'M11', 'name' => 'FIKes', 'model' => EvaluasiFikes::class],
+            ['code' => 'M12', 'name' => 'FST', 'model' => EvaluasiFst::class],
+            ['code' => 'M13', 'name' => 'FEB', 'model' => EvaluasiFeb::class],
         ];
 
         // 5 Item Questions for Table 1 (Pemateri & Materi)

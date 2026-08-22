@@ -62,10 +62,10 @@
                             <tbody>
                                 @foreach($menus as $menu)
                                     <tr>
-                                        <td class="text-center font-monospace fw-bold">{{ $menu->nomor }}</td>
+                                        <td class="text-center font-monospace fw-bold">{{ $loop->iteration }}</td>
                                         <td>
                                             <span class="{{ $menu->is_active ? 'fw-bold text-primary' : 'text-secondary' }}">
-                                                {{ $menu->nama }}
+                                                {{ $loop->iteration }}. {{ $menu->clean_nama }}
                                             </span>
                                         </td>
                                         <td class="text-center">

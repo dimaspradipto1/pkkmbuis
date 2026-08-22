@@ -101,7 +101,7 @@
 
             @if ($canSeeEvaluasi)
                 @php
-                    $evaluasiMenus = \App\Models\EvaluasiMenu::orderBy('nomor')->get();
+                    $evaluasiMenus = \App\Models\EvaluasiMenu::available()->orderBy('nomor')->get();
                 @endphp
                 <li class="nav-item">
                     <a class="nav-link {{ (request()->routeIs('evaluasi*') || request()->routeIs('perpustakaan*')) ? '' : 'collapsed' }}" data-bs-target="#evaluasi" data-bs-toggle="collapse" href="#">
@@ -113,11 +113,11 @@
                                 <li>
                                     @if ($menu->is_active && $menu->route_name && Route::has($menu->route_name))
                                         <a href="{{ route($menu->route_name) }}" class="{{ request()->routeIs($menu->route_name . '*') ? 'active' : '' }}">
-                                            <i class="bi bi-circle"></i><span>{{ $menu->nama }}</span>
+                                            <i class="bi bi-circle"></i><span>{{ $loop->iteration }}. {{ $menu->clean_nama }}</span>
                                         </a>
                                     @else
                                         <a href="javascript:void(0)" class="text-muted" style="{{ !$menu->is_active ? 'opacity: 0.6;' : '' }}">
-                                            <i class="bi bi-circle"></i><span>{{ $menu->nama }}</span>
+                                            <i class="bi bi-circle"></i><span>{{ $loop->iteration }}. {{ $menu->clean_nama }}</span>
                                             @if (Auth::user()->role != 'mahasiswa' && !$menu->is_active)
                                                 <span class="badge bg-secondary ms-1" style="font-size: 0.65rem;">Non-aktif</span>
                                             @endif
