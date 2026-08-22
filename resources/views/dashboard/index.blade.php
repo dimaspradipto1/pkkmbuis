@@ -740,15 +740,20 @@
                 {{-- Total Kehadiran --}}
                 <div class="col-12 col-sm-6 col-xl-3">
                     <div class="card border-0 shadow-sm rounded-4 h-100 p-3" style="background: linear-gradient(135deg, #ffffff, #f0f9ff); border-left: 4px solid #0284c7 !important;">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div>
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div class="w-100 pe-2">
                                 <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Presensi Kehadiran</span>
-                                <h3 class="fw-bold text-dark mb-0 mt-1">{{ number_format($totalPresensi ?? ($absenDatang + $absenPulang)) }}</h3>
-                                <span class="text-muted extra-small mt-1 d-block">
-                                    Datang: <b>{{ $absenDatang ?? 0 }}</b> | Pulang: <b>{{ $absenPulang ?? 0 }}</b>
-                                </span>
+                                <div class="d-flex align-items-baseline gap-2 mt-1">
+                                    <h3 class="fw-bold text-dark mb-0">{{ number_format($totalPresensi ?? ($absenDatang + $absenPulang)) }}</h3>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary extra-small fw-semibold py-1">6 Sesi</span>
+                                </div>
+                                <div class="mt-2 pt-1 border-top border-light extra-small text-muted" style="font-size: 0.72rem; line-height: 1.4;">
+                                    <div>H1: <b>{{ $absenDatang1 ?? 0 }}</b> Datang &bull; <b>{{ $absenPulang1 ?? 0 }}</b> Pulang</div>
+                                    <div>H2: <b>{{ $absenDatang2 ?? 0 }}</b> Datang &bull; <b>{{ $absenPulang2 ?? 0 }}</b> Pulang</div>
+                                    <div>H3: <b>{{ $absenDatang3 ?? 0 }}</b> Datang &bull; <b>{{ $absenPulang3 ?? 0 }}</b> Pulang</div>
+                                </div>
                             </div>
-                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff;">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm flex-shrink-0 mt-1" style="width: 44px; height: 44px; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff;">
                                 <i class="bi bi-calendar-check-fill fs-5"></i>
                             </div>
                         </div>
