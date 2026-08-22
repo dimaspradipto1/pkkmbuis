@@ -64,9 +64,17 @@ class SertifikatVerifikasiController extends Controller
         }
         $disComplete = $disDayCount >= 3;
 
-        $pretestComplete = HasilTest::where('user_id', $user->id)->where('type', 'pretest')->distinct('modul')->count('modul') >= 4;
-        $posttestComplete = HasilTest::where('user_id', $user->id)->where('type', 'posttest')->distinct('modul')->count('modul') >= 4;
-        $tugasComplete = SoalTugasKelompok::where('user_id', $user->id)->exists();
+        $activePosttestModules = \App\Models\ModulSetting::getActivePosttestModules();
+        $totalActivePosttest = count($activePosttestModules);
+        $isM5Active = \App\Models\ModulSetting::isActive(5);
+
+        $preCount = HasilTest::where('user_id', $user->id)->where('type', 'pretest')->whereIn('modul', $activePosttestModules)->distinct('modul')->count('modul');
+        $pretestComplete = ($totalActivePosttest === 0) || ($preCount >= $totalActivePosttest);
+
+        $postCount = HasilTest::where('user_id', $user->id)->where('type', 'posttest')->whereIn('modul', $activePosttestModules)->distinct('modul')->count('modul');
+        $posttestComplete = ($totalActivePosttest === 0) || ($postCount >= $totalActivePosttest);
+
+        $tugasComplete = !$isM5Active || SoalTugasKelompok::where('user_id', $user->id)->exists();
 
         $activeEvaluasiMenus = EvaluasiMenu::available()->where('is_active', true)->get();
         $requiredEvaluasiTotal = $activeEvaluasiMenus->count();

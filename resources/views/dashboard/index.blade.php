@@ -2045,20 +2045,28 @@
                                         <h5 class="card-title mb-0">Rapor & Progress Materi <span>| My Academic
                                                 Ledger</span></h5>
                                         @php
+                                            $activePosttestModules = \App\Models\ModulSetting::getActivePosttestModules();
+                                            $totalActivePosttest = count($activePosttestModules);
+                                            $isM5Active = \App\Models\ModulSetting::isActive(5);
+
                                             $myPretests = \App\Models\HasilTest::where('user_id', Auth::id())
                                                 ->where('type', 'pretest')
+                                                ->whereIn('modul', $activePosttestModules)
                                                 ->get();
                                             $myPosttests = \App\Models\HasilTest::where('user_id', Auth::id())
                                                 ->where('type', 'posttest')
+                                                ->whereIn('modul', $activePosttestModules)
                                                 ->get();
-                                            $myTugas = \App\Models\SoalTugasKelompok::where(
-                                                'user_id',
-                                                Auth::id(),
-                                            )->get();
+                                            $myTugas = \App\Models\SoalTugasKelompok::where('user_id', Auth::id())
+                                                ->whereNotNull('link_tugas')
+                                                ->where('link_tugas', '!=', '')
+                                                ->get();
+
                                             $isComplete =
-                                                $myPretests->count() >= 4 &&
-                                                $myPosttests->count() >= 4 &&
-                                                $myTugas->count() >= 1;
+                                                ($totalActivePosttest == 0 || $myPretests->pluck('modul')->unique()->count() >= $totalActivePosttest) &&
+                                                ($totalActivePosttest == 0 || $myPosttests->pluck('modul')->unique()->count() >= $totalActivePosttest) &&
+                                                (!$isM5Active || $myTugas->count() >= 1);
+
                                             $statusText = $isComplete ? 'Selesai' : 'Dalam Proses';
                                             $statusBadge = $isComplete ? 'bg-success' : 'bg-warning';
                                         @endphp
@@ -2079,17 +2087,22 @@
                                                     <i class="bi bi-pencil-square me-2 text-info"></i> Pre-Test Scores
                                                 </h6>
                                                 <div class="d-flex flex-wrap gap-2">
-                                                    @for ($i = 1; $i <= 4; $i++)
-                                                        @php $pRec = $myPretests->skip($i-1)->first(); @endphp
+                                                    @php $seqPre = 1; @endphp
+                                                    @forelse ($activePosttestModules as $modId)
+                                                        @php
+                                                            $pRec = $myPretests->firstWhere('modul', $modId);
+                                                            $displayNum = $seqPre++;
+                                                        @endphp
                                                         <div
-                                                            class="flex-fill bg-white p-2 rounded-3 text-center border shadow-sm">
-                                                            <div class="extra-small opacity-50 mb-1">Tes
-                                                                {{ $i }}</div>
+                                                            class="flex-fill bg-white p-2 rounded-3 text-center border shadow-sm" style="min-width: 70px;">
+                                                            <div class="extra-small opacity-50 mb-1">Tes {{ $displayNum }}</div>
                                                             <div
                                                                 class="fw-bold fs-5 {{ $pRec ? 'text-info' : 'text-muted' }}">
                                                                 {{ $pRec ? $pRec->skor : '-' }}</div>
                                                         </div>
-                                                    @endfor
+                                                    @empty
+                                                        <div class="text-muted small py-2 text-center w-100">Belum ada sesi tes yang dibuka</div>
+                                                    @endforelse
                                                 </div>
                                             </div>
                                         </div>
@@ -2101,17 +2114,22 @@
                                                     Scores
                                                 </h6>
                                                 <div class="d-flex flex-wrap gap-2">
-                                                    @for ($i = 1; $i <= 4; $i++)
-                                                        @php $poRec = $myPosttests->skip($i-1)->first(); @endphp
+                                                    @php $seqPost = 1; @endphp
+                                                    @forelse ($activePosttestModules as $modId)
+                                                        @php
+                                                            $poRec = $myPosttests->firstWhere('modul', $modId);
+                                                            $displayNum = $seqPost++;
+                                                        @endphp
                                                         <div
-                                                            class="flex-fill bg-white p-2 rounded-3 text-center border shadow-sm">
-                                                            <div class="extra-small opacity-50 mb-1">Tes
-                                                                {{ $i }}</div>
+                                                            class="flex-fill bg-white p-2 rounded-3 text-center border shadow-sm" style="min-width: 70px;">
+                                                            <div class="extra-small opacity-50 mb-1">Tes {{ $displayNum }}</div>
                                                             <div
                                                                 class="fw-bold fs-5 {{ $poRec ? 'text-primary' : 'text-muted' }}">
                                                                 {{ $poRec ? $poRec->skor : '-' }}</div>
                                                         </div>
-                                                    @endfor
+                                                    @empty
+                                                        <div class="text-muted small py-2 text-center w-100">Belum ada sesi tes yang dibuka</div>
+                                                    @endforelse
                                                 </div>
                                             </div>
                                         </div>
@@ -2122,17 +2140,23 @@
                                                     <i class="bi bi-person-check me-2 text-success"></i> Tugas & Penuntasan
                                                 </h6>
                                                 <div class="d-grid gap-2">
-                                                    <div
-                                                        class="bg-white p-3 rounded-3 d-flex justify-content-between align-items-center border shadow-sm">
-                                                        <span class="small fw-semibold">Tugas Kelompok</span>
-                                                        @if ($myTugas->count() > 0)
-                                                            <span class="badge bg-success rounded-circle p-2"><i
-                                                                    class="bi bi-check-lg"></i></span>
-                                                        @else
-                                                            <span class="badge bg-warning rounded-circle p-2"><i
-                                                                    class="bi bi-dash-lg"></i></span>
-                                                        @endif
-                                                    </div>
+                                                    @if ($isM5Active)
+                                                        <div
+                                                            class="bg-white p-3 rounded-3 d-flex justify-content-between align-items-center border shadow-sm">
+                                                            <span class="small fw-semibold">Tugas Kelompok</span>
+                                                            @if ($myTugas->count() > 0)
+                                                                <span class="badge bg-success rounded-circle p-2"><i
+                                                                        class="bi bi-check-lg"></i></span>
+                                                            @else
+                                                                <span class="badge bg-warning rounded-circle p-2"><i
+                                                                        class="bi bi-dash-lg"></i></span>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <div class="bg-white p-3 rounded-3 text-center border shadow-sm">
+                                                            <span class="small text-muted">Tugas Kelompok Ditutup</span>
+                                                        </div>
+                                                    @endif
                                                     <div class="text-center mt-2">
                                                         <p class="extra-small text-muted italic mb-0">Terima kasih atas
                                                             partisipasi aktif Anda.</p>
@@ -2140,7 +2164,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>                          </div>
                                 </div>
                             </div>
                         </div>
@@ -2309,17 +2333,21 @@
                                 }
                                 $disComplete = ($disDayCount >= 3);
 
-                                // 3. Pre-Test (4 Sesi)
-                                $pretestCountUser = \App\Models\HasilTest::where('user_id', $userId)->where('type', 'pretest')->distinct('modul')->count();
-                                $pretestComplete = ($pretestCountUser >= 4);
+                                // 3. Pre-Test (Dinamis sesuai modul yang dibuka)
+                                $activePosttestModules = \App\Models\ModulSetting::getActivePosttestModules();
+                                $totalActivePosttest = count($activePosttestModules);
+                                $isM5Active = \App\Models\ModulSetting::isActive(5);
 
-                                // 4. Post-Test (4 Sesi)
-                                $posttestCountUser = \App\Models\HasilTest::where('user_id', $userId)->where('type', 'posttest')->distinct('modul')->count();
-                                $posttestComplete = ($posttestCountUser >= 4);
+                                $pretestCountUser = \App\Models\HasilTest::where('user_id', $userId)->where('type', 'pretest')->whereIn('modul', $activePosttestModules)->distinct('modul')->count();
+                                $pretestComplete = ($totalActivePosttest == 0) || ($pretestCountUser >= $totalActivePosttest);
+
+                                // 4. Post-Test (Dinamis sesuai modul yang dibuka)
+                                $posttestCountUser = \App\Models\HasilTest::where('user_id', $userId)->where('type', 'posttest')->whereIn('modul', $activePosttestModules)->distinct('modul')->count();
+                                $posttestComplete = ($totalActivePosttest == 0) || ($posttestCountUser >= $totalActivePosttest);
 
                                 // 5. Tugas Kelompok (1 Tugas)
-                                $tugasCountUser = \App\Models\SoalTugasKelompok::where('user_id', $userId)->count();
-                                $tugasComplete = ($tugasCountUser >= 1);
+                                $tugasCountUser = \App\Models\SoalTugasKelompok::where('user_id', $userId)->whereNotNull('link_tugas')->where('link_tugas', '!=', '')->count();
+                                $tugasComplete = !$isM5Active || ($tugasCountUser >= 1);
 
                                 // 6. Evaluasi Penyampaian Materi
                                 $activeEvaluasiMenus = \App\Models\EvaluasiMenu::available()->where('is_active', true)->get();
@@ -2342,10 +2370,11 @@
                                 $isAllComplete = $absComplete && $disComplete && $pretestComplete && $posttestComplete && $tugasComplete && $evaluasiComplete;
 
                                 // Score Calculations (For Display if All Complete)
-                                $allTests = \App\Models\HasilTest::where('user_id', $userId)->get();
+                                $allTests = \App\Models\HasilTest::where('user_id', $userId)->whereIn('modul', $activePosttestModules)->get();
                                 $hasTugas = $tugasComplete;
-                                $sumTests = $allTests->sum('skor') + ($hasTugas ? 100 : 0);
-                                $scoreTestsRaw = $sumTests / 9;
+                                $sumTests = $allTests->sum('skor') + (($isM5Active && $hasTugas) ? 100 : 0);
+                                $totalTestDenom = ($totalActivePosttest * 2) + ($isM5Active ? 1 : 0);
+                                $scoreTestsRaw = $totalTestDenom > 0 ? ($sumTests / $totalTestDenom) : 0;
 
                                 $absPoints = 0;
                                 foreach ([$myAbs1, $myAbs2, $myAbs3] as $myAb) {
@@ -2599,23 +2628,25 @@
                                     <div class="d-flex justify-content-between align-items-center mb-2 small">
                                         <span><i class="bi bi-pencil-square me-2 {{ $pretestComplete ? 'text-success' : 'text-muted' }}"></i> Ujian Pre-Test</span>
                                         <span class="badge {{ $pretestComplete ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-2 py-1" style="font-size: 0.75rem;">
-                                            {{ $pretestCountUser }}/4 Tes {!! $pretestComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
+                                            {{ $pretestCountUser }}/{{ $totalActivePosttest }} Tes {!! $pretestComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
                                         </span>
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center mb-2 small">
                                         <span><i class="bi bi-file-earmark-check me-2 {{ $posttestComplete ? 'text-success' : 'text-muted' }}"></i> Ujian Post-Test</span>
                                         <span class="badge {{ $posttestComplete ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-2 py-1" style="font-size: 0.75rem;">
-                                            {{ $posttestCountUser }}/4 Tes {!! $posttestComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
+                                            {{ $posttestCountUser }}/{{ $totalActivePosttest }} Tes {!! $posttestComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
                                         </span>
                                     </div>
 
+                                    @if ($isM5Active)
                                     <div class="d-flex justify-content-between align-items-center mb-2 small">
                                         <span><i class="bi bi-journal-text me-2 {{ $tugasComplete ? 'text-success' : 'text-muted' }}"></i> Tugas Kelompok</span>
                                         <span class="badge {{ $tugasComplete ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill px-2 py-1" style="font-size: 0.75rem;">
                                             {{ $tugasCountUser }}/1 Tugas {!! $tugasComplete ? '<i class="bi bi-check-lg ms-1"></i>' : '' !!}
                                         </span>
                                     </div>
+                                    @endif
 
                                     <div class="d-flex justify-content-between align-items-center mb-0 small">
                                         <span><i class="bi bi-clipboard2-check me-2 {{ $evaluasiComplete ? 'text-success' : 'text-muted' }}"></i> Evaluasi Penyampaian Materi</span>

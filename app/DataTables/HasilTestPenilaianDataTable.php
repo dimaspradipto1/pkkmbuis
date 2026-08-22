@@ -37,10 +37,21 @@ class HasilTestPenilaianDataTable extends DataTable
                 return '<span class="text-muted opacity-50">-</span>';
             })
             ->addColumn('nilai_tes', function ($row) {
-                $postTestScores = $row->hasilTests->where('type', 'posttest')->pluck('skor')->toArray();
-                $tugasScore = $row->tugasKelompok->nilai ?? 0;
-                $allScores = array_merge($postTestScores, [$tugasScore]);
-                $avg = count($allScores) > 0 ? array_sum($allScores) / 5 : 0; // Divided by 5 metrics (4 posttest + 1 tugas)
+                $activeModules = \App\Models\ModulSetting::getActivePosttestModules();
+                $activeCount = count($activeModules);
+                $isM5Active = \App\Models\ModulSetting::isActive(5);
+
+                $postTestScores = $row->hasilTests
+                    ->where('type', 'posttest')
+                    ->whereIn('modul', $activeModules)
+                    ->pluck('skor')
+                    ->toArray();
+
+                $tugasScore = ($isM5Active && $row->tugasKelompok) ? ($row->tugasKelompok->nilai ?? 0) : null;
+                $totalDivisor = $activeCount + ($isM5Active ? 1 : 0);
+                $sum = array_sum($postTestScores) + ($tugasScore !== null ? $tugasScore : 0);
+
+                $avg = $totalDivisor > 0 ? ($sum / $totalDivisor) : 0;
                 return '<span class="fw-bold text-primary">' . round($avg, 2) . '</span>';
             })
             ->addColumn('action', function($row) {

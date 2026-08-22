@@ -73,17 +73,25 @@ class KelulusanDataTable extends DataTable
                 return '<span class="badge ' . ($complete ? 'bg-success' : 'bg-warning text-dark') . ' rounded-pill">' . $count . '/3</span>';
             })
             ->addColumn('pretest', function (User $row) {
-                $count = $row->hasilTests->where('type', 'pretest')->pluck('modul')->unique()->count();
-                $complete = $count >= 4;
-                return '<span class="badge ' . ($complete ? 'bg-success' : 'bg-warning text-dark') . ' rounded-pill">' . $count . '/4</span>';
+                $activeModules = \App\Models\ModulSetting::getActivePosttestModules();
+                $totalActive = count($activeModules);
+                $count = $row->hasilTests->where('type', 'pretest')->whereIn('modul', $activeModules)->pluck('modul')->unique()->count();
+                $complete = ($totalActive === 0) || ($count >= $totalActive);
+                return '<span class="badge ' . ($complete ? 'bg-success' : 'bg-warning text-dark') . ' rounded-pill">' . $count . '/' . $totalActive . '</span>';
             })
             ->addColumn('posttest', function (User $row) {
-                $count = $row->hasilTests->where('type', 'posttest')->pluck('modul')->unique()->count();
-                $complete = $count >= 4;
-                return '<span class="badge ' . ($complete ? 'bg-success' : 'bg-warning text-dark') . ' rounded-pill">' . $count . '/4</span>';
+                $activeModules = \App\Models\ModulSetting::getActivePosttestModules();
+                $totalActive = count($activeModules);
+                $count = $row->hasilTests->where('type', 'posttest')->whereIn('modul', $activeModules)->pluck('modul')->unique()->count();
+                $complete = ($totalActive === 0) || ($count >= $totalActive);
+                return '<span class="badge ' . ($complete ? 'bg-success' : 'bg-warning text-dark') . ' rounded-pill">' . $count . '/' . $totalActive . '</span>';
             })
             ->addColumn('tugas', function (User $row) {
+                $isM5Active = \App\Models\ModulSetting::isActive(5);
                 $complete = (bool) $row->tugasKelompok;
+                if (!$isM5Active) {
+                    return '<span class="badge bg-secondary rounded-pill">Nonaktif</span>';
+                }
                 return '<span class="badge ' . ($complete ? 'bg-success' : 'bg-warning text-dark') . ' rounded-pill">' . ($complete ? '1' : '0') . '/1</span>';
             })
             ->addColumn('evaluasi', function (User $row) use ($completedUserIdSets, $requiredEvaluasiTotal) {
@@ -163,9 +171,17 @@ class KelulusanDataTable extends DataTable
         }
         $disComplete = $disDayCount >= 3;
 
-        $pretestComplete = $row->hasilTests->where('type', 'pretest')->pluck('modul')->unique()->count() >= 4;
-        $posttestComplete = $row->hasilTests->where('type', 'posttest')->pluck('modul')->unique()->count() >= 4;
-        $tugasComplete = (bool) $row->tugasKelompok;
+        $activeModules = \App\Models\ModulSetting::getActivePosttestModules();
+        $totalActive = count($activeModules);
+        $isM5Active = \App\Models\ModulSetting::isActive(5);
+
+        $pretestCount = $row->hasilTests->where('type', 'pretest')->whereIn('modul', $activeModules)->pluck('modul')->unique()->count();
+        $pretestComplete = ($totalActive === 0) || ($pretestCount >= $totalActive);
+
+        $posttestCount = $row->hasilTests->where('type', 'posttest')->whereIn('modul', $activeModules)->pluck('modul')->unique()->count();
+        $posttestComplete = ($totalActive === 0) || ($posttestCount >= $totalActive);
+
+        $tugasComplete = !$isM5Active || (bool) $row->tugasKelompok;
 
         $completedEvaluasi = 0;
         foreach ($completedUserIdSets as $set) {
@@ -175,8 +191,9 @@ class KelulusanDataTable extends DataTable
 
         $isAllComplete = $absComplete && $disComplete && $pretestComplete && $posttestComplete && $tugasComplete && $evaluasiComplete;
 
-        $sumTests = $row->hasilTests->sum('skor') + ($tugasComplete ? 100 : 0);
-        $scoreTestsRaw = $sumTests / 9;
+        $sumTests = $row->hasilTests->whereIn('modul', $activeModules)->sum('skor') + (($isM5Active && $tugasComplete) ? 100 : 0);
+        $totalTestDenominator = ($totalActive * 2) + ($isM5Active ? 1 : 0); // pre + post + tugas
+        $scoreTestsRaw = $totalTestDenominator > 0 ? ($sumTests / $totalTestDenominator) : 0;
         $scoreAbsRaw = ($absCount / 6) * 100;
         $scoreDisRaw = ($disPoints / 9) * 100;
 

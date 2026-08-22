@@ -57,4 +57,26 @@ class ModulSetting
 
         return (bool) $statuses[$modul];
     }
+
+    public static function getActivePosttestModules(): array
+    {
+        $statuses = static::getAllStatuses();
+        $active = [];
+        for ($i = 1; $i <= 4; $i++) {
+            if ($statuses[$i] ?? true) {
+                $active[] = $i;
+            }
+        }
+        return $active;
+    }
+
+    public static function getActivePosttestCount(): int
+    {
+        return count(static::getActivePosttestModules());
+    }
+
+    public static function isTugasActive(): bool
+    {
+        return static::isActive(5);
+    }
 }

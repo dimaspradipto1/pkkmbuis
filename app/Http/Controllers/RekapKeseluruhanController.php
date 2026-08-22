@@ -36,10 +36,18 @@ class RekapKeseluruhanController extends Controller
         $countDisiplin = 0;
         $passedCount = 0;
 
+        $activePosttestModules = \App\Models\ModulSetting::getActivePosttestModules();
+        $activePosttestCount = count($activePosttestModules);
+
         foreach ($students as $row) {
-            // 1. Post-Test
-            $postTestScores = $row->hasilTests->where('type', 'posttest')->pluck('skor')->toArray();
-            $scoreTes = count($postTestScores) > 0 ? array_sum($postTestScores) / 4 : 0;
+            // 1. Post-Test (Dinamis)
+            $postTestScores = $row->hasilTests
+                ->where('type', 'posttest')
+                ->whereIn('modul', $activePosttestModules)
+                ->pluck('skor')
+                ->toArray();
+
+            $scoreTes = ($activePosttestCount > 0 && count($postTestScores) > 0) ? (array_sum($postTestScores) / $activePosttestCount) : 0;
             if ($scoreTes > 0) {
                 $countTest++;
             }

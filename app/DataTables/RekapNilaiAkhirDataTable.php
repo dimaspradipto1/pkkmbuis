@@ -16,9 +16,18 @@ class RekapNilaiAkhirDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('score_tes', function ($row) {
-                // Post-Test (4 Modul)
-                $postTestScores = $row->hasilTests->where('type', 'posttest')->pluck('skor')->toArray();
-                $avg = count($postTestScores) > 0 ? array_sum($postTestScores) / 4 : 0; 
+                // Post-Test (Dinamis sesuai modul yang aktif)
+                $activeModules = \App\Models\ModulSetting::getActivePosttestModules();
+                $activeCount = count($activeModules);
+                if ($activeCount === 0) return 0;
+
+                $postTestScores = $row->hasilTests
+                    ->where('type', 'posttest')
+                    ->whereIn('modul', $activeModules)
+                    ->pluck('skor')
+                    ->toArray();
+
+                $avg = count($postTestScores) > 0 ? (array_sum($postTestScores) / $activeCount) : 0; 
                 return round($avg, 2);
             })
             ->addColumn('score_tugas', function ($row) {
@@ -62,9 +71,17 @@ class RekapNilaiAkhirDataTable extends DataTable
             ->addColumn('total_akhir', function ($row) {
                 // Tests (10%), Tugas (10%), Absensi (50%), Disiplin (30%)
                 
-                // 1. Avg Post-Tests (4 Modul)
-                $postTestScores = $row->hasilTests->where('type', 'posttest')->pluck('skor')->toArray();
-                $scoreTes = count($postTestScores) > 0 ? array_sum($postTestScores) / 4 : 0;
+                // 1. Avg Post-Tests (Dinamis)
+                $activeModules = \App\Models\ModulSetting::getActivePosttestModules();
+                $activeCount = count($activeModules);
+
+                $postTestScores = $row->hasilTests
+                    ->where('type', 'posttest')
+                    ->whereIn('modul', $activeModules)
+                    ->pluck('skor')
+                    ->toArray();
+
+                $scoreTes = ($activeCount > 0 && count($postTestScores) > 0) ? (array_sum($postTestScores) / $activeCount) : 0;
                 
                 // 2. Tugas
                 $scoreTugas = ($row->tugasKelompok && (!empty($row->tugasKelompok->link_tugas) || !empty($row->tugasKelompok->nilai))) ? ($row->tugasKelompok->nilai ?: 100) : 0;
