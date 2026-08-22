@@ -34,7 +34,7 @@
                         <div class="alert alert-info border-0 py-2 small mb-3 rounded-3">
                             <i class="bi bi-info-circle me-1"></i> Gunakan template resmi berikut sebagai acuan penulisan LPJ.
                             <br>
-                            <a href="https://docs.google.com/document/d/1eOVVbrfeyEZIuc5HUFakevcnHw69T-gJ/edit" target="_blank" rel="noopener" class="fw-bold text-primary">
+                            <a href="https://drive.google.com/drive/folders/1gyaNcZyuDuB_E9vHeXVjTCJgTwtiIRYU?usp=sharing" target="_blank" rel="noopener" class="fw-bold text-primary">
                                 <i class="bi bi-file-earmark-text me-1"></i> Download Template LPJ
                             </a>
                         </div>

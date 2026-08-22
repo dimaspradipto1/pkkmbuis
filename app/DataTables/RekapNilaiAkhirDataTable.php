@@ -16,14 +16,14 @@ class RekapNilaiAkhirDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addIndexColumn()
             ->addColumn('score_tes', function ($row) {
-                // M1-M4 Post (4 scores)
+                // Post-Test (4 Modul)
                 $postTestScores = $row->hasilTests->where('type', 'posttest')->pluck('skor')->toArray();
                 $avg = count($postTestScores) > 0 ? array_sum($postTestScores) / 4 : 0; 
                 return round($avg, 2);
             })
             ->addColumn('score_tugas', function ($row) {
-                // M5 Tugas (1 score)
-                $tugasScore = $row->tugasKelompok->nilai ?? 0;
+                // M5 Tugas Kelompok
+                $tugasScore = ($row->tugasKelompok && (!empty($row->tugasKelompok->link_tugas) || !empty($row->tugasKelompok->nilai))) ? ($row->tugasKelompok->nilai ?: 100) : 0;
                 return $tugasScore;
             })
             ->addColumn('score_absensi', function ($row) {
@@ -62,12 +62,12 @@ class RekapNilaiAkhirDataTable extends DataTable
             ->addColumn('total_akhir', function ($row) {
                 // Tests (10%), Tugas (10%), Absensi (50%), Disiplin (30%)
                 
-                // 1. Avg Tests (4 posttest)
+                // 1. Avg Post-Tests (4 Modul)
                 $postTestScores = $row->hasilTests->where('type', 'posttest')->pluck('skor')->toArray();
                 $scoreTes = count($postTestScores) > 0 ? array_sum($postTestScores) / 4 : 0;
                 
                 // 2. Tugas
-                $scoreTugas = $row->tugasKelompok->nilai ?? 0;
+                $scoreTugas = ($row->tugasKelompok && (!empty($row->tugasKelompok->link_tugas) || !empty($row->tugasKelompok->nilai))) ? ($row->tugasKelompok->nilai ?: 100) : 0;
 
                 // 3. Absensi Score (6 metrics) - Strict Presence Only
                 $absPoints = 0;
