@@ -48,7 +48,7 @@
                                                 );
                                             @endphp
                                             <option value="{{ $user->id }}" data-has-data="{{ $hasData ? '1' : '0' }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>
-                                                {{ $user->name }} ({{ $user->id_pendaftar }}) {{ $hasData ? '✓ [Sudah Ada Data]' : '' }}
+                                                {{ $user->name }} ({{ $user->id_pendaftar }}) — [{{ $user->kelompok->nama_kelompok ?? 'Tanpa Kelompok' }}] {{ $hasData ? '✓ [Sudah Ada Data]' : '' }}
                                             </option>
                                         @endforeach
                                     </select>

@@ -121,9 +121,12 @@ class AbsenKetigaController extends Controller
         $authUser = Auth::user();
         if ($authUser->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
-            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->with('kelompok')->orderBy('name')->get();
+        } elseif ($authUser->role == 'dosenpendamping') {
+            $myKelompokIds = \App\Models\Kelompok::whereHas('dosenPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
+            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->with('kelompok')->orderBy('name')->get();
         } else {
-            $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->with('kelompok')->orderBy('name')->get();
         }
         return view('pages.absenketiga.create', compact('users'));
     }
@@ -283,9 +286,12 @@ class AbsenKetigaController extends Controller
         $authUser = Auth::user();
         if ($authUser->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
-            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->where(fn($q) => $q->whereIn('kelompok_id', $myKelompokIds)->orWhere('id', $absenKetiga->user_id))->with('kelompok')->orderBy('name')->get();
+        } elseif ($authUser->role == 'dosenpendamping') {
+            $myKelompokIds = \App\Models\Kelompok::whereHas('dosenPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
+            $users = User::where('role', 'mahasiswa')->where(fn($q) => $q->whereIn('kelompok_id', $myKelompokIds)->orWhere('id', $absenKetiga->user_id))->with('kelompok')->orderBy('name')->get();
         } else {
-            $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->with('kelompok')->orderBy('name')->get();
         }
         return view('pages.absenketiga.edit', compact('absenKetiga', 'users'));
     }

@@ -114,9 +114,12 @@ class KedisiplinanPertamaController extends Controller
         $authUser = Auth::user();
         if ($authUser->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
-            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->with('kedisiplinanPertama')->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->with(['kelompok', 'kedisiplinanPertama'])->orderBy('name')->get();
+        } elseif ($authUser->role == 'dosenpendamping') {
+            $myKelompokIds = \App\Models\Kelompok::whereHas('dosenPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
+            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->with(['kelompok', 'kedisiplinanPertama'])->orderBy('name')->get();
         } else {
-            $users = User::where('role', 'mahasiswa')->with('kedisiplinanPertama')->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->with(['kelompok', 'kedisiplinanPertama'])->orderBy('name')->get();
         }
         return view('pages.kedisiplinanpertama.create', compact('users'));
     }
@@ -155,9 +158,12 @@ class KedisiplinanPertamaController extends Controller
         $authUser = Auth::user();
         if ($authUser->role == 'kakakpendamping') {
             $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
-            $users = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->where(fn($q) => $q->whereIn('kelompok_id', $myKelompokIds)->orWhere('id', $kedisiplinanPertama->user_id))->with(['kelompok', 'kedisiplinanPertama'])->orderBy('name')->get();
+        } elseif ($authUser->role == 'dosenpendamping') {
+            $myKelompokIds = \App\Models\Kelompok::whereHas('dosenPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
+            $users = User::where('role', 'mahasiswa')->where(fn($q) => $q->whereIn('kelompok_id', $myKelompokIds)->orWhere('id', $kedisiplinanPertama->user_id))->with(['kelompok', 'kedisiplinanPertama'])->orderBy('name')->get();
         } else {
-            $users = User::where('role', 'mahasiswa')->orderBy('name')->get();
+            $users = User::where('role', 'mahasiswa')->with(['kelompok', 'kedisiplinanPertama'])->orderBy('name')->get();
         }
         return view('pages.kedisiplinanpertama.edit', compact('kedisiplinanPertama', 'users'));
     }

@@ -40,7 +40,7 @@
                                     <select name="user_id" id="user_id" class="form-select" required>
                                         @foreach($users as $user)
                                             <option value="{{ $user->id }}" {{ (old('user_id', $kedisiplinanKedua->user_id) == $user->id) ? 'selected' : '' }}>
-                                                {{ $user->name }} ({{ $user->id_pendaftar }})
+                                                {{ $user->name }} ({{ $user->id_pendaftar }}) — [{{ $user->kelompok->nama_kelompok ?? 'Tanpa Kelompok' }}]
                                             </option>
                                         @endforeach
                                     </select>
