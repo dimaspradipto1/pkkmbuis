@@ -1828,100 +1828,207 @@
                                 </div>
                             </div>
 
-                            <div class="card shadow-sm border-0 mb-4">
-                                <div class="card-body">
-                                    <h5 class="card-title">Timeline Kehadiran <span>| My Attendance</span></h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-borderless align-middle mb-0 text-center">
-                                            <thead>
-                                                <tr class="extra-small text-uppercase fw-bold text-muted border-bottom">
-                                                    <th class="text-start py-2">HARI</th>
-                                                    <th>DATANG</th>
-                                                    <th>PULANG</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @php
-                                                    $abs1 = \App\Models\AbsenPertama::where(
-                                                        'user_id',
-                                                        Auth::id(),
-                                                    )->first();
-                                                    $abs2 = \App\Models\AbsenKedua::where(
-                                                        'user_id',
-                                                        Auth::id(),
-                                                    )->first();
-                                                    $abs3 = \App\Models\AbsenKetiga::where(
-                                                        'user_id',
-                                                        Auth::id(),
-                                                    )->first();
+                            <div class="row">
+                                {{-- Timeline Kehadiran --}}
+                                <div class="col-lg-6 col-12">
+                                    <div class="card shadow-sm border-0 mb-4 h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Timeline Kehadiran <span>| My Attendance</span></h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-borderless align-middle mb-0 text-center">
+                                                    <thead>
+                                                        <tr class="extra-small text-uppercase fw-bold text-muted border-bottom">
+                                                            <th class="text-start py-2">HARI</th>
+                                                            <th>DATANG</th>
+                                                            <th>PULANG</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $abs1 = \App\Models\AbsenPertama::where('user_id', Auth::id())->first();
+                                                            $abs2 = \App\Models\AbsenKedua::where('user_id', Auth::id())->first();
+                                                            $abs3 = \App\Models\AbsenKetiga::where('user_id', Auth::id())->first();
 
-                                                    $days = [
-                                                        ['label' => 'Hari I', 'data' => $abs1],
-                                                        ['label' => 'Hari II', 'data' => $abs2],
-                                                        ['label' => 'Hari III', 'data' => $abs3],
-                                                    ];
-                                                @endphp
+                                                            $days = [
+                                                                ['label' => 'Hari I', 'data' => $abs1],
+                                                                ['label' => 'Hari II', 'data' => $abs2],
+                                                                ['label' => 'Hari III', 'data' => $abs3],
+                                                            ];
+                                                        @endphp
 
-                                                @foreach ($days as $day)
-                                                    <tr class="border-bottom border-light">
-                                                        <td class="text-start fw-bold py-3 fs-6">{{ $day['label'] }}
-                                                        </td>
-                                                        <td>
-                                                            @php
-                                                                $stPagi = $day['data']->hadir_pagi ?? 'Belum';
-                                                                $clPagi = match ($stPagi) {
-                                                                    'Hadir' => 'bg-success',
-                                                                    'Izin' => 'bg-warning',
-                                                                    'Alpa', 'Tidak Hadir' => 'bg-danger',
-                                                                    default => 'bg-light text-muted border',
-                                                                };
-                                                                $displayPagi = match ($stPagi) {
-                                                                    'Hadir' => 'H',
-                                                                    'Izin' => 'I',
-                                                                    'Alpa', 'Tidak Hadir' => 'TH',
-                                                                    default => '-',
-                                                                };
-                                                            @endphp
-                                                            <span class="badge {{ $clPagi }} fs-6 px-3 py-2"
-                                                                style="min-width: 45px;">{{ $displayPagi }}</span>
-                                                        </td>
-                                                        <td>
-                                                            @php
-                                                                $stSore = $day['data']->hadir_sore ?? 'Belum';
-                                                                $clSore = match ($stSore) {
-                                                                    'Hadir' => 'bg-success',
-                                                                    'Izin' => 'bg-warning',
-                                                                    'Alpa', 'Tidak Hadir' => 'bg-danger',
-                                                                    default => 'bg-light text-muted border',
-                                                                };
-                                                                $displaySore = match ($stSore) {
-                                                                    'Hadir' => 'H',
-                                                                    'Izin' => 'I',
-                                                                    'Alpa', 'Tidak Hadir' => 'TH',
-                                                                    default => '-',
-                                                                };
-                                                            @endphp
-                                                            <span class="badge {{ $clSore }} fs-6 px-3 py-2"
-                                                                style="min-width: 45px;">{{ $displaySore }}</span>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                                        @foreach ($days as $day)
+                                                            <tr class="border-bottom border-light">
+                                                                <td class="text-start fw-bold py-3 fs-6">{{ $day['label'] }}</td>
+                                                                <td>
+                                                                    @php
+                                                                        $stPagi = $day['data']->hadir_pagi ?? 'Belum';
+                                                                        $clPagi = match ($stPagi) {
+                                                                            'Hadir' => 'bg-success',
+                                                                            'Izin' => 'bg-warning',
+                                                                            'Alpa', 'Tidak Hadir' => 'bg-danger',
+                                                                            default => 'bg-light text-muted border',
+                                                                        };
+                                                                        $displayPagi = match ($stPagi) {
+                                                                            'Hadir' => 'H',
+                                                                            'Izin' => 'I',
+                                                                            'Alpa', 'Tidak Hadir' => 'TH',
+                                                                            default => '-',
+                                                                        };
+                                                                    @endphp
+                                                                    <span class="badge {{ $clPagi }} fs-6 px-3 py-2" style="min-width: 45px;">{{ $displayPagi }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    @php
+                                                                        $stSore = $day['data']->hadir_sore ?? 'Belum';
+                                                                        $clSore = match ($stSore) {
+                                                                            'Hadir' => 'bg-success',
+                                                                            'Izin' => 'bg-warning',
+                                                                            'Alpa', 'Tidak Hadir' => 'bg-danger',
+                                                                            default => 'bg-light text-muted border',
+                                                                        };
+                                                                        $displaySore = match ($stSore) {
+                                                                            'Hadir' => 'H',
+                                                                            'Izin' => 'I',
+                                                                            'Alpa', 'Tidak Hadir' => 'TH',
+                                                                            default => '-',
+                                                                        };
+                                                                    @endphp
+                                                                    <span class="badge {{ $clSore }} fs-6 px-3 py-2" style="min-width: 45px;">{{ $displaySore }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-3">
+                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
+                                                    <span class="badge bg-success py-1 px-2" style="min-width: 25px;">H</span>
+                                                    Hadir
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
+                                                    <span class="badge bg-danger py-1 px-2" style="min-width: 25px;">TH</span>
+                                                    Tidak Hadir
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
+                                                    <span class="badge bg-warning py-1 px-2" style="min-width: 25px;">I</span>
+                                                    Izin
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div
-                                        class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-3">
-                                        <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
-                                            <span class="badge bg-success py-1 px-2" style="min-width: 25px;">H</span>
-                                            Hadir
-                                        </div>
-                                        <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
-                                            <span class="badge bg-danger py-1 px-2" style="min-width: 25px;">TH</span>
-                                            Tidak Hadir
-                                        </div>
-                                        <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
-                                            <span class="badge bg-warning py-1 px-2" style="min-width: 25px;">I</span>
-                                            Izin
+                                </div>
+
+                                {{-- Monitoring Kedisiplinan --}}
+                                <div class="col-lg-6 col-12">
+                                    <div class="card shadow-sm border-0 mb-4 h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Monitoring Kedisiplinan <span>| My Discipline</span></h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-borderless align-middle mb-0 text-center">
+                                                    <thead>
+                                                        <tr class="extra-small text-uppercase fw-bold text-muted border-bottom">
+                                                            <th class="text-start py-2">HARI</th>
+                                                            <th>ATRIBUT</th>
+                                                            <th>WAKTU</th>
+                                                            <th>PERILAKU</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $dis1 = \App\Models\KedisiplinanPertama::where('user_id', Auth::id())->first();
+                                                            $dis2 = \App\Models\KedisiplinanKedua::where('user_id', Auth::id())->first();
+                                                            $dis3 = \App\Models\KedisiplinanKetiga::where('user_id', Auth::id())->first();
+
+                                                            $disDays = [
+                                                                ['label' => 'Hari I', 'data' => $dis1],
+                                                                ['label' => 'Hari II', 'data' => $dis2],
+                                                                ['label' => 'Hari III', 'data' => $dis3],
+                                                            ];
+                                                        @endphp
+
+                                                        @foreach ($disDays as $day)
+                                                            <tr class="border-bottom border-light">
+                                                                <td class="text-start fw-bold py-3 fs-6">{{ $day['label'] }}</td>
+                                                                <td>
+                                                                    @php
+                                                                        $stA = strtolower($day['data']->kelengkapan_atribut ?? '');
+                                                                        $clA = match ($stA) {
+                                                                            'lengkap' => 'bg-success',
+                                                                            'tidak lengkap' => 'bg-danger',
+                                                                            default => 'bg-light text-muted border',
+                                                                        };
+                                                                        $displayA = match ($stA) {
+                                                                            'lengkap' => 'A',
+                                                                            'tidak lengkap' => 'TL',
+                                                                            default => '-',
+                                                                        };
+                                                                    @endphp
+                                                                    <span class="badge {{ $clA }} fs-6 px-3 py-2" style="min-width: 45px;">{{ $displayA }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    @php
+                                                                        $stW = strtolower($day['data']->ketepatan_waktu ?? '');
+                                                                        $clW = match ($stW) {
+                                                                            'tepat waktu' => 'bg-success',
+                                                                            'terlambat' => 'bg-danger',
+                                                                            default => 'bg-light text-muted border',
+                                                                        };
+                                                                        $displayW = match ($stW) {
+                                                                            'tepat waktu' => 'W',
+                                                                            'terlambat' => 'TL',
+                                                                            default => '-',
+                                                                        };
+                                                                    @endphp
+                                                                    <span class="badge {{ $clW }} fs-6 px-3 py-2" style="min-width: 45px;">{{ $displayW }}</span>
+                                                                </td>
+                                                                <td>
+                                                                    @php
+                                                                        $stP = strtolower($day['data']->perilaku ?? '');
+                                                                        $clP = match ($stP) {
+                                                                            'sangat baik' => 'bg-success',
+                                                                            'baik' => 'bg-primary',
+                                                                            'cukup' => 'bg-warning text-dark',
+                                                                            'kurang' => 'bg-danger',
+                                                                            default => 'bg-light text-muted border',
+                                                                        };
+                                                                        $displayP = match ($stP) {
+                                                                            'sangat baik' => 'SB',
+                                                                            'baik' => 'B',
+                                                                            'cukup' => 'C',
+                                                                            'kurang' => 'K',
+                                                                            default => '-',
+                                                                        };
+                                                                    @endphp
+                                                                    <span class="badge {{ $clP }} fs-6 px-3 py-2" style="min-width: 45px;">{{ $displayP }}</span>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-2">
+                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
+                                                    <span class="badge bg-success py-1 px-2">A</span> Lengkap
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
+                                                    <span class="badge bg-danger py-1 px-2">TL</span> Tidak Lengkap/Telat
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
+                                                    <span class="badge bg-success py-1 px-2">W</span> Tepat Waktu
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
+                                                    <span class="badge bg-success py-1 px-2">SB</span> Sangat Baik
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
+                                                    <span class="badge bg-primary py-1 px-2">B</span> Baik
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
+                                                    <span class="badge bg-warning text-dark py-1 px-2">C</span> Cukup
+                                                </div>
+                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
+                                                    <span class="badge bg-danger py-1 px-2">K</span> Kurang
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -2189,7 +2296,9 @@
 
                                 $disDayCount = 0;
                                 foreach ([$myDis1, $myDis2, $myDis3] as $di) {
-                                    if ($di && !empty($di->kelengkapan_atribut) && !empty($di->ketepatan_waktu) && !empty($di->perilaku)) {
+                                    if ($di && !empty($di->kelengkapan_atribut) && $di->kelengkapan_atribut !== '-'
+                                            && !empty($di->ketepatan_waktu) && $di->ketepatan_waktu !== '-'
+                                            && !empty($di->perilaku) && $di->perilaku !== '-') {
                                         $disDayCount++;
                                     }
                                 }

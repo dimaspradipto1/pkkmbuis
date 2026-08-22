@@ -63,7 +63,9 @@ class KelulusanDataTable extends DataTable
             ->addColumn('kedisiplinan', function (User $row) {
                 $count = 0;
                 foreach ([$row->kedisiplinanPertama, $row->kedisiplinanKedua, $row->kedisiplinanKetiga] as $di) {
-                    if ($di && !empty($di->kelengkapan_atribut) && !empty($di->ketepatan_waktu) && !empty($di->perilaku)) {
+                    if ($di && !empty($di->kelengkapan_atribut) && $di->kelengkapan_atribut !== '-'
+                            && !empty($di->ketepatan_waktu) && $di->ketepatan_waktu !== '-'
+                            && !empty($di->perilaku) && $di->perilaku !== '-') {
                         $count++;
                     }
                 }
@@ -148,7 +150,9 @@ class KelulusanDataTable extends DataTable
         $disPoints = 0;
         $disDayCount = 0;
         foreach ([$row->kedisiplinanPertama, $row->kedisiplinanKedua, $row->kedisiplinanKetiga] as $di) {
-            if ($di && !empty($di->kelengkapan_atribut) && !empty($di->ketepatan_waktu) && !empty($di->perilaku)) {
+            if ($di && !empty($di->kelengkapan_atribut) && $di->kelengkapan_atribut !== '-'
+                    && !empty($di->ketepatan_waktu) && $di->ketepatan_waktu !== '-'
+                    && !empty($di->perilaku) && $di->perilaku !== '-') {
                 $disDayCount++;
             }
             if ($di) {

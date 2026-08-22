@@ -56,7 +56,9 @@ class SertifikatVerifikasiController extends Controller
 
         $disDayCount = 0;
         foreach ([$user->kedisiplinanPertama, $user->kedisiplinanKedua, $user->kedisiplinanKetiga] as $di) {
-            if ($di && !empty($di->kelengkapan_atribut) && !empty($di->ketepatan_waktu) && !empty($di->perilaku)) {
+            if ($di && !empty($di->kelengkapan_atribut) && $di->kelengkapan_atribut !== '-'
+                    && !empty($di->ketepatan_waktu) && $di->ketepatan_waktu !== '-'
+                    && !empty($di->perilaku) && $di->perilaku !== '-') {
                 $disDayCount++;
             }
         }
