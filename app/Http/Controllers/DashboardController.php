@@ -37,7 +37,14 @@ class DashboardController extends Controller
                 'absen1' => 0,
                 'absen2' => 0,
                 'absen3' => 0,
+                'absenDatang' => 0,
+                'absenPulang' => 0,
+                'totalPresensi' => 0,
                 'absenCount' => 0,
+                'dis1Count' => 0,
+                'dis2Count' => 0,
+                'dis3Count' => 0,
+                'totalKedisiplinan' => 0,
                 'disiplinCount' => 0,
                 'pretestCount' => 0,
                 'posttestCount' => 0,
@@ -117,7 +124,18 @@ class DashboardController extends Controller
                     ];
                 }
 
-                // Attendance Daily Counts
+                // Attendance Daily & Sesi Counts (Datang & Pulang)
+                $absenDatang1 = AbsenPertama::whereIn('user_id', $targetUserIds)->whereNotNull('hadir_pagi')->where('hadir_pagi', '!=', 'Belum Absen')->count();
+                $absenPulang1 = AbsenPertama::whereIn('user_id', $targetUserIds)->whereNotNull('hadir_sore')->where('hadir_sore', '!=', 'Belum Absen')->count();
+                $absenDatang2 = AbsenKedua::whereIn('user_id', $targetUserIds)->whereNotNull('hadir_pagi')->where('hadir_pagi', '!=', 'Belum Absen')->count();
+                $absenPulang2 = AbsenKedua::whereIn('user_id', $targetUserIds)->whereNotNull('hadir_sore')->where('hadir_sore', '!=', 'Belum Absen')->count();
+                $absenDatang3 = AbsenKetiga::whereIn('user_id', $targetUserIds)->whereNotNull('hadir_pagi')->where('hadir_pagi', '!=', 'Belum Absen')->count();
+                $absenPulang3 = AbsenKetiga::whereIn('user_id', $targetUserIds)->whereNotNull('hadir_sore')->where('hadir_sore', '!=', 'Belum Absen')->count();
+
+                $absenDatang = $absenDatang1 + $absenDatang2 + $absenDatang3;
+                $absenPulang = $absenPulang1 + $absenPulang2 + $absenPulang3;
+                $totalPresensi = $absenDatang + $absenPulang;
+
                 $absen1 = AbsenPertama::whereIn('user_id', $targetUserIds)
                     ->where(fn($q) => $q->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen'))
                     ->count();
@@ -140,6 +158,11 @@ class DashboardController extends Controller
                                          ->where(fn($sub) => $sub->whereNotNull('ketepatan_waktu')->where('ketepatan_waktu', '!=', '')->where('ketepatan_waktu', '!=', '-'))
                                          ->where(fn($sub) => $sub->whereNotNull('perilaku')->where('perilaku', '!=', '')->where('perilaku', '!=', '-'));
 
+                $dis1Count = KedisiplinanPertama::whereIn('user_id', $targetUserIds)->where($disFilter)->count();
+                $dis2Count = KedisiplinanKedua::whereIn('user_id', $targetUserIds)->where($disFilter)->count();
+                $dis3Count = KedisiplinanKetiga::whereIn('user_id', $targetUserIds)->where($disFilter)->count();
+                $totalKedisiplinan = $dis1Count + $dis2Count + $dis3Count;
+
                 $disiplinUserIds = collect()
                     ->merge(KedisiplinanPertama::whereIn('user_id', $targetUserIds)->where($disFilter)->pluck('user_id'))
                     ->merge(KedisiplinanKedua::whereIn('user_id', $targetUserIds)->where($disFilter)->pluck('user_id'))
@@ -147,6 +170,8 @@ class DashboardController extends Controller
                     ->unique();
                 $disiplinCount = $disiplinUserIds->count();
 
+                $pretestCount = HasilTest::where('type', 'pretest')->whereIn('user_id', $targetUserIds)->distinct('user_id')->count('user_id');
+                $posttestCount = HasilTest::where('type', 'posttest')->whereIn('user_id', $targetUserIds)->distinct('user_id')->count('user_id');
                 $tugasCount = SoalTugasKelompok::whereIn('user_id', $targetUserIds)
                     ->whereNotNull('link_tugas')
                     ->where('link_tugas', '!=', '')
@@ -247,7 +272,14 @@ class DashboardController extends Controller
                     'absen1',
                     'absen2',
                     'absen3',
+                    'absenDatang',
+                    'absenPulang',
+                    'totalPresensi',
                     'absenCount',
+                    'dis1Count',
+                    'dis2Count',
+                    'dis3Count',
+                    'totalKedisiplinan',
                     'disiplinCount',
                     'pretestCount',
                     'posttestCount',
@@ -281,7 +313,18 @@ class DashboardController extends Controller
             $totalMahasiswa = User::where('role', 'mahasiswa')->count();
             $sertifikatCount = User::where('role', 'mahasiswa')->whereNotNull('nomor_sertifikat')->count();
 
-            // Attendance Daily Counts
+            // Attendance Daily & Sesi Counts (Datang & Pulang)
+            $absenDatang1 = AbsenPertama::whereNotNull('hadir_pagi')->where('hadir_pagi', '!=', 'Belum Absen')->count();
+            $absenPulang1 = AbsenPertama::whereNotNull('hadir_sore')->where('hadir_sore', '!=', 'Belum Absen')->count();
+            $absenDatang2 = AbsenKedua::whereNotNull('hadir_pagi')->where('hadir_pagi', '!=', 'Belum Absen')->count();
+            $absenPulang2 = AbsenKedua::whereNotNull('hadir_sore')->where('hadir_sore', '!=', 'Belum Absen')->count();
+            $absenDatang3 = AbsenKetiga::whereNotNull('hadir_pagi')->where('hadir_pagi', '!=', 'Belum Absen')->count();
+            $absenPulang3 = AbsenKetiga::whereNotNull('hadir_sore')->where('hadir_sore', '!=', 'Belum Absen')->count();
+
+            $absenDatang = $absenDatang1 + $absenDatang2 + $absenDatang3;
+            $absenPulang = $absenPulang1 + $absenPulang2 + $absenPulang3;
+            $totalPresensi = $absenDatang + $absenPulang;
+
             $absen1 = AbsenPertama::where(fn($q) => $q->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen'))->count();
             $absen2 = AbsenKedua::where(fn($q) => $q->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen'))->count();
             $absen3 = AbsenKetiga::where(fn($q) => $q->where('hadir_pagi', '!=', 'Belum Absen')->orWhere('hadir_sore', '!=', 'Belum Absen'))->count();
@@ -297,6 +340,11 @@ class DashboardController extends Controller
             $disFilter = fn($q) => $q->where(fn($sub) => $sub->whereNotNull('kelengkapan_atribut')->where('kelengkapan_atribut', '!=', '')->where('kelengkapan_atribut', '!=', '-'))
                                      ->where(fn($sub) => $sub->whereNotNull('ketepatan_waktu')->where('ketepatan_waktu', '!=', '')->where('ketepatan_waktu', '!=', '-'))
                                      ->where(fn($sub) => $sub->whereNotNull('perilaku')->where('perilaku', '!=', '')->where('perilaku', '!=', '-'));
+
+            $dis1Count = KedisiplinanPertama::where($disFilter)->count();
+            $dis2Count = KedisiplinanKedua::where($disFilter)->count();
+            $dis3Count = KedisiplinanKetiga::where($disFilter)->count();
+            $totalKedisiplinan = $dis1Count + $dis2Count + $dis3Count;
 
             $disiplinUserIds = collect()
                 ->merge(KedisiplinanPertama::where($disFilter)->pluck('user_id'))
@@ -391,7 +439,14 @@ class DashboardController extends Controller
                 'absen1',
                 'absen2',
                 'absen3',
+                'absenDatang',
+                'absenPulang',
+                'totalPresensi',
                 'absenCount',
+                'dis1Count',
+                'dis2Count',
+                'dis3Count',
+                'totalKedisiplinan',
                 'disiplinCount',
                 'pretestCount',
                 'posttestCount',

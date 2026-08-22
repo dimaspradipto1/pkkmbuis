@@ -743,9 +743,9 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
                                 <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Presensi Kehadiran</span>
-                                <h3 class="fw-bold text-dark mb-0 mt-1">{{ number_format($absen1 + $absen2 + $absen3) }}</h3>
+                                <h3 class="fw-bold text-dark mb-0 mt-1">{{ number_format($totalPresensi ?? ($absenDatang + $absenPulang)) }}</h3>
                                 <span class="text-muted extra-small mt-1 d-block">
-                                    H1: <b>{{ $absen1 }}</b> | H2: <b>{{ $absen2 }}</b> | H3: <b>{{ $absen3 }}</b>
+                                    Datang: <b>{{ $absenDatang ?? 0 }}</b> | Pulang: <b>{{ $absenPulang ?? 0 }}</b>
                                 </span>
                             </div>
                             <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff;">
@@ -755,19 +755,19 @@
                     </div>
                 </div>
 
-                {{-- Partisipasi Test --}}
+                {{-- Penilaian Kedisiplinan --}}
                 <div class="col-12 col-sm-6 col-xl-3">
                     <div class="card border-0 shadow-sm rounded-4 h-100 p-3" style="background: linear-gradient(135deg, #ffffff, #eef2ff); border-left: 4px solid #6366f1 !important;">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Partisipasi Ujian</span>
-                                <h3 class="fw-bold text-dark mb-0 mt-1">{{ number_format($pretestCount + $posttestCount) }}</h3>
+                                <span class="text-muted extra-small fw-bold text-uppercase tracking-wider">Kedisiplinan</span>
+                                <h3 class="fw-bold text-dark mb-0 mt-1">{{ number_format($totalKedisiplinan ?? ($dis1Count + $dis2Count + $dis3Count)) }}</h3>
                                 <span class="text-muted extra-small mt-1 d-block">
-                                    Pre: <b>{{ $pretestCount }}</b> | Post: <b>{{ $posttestCount }}</b>
+                                    H1: <b>{{ $dis1Count ?? 0 }}</b> | H2: <b>{{ $dis2Count ?? 0 }}</b> | H3: <b>{{ $dis3Count ?? 0 }}</b>
                                 </span>
                             </div>
                             <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff;">
-                                <i class="bi bi-clipboard-check-fill fs-5"></i>
+                                <i class="bi bi-shield-check fs-5"></i>
                             </div>
                         </div>
                     </div>
