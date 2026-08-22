@@ -12,7 +12,9 @@
     </div>
 
     @php
-        $isMahasiswa = Auth::check() && Auth::user()->role == 'mahasiswa';
+        $userRole = Auth::check() ? Auth::user()->role : 'mahasiswa';
+        $isStaff = in_array($userRole, ['admin', 'superadmin', 'panitia']);
+        $isMahasiswa = !$isStaff;
         $isPreTestDone = (bool) $hasil_pre;
         $isMateriLocked = in_array($id, [1, 2, 3, 4]) && $isMahasiswa && !$isPreTestDone;
 
@@ -36,51 +38,95 @@
             <div class="col-lg-8">
                 <div class="card shadow-sm border-0 rounded-3">
                     <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
-                        <h4 class="fw-bold mb-3" style="color: #012970;">{{ $modul_title }}</h4>
-                        <!-- Tabs -->
-                        <ul class="nav nav-tabs nav-tabs-bordered border-bottom-0" id="modulTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link {{ $activeTab == 'materi' ? 'active' : '' }}" id="materi-tab" data-bs-toggle="tab" data-bs-target="#materi"
-                                    type="button" role="tab" aria-controls="materi"
-                                    aria-selected="{{ $activeTab == 'materi' ? 'true' : 'false' }}">
-                                    @if ($isMateriLocked)
-                                        <i class="bi bi-lock-fill text-warning me-1"></i>
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <h4 class="fw-bold mb-0" style="color: #012970;">{{ $modul_title }}</h4>
+                                @if ($isStaff)
+                                    @if ($modul_is_active)
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill extra-small">
+                                            <i class="bi bi-unlock-fill me-1"></i> Terbuka (Aktif)
+                                        </span>
+                                    @else
+                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1 rounded-pill extra-small">
+                                            <i class="bi bi-lock-fill me-1"></i> Ditutup (Nonaktif)
+                                        </span>
                                     @endif
-                                    Materi
-                                </button>
-                            </li>
-                            @if ($id != 5)
+                                @endif
+                            </div>
+
+                            @if ($isStaff)
+                                <form action="{{ route('modulposttest.toggle-modul', $id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm {{ $modul_is_active ? 'btn-outline-danger' : 'btn-success' }} rounded-pill px-3 fw-bold shadow-sm extra-small">
+                                        <i class="bi {{ $modul_is_active ? 'bi-lock-fill' : 'bi-unlock-fill' }} me-1"></i>
+                                        {{ $modul_is_active ? 'Tutup Akses Modul ' . $id : 'Buka Akses Modul ' . $id }}
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+
+                        @if (!($isMahasiswa && !$modul_is_active))
+                            <!-- Tabs -->
+                            <ul class="nav nav-tabs nav-tabs-bordered border-bottom-0" id="modulTab" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link {{ $activeTab == 'pretest' ? 'active' : '' }}" id="pretest-tab" data-bs-toggle="tab"
-                                        data-bs-target="#pretest" type="button" role="tab" aria-controls="pretest"
-                                        aria-selected="{{ $activeTab == 'pretest' ? 'true' : 'false' }}">
-                                        Pre Test
-                                        @if ($isPreTestDone)
-                                            <i class="bi bi-check-circle-fill text-success ms-1 small"></i>
+                                    <button class="nav-link {{ $activeTab == 'materi' ? 'active' : '' }}" id="materi-tab" data-bs-toggle="tab" data-bs-target="#materi"
+                                        type="button" role="tab" aria-controls="materi"
+                                        aria-selected="{{ $activeTab == 'materi' ? 'true' : 'false' }}">
+                                        @if ($isMateriLocked)
+                                            <i class="bi bi-lock-fill text-warning me-1"></i>
                                         @endif
+                                        Materi
                                     </button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link {{ $activeTab == 'posttest' ? 'active' : '' }}" id="posttest-tab" data-bs-toggle="tab" data-bs-target="#posttest"
-                                        type="button" role="tab" aria-controls="posttest"
-                                        aria-selected="{{ $activeTab == 'posttest' ? 'true' : 'false' }}">Post
-                                        Test</button>
-                                </li>
-                            @else
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link {{ $activeTab == 'tugas' ? 'active' : '' }}" id="tugas-tab" data-bs-toggle="tab"
-                                        data-bs-target="#tugas" type="button" role="tab" aria-controls="tugas"
-                                        aria-selected="{{ $activeTab == 'tugas' ? 'true' : 'false' }}">Tugas Kelompok</button>
-                                </li>
-                            @endif
-                        </ul>
+                                @if ($id != 5)
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link {{ $activeTab == 'pretest' ? 'active' : '' }}" id="pretest-tab" data-bs-toggle="tab"
+                                            data-bs-target="#pretest" type="button" role="tab" aria-controls="pretest"
+                                            aria-selected="{{ $activeTab == 'pretest' ? 'true' : 'false' }}">
+                                            Pre Test
+                                            @if ($isPreTestDone)
+                                                <i class="bi bi-check-circle-fill text-success ms-1 small"></i>
+                                            @endif
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link {{ $activeTab == 'posttest' ? 'active' : '' }}" id="posttest-tab" data-bs-toggle="tab" data-bs-target="#posttest"
+                                            type="button" role="tab" aria-controls="posttest"
+                                            aria-selected="{{ $activeTab == 'posttest' ? 'true' : 'false' }}">Post
+                                            Test</button>
+                                    </li>
+                                @else
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link {{ $activeTab == 'tugas' ? 'active' : '' }}" id="tugas-tab" data-bs-toggle="tab"
+                                            data-bs-target="#tugas" type="button" role="tab" aria-controls="tugas"
+                                            aria-selected="{{ $activeTab == 'tugas' ? 'true' : 'false' }}">Tugas Kelompok</button>
+                                    </li>
+                                @endif
+                            </ul>
+                        @endif
                     </div>
                     <div class="card-body px-4 py-3">
-                        <div class="tab-content pt-2" id="modulTabContent">
+                        @if ($isMahasiswa && !$modul_is_active)
+                            <div class="text-center py-5">
+                                <div class="mb-4">
+                                    <div class="d-inline-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger rounded-circle shadow-sm" style="width: 80px; height: 80px;">
+                                        <i class="bi bi-lock-fill fs-1"></i>
+                                    </div>
+                                </div>
+                                <h4 class="fw-bold text-dark mb-2">Modul {{ $id }} Belum Dibuka</h4>
+                                <p class="text-muted mb-4 mx-auto" style="max-width: 500px;">
+                                    Sesi pembelajaran, materi, pre-test, dan post-test untuk <strong>Modul {{ $id }}</strong> saat ini sedang ditutup atau belum dibuka oleh Panitia. Silakan pantau informasi pembukaan modul.
+                                </p>
+                                <a href="{{ route('dashboard') }}" class="btn btn-outline-primary rounded-pill px-4">
+                                    <i class="bi bi-arrow-left me-1"></i> Kembali ke Dashboard
+                                </a>
+                            </div>
+                        @else
+                            <div class="tab-content pt-2" id="modulTabContent">
                             <!-- Materi Tab Content -->
                             <div class="tab-pane fade {{ $activeTab == 'materi' ? 'show active' : '' }}" id="materi" role="tabpanel" aria-labelledby="materi-tab">
                                 <div class="py-3">
-                                    <h5 class="fw-bold mb-3">Materi Modul {{ $id }}</h5>
+                                    <h5 class="fw-bold mb-3">Materi Modul {{ $display_num }}</h5>
 
                                     @if ($isMateriLocked)
                                         <div class="alert alert-warning border-0 shadow-sm d-flex align-items-center mt-4">
@@ -110,7 +156,7 @@
                                             </div>
                                             <div class="border rounded" style="height: 520px; overflow: hidden;">
                                                 <iframe src="{{ route('materimodul.view', ['id' => $materi_id, 'modul' => $id]) }}" width="100%" height="100%"
-                                                    style="border: none;" title="Materi Modul {{ $id }}">
+                                                    style="border: none;" title="Materi Modul {{ $display_num }}">
                                                     <p>Browser Anda tidak mendukung tampilan PDF.
                                                         <a href="{{ route('materimodul.download', ['id' => $materi_id, 'modul' => $id]) }}">Klik di sini untuk mengunduh.</a>
                                                     </p>
@@ -141,10 +187,10 @@
                                                     <strong>.{{ strtoupper($ext) }}</strong>
                                                 </p>
                                                 <p class="text-muted small mb-4">Klik tombol di bawah untuk mengunduh
-                                                    materi modul {{ $id }}.</p>
+                                                    materi modul {{ $display_num }}.</p>
                                                 <a href="{{ route('materimodul.download', ['id' => $materi_id, 'modul' => $id]) }}"
                                                     class="btn btn-success px-4">
-                                                    <i class="bi bi-download me-2"></i> Unduh Materi Modul {{ $id }}
+                                                    <i class="bi bi-download me-2"></i> Unduh Materi Modul {{ $display_num }}
                                                 </a>
                                             </div>
                                         @endif
@@ -152,7 +198,7 @@
                                         {{-- Link Google Drive tersedia --}}
                                         <div class="text-center py-5">
                                             <i class="bi bi-google text-primary" style="font-size: 4rem;"></i>
-                                            <p class="fw-semibold mt-3 mb-1">Materi Modul {{ $id }} tersedia via Google Drive</p>
+                                            <p class="fw-semibold mt-3 mb-1">Materi Modul {{ $display_num }} tersedia via Google Drive</p>
                                             <p class="text-muted small mb-4">Klik tombol di bawah untuk membuka materi di Google Drive.</p>
                                             <a href="{{ $materi_link }}" target="_blank" class="btn btn-primary px-4">
                                                 <i class="bi bi-box-arrow-up-right me-2"></i> Buka Materi di Google Drive
@@ -162,7 +208,7 @@
                                         {{-- Belum ada file materi --}}
                                         <div class="text-center py-5">
                                             <i class="bi bi-folder2-open text-muted" style="font-size: 4rem;"></i>
-                                            <p class="text-muted mt-3 mb-0">Belum ada materi untuk Modul {{ $id }}.</p>
+                                            <p class="text-muted mt-3 mb-0">Belum ada materi untuk Modul {{ $display_num }}.</p>
                                             <p class="text-muted small">Materi akan ditampilkan setelah diunggah oleh
                                                 admin.</p>
                                         </div>
@@ -449,6 +495,7 @@
                                 </div>
                             @endif
                         </div><!-- End Default Tabs -->
+                        @endif
                     </div>
                 </div>
             </div>
@@ -472,15 +519,30 @@
 
                         <div class="module-list">
                             @foreach ($modules as $m)
+                                @php
+                                    $mActive = $moduleStatuses[$m['id']] ?? true;
+                                @endphp
                                 <a href="?modul={{ $m['id'] }}"
-                                    class="text-decoration-none module-item d-flex align-items-center py-3 {{ $id == $m['id'] ? 'active' : '' }}">
+                                    class="text-decoration-none module-item d-flex align-items-center py-3 {{ $id == $m['id'] ? 'active' : '' }} {{ (!$mActive && $isMahasiswa) ? 'opacity-75' : '' }}">
                                     <div
-                                        class="module-number me-3 text-white fw-bold d-flex align-items-center justify-content-center shadow-sm">
-                                        {{ $m['id'] }}
+                                        class="module-number me-3 text-white fw-bold d-flex align-items-center justify-content-center shadow-sm"
+                                        style="{{ !$mActive ? 'background-color: #6c757d !important;' : '' }}">
+                                        @if (!$mActive && $isMahasiswa)
+                                            <i class="bi bi-lock-fill"></i>
+                                        @else
+                                            {{ $m['id'] }}
+                                        @endif
                                     </div>
-                                    <div>
-                                        <div class="fw-bold text-uppercase module-id" style="font-size: 0.75rem;">MODUL
-                                            {{ $m['id'] }}:</div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="fw-bold text-uppercase module-id" style="font-size: 0.75rem;">MODUL
+                                                {{ $m['id'] }}:</div>
+                                            @if ($mActive)
+                                                <span class="badge bg-success bg-opacity-10 text-success extra-small">Aktif</span>
+                                            @else
+                                                <span class="badge bg-secondary bg-opacity-10 text-secondary extra-small">Tutup</span>
+                                            @endif
+                                        </div>
                                         <div class="text-muted module-title" style="font-size: 0.85rem;">
                                             {{ $m['title'] }}</div>
                                     </div>

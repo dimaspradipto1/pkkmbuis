@@ -16,7 +16,56 @@ class ModulPostTestController extends Controller
      */
     public function index(Request $request)
     {
-        $id = (int) $request->query('modul', 1); // Default to modul 1
+        $user = Auth::user();
+        $isStaff = in_array($user->role, ['admin', 'superadmin', 'panitia']);
+        $moduleStatuses = \App\Models\ModulSetting::getAllStatuses();
+
+        $allModules = [
+            ['id' => 1, 'base_title' => 'Materi 1'],
+            ['id' => 2, 'base_title' => 'Materi 2'],
+            ['id' => 3, 'base_title' => 'Materi 3'],
+            ['id' => 4, 'base_title' => 'Materi 4'],
+            ['id' => 5, 'base_title' => 'Materi 5'],
+        ];
+
+        // Filter and dynamically number modules
+        $modules = [];
+        $seq = 1;
+        foreach ($allModules as $m) {
+            $mActive = $moduleStatuses[$m['id']] ?? true;
+            if ($isStaff || $mActive) {
+                $displayNum = $isStaff ? $m['id'] : $seq;
+                $displayTitle = $isStaff ? $m['base_title'] : "Materi $displayNum";
+                $modules[] = [
+                    'id'          => $m['id'],
+                    'title'       => $displayTitle,
+                    'display_num' => $displayNum,
+                    'is_active'   => $mActive,
+                ];
+                $seq++;
+            }
+        }
+
+        // Determine current selected module ID
+        $requestedId = (int) $request->query('modul', 0);
+        $currentModule = collect($modules)->firstWhere('id', $requestedId);
+
+        if (!$currentModule) {
+            if (!empty($modules)) {
+                $id = $modules[0]['id'];
+                $currentModule = $modules[0];
+            } else {
+                $id = 1;
+                $currentModule = ['id' => 1, 'title' => 'Materi 1', 'display_num' => 1, 'is_active' => false];
+            }
+        } else {
+            $id = $currentModule['id'];
+        }
+
+        $display_num = $currentModule['display_num'];
+        $modul_title = "MODUL $display_num";
+        $modul_is_active = $currentModule['is_active'];
+
         $questions_pre  = collect();
         $questions_post = collect();
         $tugas_kelompok = null;
@@ -58,16 +107,6 @@ class ModulPostTestController extends Controller
         $materi_link  = $materiModul ? $materiModul->$modulLinkKey : null;
         $materi_id    = $materiModul ? $materiModul->id : null;
 
-        $modul_title = "MODUL $id";
-
-        $modules = [
-            ['id' => 1, 'title' => 'Materi 1'],
-            ['id' => 2, 'title' => 'Materi 2'],
-            ['id' => 3, 'title' => 'Materi 3'],
-            ['id' => 4, 'title' => 'Materi 4'],
-            ['id' => 5, 'title' => 'Materi 5'],
-        ];
-
         // Ambil hasil test user jika ada
         $hasil_pre  = HasilTest::where('user_id', Auth::id())->where('modul', $id)->where('type', 'pretest')->first();
         $hasil_post = HasilTest::where('user_id', Auth::id())->where('modul', $id)->where('type', 'posttest')->first();
@@ -78,6 +117,7 @@ class ModulPostTestController extends Controller
             'questions_post',
             'modules',
             'id',
+            'display_num',
             'modul_title',
             'materi_file',
             'materi_link',
@@ -85,7 +125,9 @@ class ModulPostTestController extends Controller
             'hasil_pre',
             'hasil_post',
             'tugas_kelompok',
-            'posttest_is_active'
+            'posttest_is_active',
+            'modul_is_active',
+            'moduleStatuses'
         ));
     }
 
@@ -96,6 +138,11 @@ class ModulPostTestController extends Controller
     {
         $modul_id = (int) $request->input('modul_id');
         $type     = $request->input('type'); // 'pretest' or 'posttest'
+
+        if (Auth::user()->role == 'mahasiswa' && !\App\Models\ModulSetting::isActive($modul_id)) {
+            Alert::error('Akses Ditolak', "Modul {$modul_id} sedang tidak aktif / ditutup oleh Panitia.");
+            return redirect()->back();
+        }
 
         if ($modul_id == 5) {
             Alert::error('Salah Modul', 'Modul 5 tidak memiliki Pre/Post Test.');
@@ -193,6 +240,11 @@ class ModulPostTestController extends Controller
 
     public function uploadTugasKelompok(Request $request)
     {
+        if (Auth::user()->role == 'mahasiswa' && !\App\Models\ModulSetting::isActive(5)) {
+            Alert::error('Akses Ditolak', 'Modul 5 (Tugas Kelompok) sedang tidak aktif / ditutup oleh Panitia.');
+            return redirect()->back()->with('active_tab', 'tugas');
+        }
+
         $request->validate([
             'link_tugas' => 'required|url|max:2048',
         ]);
@@ -224,5 +276,25 @@ class ModulPostTestController extends Controller
         Alert::success('Berhasil', "Sesi Post Test Modul {$modulId} berhasil {$statusStr}.")->toToast()->autoClose(3000);
 
         return redirect()->back()->with('active_tab', 'posttest');
+    }
+
+    public function toggleModulActive($modul)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
+        $modulId = (int) $modul;
+        if ($modulId < 1 || $modulId > 5) {
+            Alert::error('Gagal', 'Modul tidak valid.');
+            return redirect()->back();
+        }
+
+        $isActive = \App\Models\ModulSetting::toggle($modulId);
+        $statusStr = $isActive ? 'DIBUKA (Aktif)' : 'DITUTUP (Nonaktif)';
+
+        Alert::success('Berhasil', "Akses Modul {$modulId} berhasil {$statusStr}.")->toToast()->autoClose(3000);
+
+        return redirect()->back();
     }
 }
