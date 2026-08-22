@@ -24,10 +24,86 @@ class KedisiplinanKeduaController extends Controller
 
     public function index(KedisiplinanKeduaDataTable $dataTable)
     {
+        $authUser = Auth::user();
+        if ($authUser->role == 'kakakpendamping') {
+            $myKelompokIds = \App\Models\Kelompok::where('pendamping_id', $authUser->id)
+                ->orWhereHas('kakakPendampings', fn($q) => $q->where('users.id', $authUser->id))
+                ->pluck('id');
+            $targetUserIds = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->pluck('id');
+            $totalMahasiswa = $targetUserIds->count();
+
+            $sudahAdaData = KedisiplinanKedua::whereIn('user_id', $targetUserIds)
+                ->where(function($q) {
+                    $q->where(function($sub) {
+                        $sub->whereNotNull('kelengkapan_atribut')->where('kelengkapan_atribut', '!=', '')->where('kelengkapan_atribut', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('ketepatan_waktu')->where('ketepatan_waktu', '!=', '')->where('ketepatan_waktu', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('perilaku')->where('perilaku', '!=', '')->where('perilaku', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('catatan')->where('catatan', '!=', '')->where('catatan', '!=', '-');
+                    });
+                })->count();
+
+            $belumAdaData = max(0, $totalMahasiswa - $sudahAdaData);
+        } elseif ($authUser->role == 'dosenpendamping') {
+            $myKelompokIds = \App\Models\Kelompok::whereHas('dosenPendampings', fn($q) => $q->where('users.id', $authUser->id))->pluck('id');
+            $targetUserIds = User::where('role', 'mahasiswa')->whereIn('kelompok_id', $myKelompokIds)->pluck('id');
+            $totalMahasiswa = $targetUserIds->count();
+
+            $sudahAdaData = KedisiplinanKedua::whereIn('user_id', $targetUserIds)
+                ->where(function($q) {
+                    $q->where(function($sub) {
+                        $sub->whereNotNull('kelengkapan_atribut')->where('kelengkapan_atribut', '!=', '')->where('kelengkapan_atribut', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('ketepatan_waktu')->where('ketepatan_waktu', '!=', '')->where('ketepatan_waktu', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('perilaku')->where('perilaku', '!=', '')->where('perilaku', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('catatan')->where('catatan', '!=', '')->where('catatan', '!=', '-');
+                    });
+                })->count();
+
+            $belumAdaData = max(0, $totalMahasiswa - $sudahAdaData);
+        } elseif ($authUser->role == 'mahasiswa') {
+            $totalMahasiswa = 1;
+            $hasData = KedisiplinanKedua::where('user_id', $authUser->id)
+                ->where(function($q) {
+                    $q->where(function($sub) {
+                        $sub->whereNotNull('kelengkapan_atribut')->where('kelengkapan_atribut', '!=', '')->where('kelengkapan_atribut', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('ketepatan_waktu')->where('ketepatan_waktu', '!=', '')->where('ketepatan_waktu', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('perilaku')->where('perilaku', '!=', '')->where('perilaku', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('catatan')->where('catatan', '!=', '')->where('catatan', '!=', '-');
+                    });
+                })->exists();
+
+            $sudahAdaData = $hasData ? 1 : 0;
+            $belumAdaData = $hasData ? 0 : 1;
+        } else {
+            $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+            $sudahAdaData = KedisiplinanKedua::whereHas('user', fn($q) => $q->where('role', 'mahasiswa'))
+                ->where(function($q) {
+                    $q->where(function($sub) {
+                        $sub->whereNotNull('kelengkapan_atribut')->where('kelengkapan_atribut', '!=', '')->where('kelengkapan_atribut', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('ketepatan_waktu')->where('ketepatan_waktu', '!=', '')->where('ketepatan_waktu', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('perilaku')->where('perilaku', '!=', '')->where('perilaku', '!=', '-');
+                    })->orWhere(function($sub) {
+                        $sub->whereNotNull('catatan')->where('catatan', '!=', '')->where('catatan', '!=', '-');
+                    });
+                })->count();
+
+            $belumAdaData = max(0, $totalMahasiswa - $sudahAdaData);
+        }
+
         $attachments = \App\Models\KedisiplinanAttachment::where('category', 'kedisiplinankedua')->latest()->get();
         $notes = \App\Models\KedisiplinanNote::where('category', 'kedisiplinankedua')->latest()->get();
 
-        return $dataTable->render('pages.kedisiplinankedua.index', compact('attachments', 'notes'));
+        return $dataTable->render('pages.kedisiplinankedua.index', compact('attachments', 'notes', 'totalMahasiswa', 'sudahAdaData', 'belumAdaData'));
     }
 
     /**

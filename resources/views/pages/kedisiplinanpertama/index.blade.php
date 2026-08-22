@@ -12,6 +12,54 @@
     </div>
 
     <section class="section">
+        <!-- Stat Cards -->
+        <div class="row g-3 mb-4">
+            <!-- Total Mahasiswa -->
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #3b82f6 !important; transition: all 0.2s ease;">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white shadow-sm" style="width: 48px; height: 48px; min-width: 48px; background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                            <i class="bi bi-people-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">TOTAL MAHASISWA</div>
+                            <div class="fs-4 fw-bold text-dark lh-1 mt-1">{{ number_format($totalMahasiswa ?? 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sudah Ada Data -->
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #10b981 !important; transition: all 0.2s ease;">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white shadow-sm" style="width: 48px; height: 48px; min-width: 48px; background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="bi bi-clipboard-check-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">SUDAH ADA DATA</div>
+                            <div class="fs-4 fw-bold text-success lh-1 mt-1">{{ number_format($sudahAdaData ?? 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Belum Ada Data -->
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #ef4444 !important; transition: all 0.2s ease;">
+                    <div class="card-body d-flex align-items-center p-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3 text-white shadow-sm" style="width: 48px; height: 48px; min-width: 48px; background: linear-gradient(135deg, #ef4444, #dc2626);">
+                            <i class="bi bi-clipboard-x-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-uppercase fw-bold text-muted" style="font-size: 0.72rem; letter-spacing: 0.5px;">BELUM ADA DATA</div>
+                            <div class="fs-4 fw-bold text-danger lh-1 mt-1">{{ number_format($belumAdaData ?? 0) }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-lg-12">
 
