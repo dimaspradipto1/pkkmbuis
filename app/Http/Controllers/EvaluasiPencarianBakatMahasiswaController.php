@@ -27,7 +27,7 @@ class EvaluasiPencarianBakatMahasiswaController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasipencarianbakatmahasiswa.index');
+        return $dataTable->render('pages.evaluasipencarianbakatmahasiswa.index', $this->getEvaluasiStats(EvaluasiPencarianBakatMahasiswa::class));
     }
 
     /**

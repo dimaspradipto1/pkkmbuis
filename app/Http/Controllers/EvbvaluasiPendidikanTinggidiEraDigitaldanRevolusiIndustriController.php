@@ -27,7 +27,7 @@ class EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustriController extend
             }
         }
 
-        return $dataTable->render('pages.evaluasipendidikantinggieradigital.index');
+        return $dataTable->render('pages.evaluasipendidikantinggieradigital.index', $this->getEvaluasiStats(EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri::class));
     }
 
     /**

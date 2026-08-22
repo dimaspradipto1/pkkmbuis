@@ -27,7 +27,7 @@ class EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegaraControll
             }
         }
 
-        return $dataTable->render('pages.evaluasikehidupanberbangsabelanegara.index');
+        return $dataTable->render('pages.evaluasikehidupanberbangsabelanegara.index', $this->getEvaluasiStats(EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegara::class));
     }
 
     /**

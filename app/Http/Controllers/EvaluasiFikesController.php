@@ -27,7 +27,7 @@ class EvaluasiFikesController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasifikes.index');
+        return $dataTable->render('pages.evaluasifikes.index', $this->getEvaluasiStats(EvaluasiFikes::class));
     }
 
     /**

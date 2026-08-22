@@ -27,7 +27,7 @@ class EvaluasiPelayanansistemAkademikController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasipelayanansistemakademik.index');
+        return $dataTable->render('pages.evaluasipelayanansistemakademik.index', $this->getEvaluasiStats(EvaluasiPelayanansistemAkademik::class));
     }
 
     /**

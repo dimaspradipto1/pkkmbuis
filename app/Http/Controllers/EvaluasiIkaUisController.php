@@ -27,7 +27,7 @@ class EvaluasiIkaUisController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasiikauis.index');
+        return $dataTable->render('pages.evaluasiikauis.index', $this->getEvaluasiStats(EvaluasiIkaUis::class));
     }
 
     /**

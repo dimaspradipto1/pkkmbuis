@@ -27,7 +27,7 @@ class EvaluasiFebController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasifeb.index');
+        return $dataTable->render('pages.evaluasifeb.index', $this->getEvaluasiStats(EvaluasiFeb::class));
     }
 
     /**

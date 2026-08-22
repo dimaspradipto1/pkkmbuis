@@ -27,7 +27,7 @@ class PerpustakaanController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasiperpustakaan.index');
+        return $dataTable->render('pages.evaluasiperpustakaan.index', $this->getEvaluasiStats(Perpustakaan::class));
     }
 
     /**

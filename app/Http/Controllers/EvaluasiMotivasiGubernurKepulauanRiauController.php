@@ -26,7 +26,7 @@ class EvaluasiMotivasiGubernurKepulauanRiauController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasimotivasigubernurkepulauanriau.index');
+        return $dataTable->render('pages.evaluasimotivasigubernurkepulauanriau.index', $this->getEvaluasiStats(EvaluasiMotivasiGubernurKepulauanRiau::class));
     }
 
     /**

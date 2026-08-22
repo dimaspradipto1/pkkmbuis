@@ -27,7 +27,7 @@ class EvaluasiKewirausahaanController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasikewirausahaan.index');
+        return $dataTable->render('pages.evaluasikewirausahaan.index', $this->getEvaluasiStats(EvaluasiKewirausahaan::class));
     }
 
     /**

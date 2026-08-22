@@ -27,7 +27,7 @@ class EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkunganController extends
             }
         }
 
-        return $dataTable->render('pages.evaluasipengenalank3l.index');
+        return $dataTable->render('pages.evaluasipengenalank3l.index', $this->getEvaluasiStats(EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkungan::class));
     }
 
     /**

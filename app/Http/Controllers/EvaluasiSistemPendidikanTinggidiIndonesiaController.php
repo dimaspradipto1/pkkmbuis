@@ -27,7 +27,7 @@ class EvaluasiSistemPendidikanTinggidiIndonesiaController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasisistempendidikantinggidiindonesia.index');
+        return $dataTable->render('pages.evaluasisistempendidikantinggidiindonesia.index', $this->getEvaluasiStats(EvaluasiSistemPendidikanTinggidiIndonesia::class));
     }
 
     /**

@@ -26,7 +26,7 @@ class EvaluasiMotivasiWaliKotaBatamController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasimotivasiwalikotabatam.index');
+        return $dataTable->render('pages.evaluasimotivasiwalikotabatam.index', $this->getEvaluasiStats(EvaluasiMotivasiWaliKotaBatam::class));
     }
 
     /**

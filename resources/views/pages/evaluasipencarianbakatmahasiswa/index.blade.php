@@ -23,6 +23,9 @@
     </div>
 
     <section class="section">
+        @include('partials.evaluasi-stats')
+
+        {{-- Individual Responses DataTable --}}
         <div class="row">
             <div class="col-lg-12">
                 <div class="card border-0 shadow-sm rounded-3">

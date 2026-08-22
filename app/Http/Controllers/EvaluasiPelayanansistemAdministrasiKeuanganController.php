@@ -27,7 +27,7 @@ class EvaluasiPelayanansistemAdministrasiKeuanganController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasipelayanansistemadministrasikeuangan.index');
+        return $dataTable->render('pages.evaluasipelayanansistemadministrasikeuangan.index', $this->getEvaluasiStats(EvaluasiPelayanansistemAdministrasiKeuangan::class));
     }
 
     /**

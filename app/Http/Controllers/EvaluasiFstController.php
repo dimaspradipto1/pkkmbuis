@@ -27,7 +27,7 @@ class EvaluasiFstController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasifst.index');
+        return $dataTable->render('pages.evaluasifst.index', $this->getEvaluasiStats(EvaluasiFst::class));
     }
 
     /**

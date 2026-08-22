@@ -209,23 +209,26 @@ class EvaluasiPengenalanWawasanIbnuSinaController extends Controller
             $chartValues[] = $item['rerata_fakultas'];
         }
 
-        return $dataTable->render('pages.evaluasipengenalanwawasanibnusina.index', compact(
-            'rekapData',
-            'totalRespondents',
-            'overallAvgNI',
-            'overallNIK',
-            'overallMutu',
-            'overallKategori',
-            'overallBadge',
-            'facultyList',
-            'facultyShortNames',
-            'matrixFakultas',
-            'avgTcrPerFaculty',
-            'kategoriPerFaculty',
-            'overallRerataTCR',
-            'overallRerataKategori',
-            'chartCategories',
-            'chartValues'
+        return $dataTable->render('pages.evaluasipengenalanwawasanibnusina.index', array_merge(
+            $this->getEvaluasiStats(EvaluasiPengenalanWawasanIbnuSina::class),
+            compact(
+                'rekapData',
+                'totalRespondents',
+                'overallAvgNI',
+                'overallNIK',
+                'overallMutu',
+                'overallKategori',
+                'overallBadge',
+                'facultyList',
+                'facultyShortNames',
+                'matrixFakultas',
+                'avgTcrPerFaculty',
+                'kategoriPerFaculty',
+                'overallRerataTCR',
+                'overallRerataKategori',
+                'chartCategories',
+                'chartValues'
+            )
         ));
     }
 

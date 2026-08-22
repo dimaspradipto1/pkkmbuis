@@ -27,7 +27,7 @@ class EvaluasiPelayananKemahasiswaanPusatPrestasiController extends Controller
             }
         }
 
-        return $dataTable->render('pages.evaluasipelayanankemahasiswaanpusatprestasi.index');
+        return $dataTable->render('pages.evaluasipelayanankemahasiswaanpusatprestasi.index', $this->getEvaluasiStats(EvaluasiPelayananKemahasiswaanPusatPrestasi::class));
     }
 
     /**
