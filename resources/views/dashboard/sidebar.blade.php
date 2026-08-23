@@ -325,6 +325,13 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('kelulusan.*') ? '' : 'collapsed' }}" href="{{ route('kelulusan.index') }}">
+                    <i class="bi bi-patch-check-fill text-success"></i>
+                    <span>Hasil Kelulusan Mahasiswa</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('hasiltest.*') ? '' : 'collapsed' }}" href="{{ route('hasiltest.index') }}">
                     <i class="bi bi-clipboard-data-fill"></i>
                     <span>Hasil Test Mahasiswa</span>

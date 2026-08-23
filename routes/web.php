@@ -83,6 +83,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::get('rekap-evaluasi', [RekapEvaluasiController::class, 'index'])->name('rekapevaluasi.index');
     Route::get('rekap-observasi', [\App\Http\Controllers\RekapObservasiController::class, 'index'])->name('rekapobservasi.index');
     Route::get('kelulusan', [\App\Http\Controllers\KelulusanController::class, 'index'])->name('kelulusan.index');
+    Route::get('kelulusan/sertifikat-data/{id}', [\App\Http\Controllers\KelulusanController::class, 'getSertifikatData'])->name('kelulusan.sertifikatData');
     Route::post('kelulusan/{id}/toggle', [\App\Http\Controllers\KelulusanController::class, 'toggle'])->name('kelulusan.toggle');
     Route::post('kelulusan/bulk-toggle', [\App\Http\Controllers\KelulusanController::class, 'bulkToggle'])->name('kelulusan.bulkToggle');
     Route::get('hasiltest/export', [HasilTestController::class, 'export'])->name('hasiltest.export');
