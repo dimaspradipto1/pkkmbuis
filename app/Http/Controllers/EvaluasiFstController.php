@@ -16,6 +16,12 @@ class EvaluasiFstController extends Controller
     public function index(EvaluasiFstDataTable $dataTable)
     {
         if (Auth::user()->role == 'mahasiswa') {
+            $userFaculty = Auth::user()->faculty_code;
+            if ($userFaculty && $userFaculty !== 'FST') {
+                Alert::warning('Perhatian', 'Form evaluasi ini khusus untuk mahasiswa Fakultas Sains & Teknologi (FST).')->toToast()->autoClose(4000);
+                return redirect()->route('dashboard.index');
+            }
+
             $evaluasi = EvaluasiFst::where('user_id', Auth::id())->first();
             $questions = EvaluasiFst::questions();
             $saranFields = EvaluasiFst::saranFields();
@@ -36,6 +42,12 @@ class EvaluasiFstController extends Controller
     public function create()
     {
         if (Auth::user()->role == 'mahasiswa') {
+            $userFaculty = Auth::user()->faculty_code;
+            if ($userFaculty && $userFaculty !== 'FST') {
+                Alert::warning('Perhatian', 'Form evaluasi ini khusus untuk mahasiswa Fakultas Sains & Teknologi (FST).')->toToast()->autoClose(4000);
+                return redirect()->route('dashboard.index');
+            }
+
             $evaluasi = EvaluasiFst::where('user_id', Auth::id())->first();
             if ($evaluasi) {
                 return view('pages.evaluasifst.completed', compact('evaluasi'));
@@ -52,6 +64,12 @@ class EvaluasiFstController extends Controller
     public function store(EvaluasiFstRequest $request)
     {
         if (Auth::user()->role == 'mahasiswa') {
+            $userFaculty = Auth::user()->faculty_code;
+            if ($userFaculty && $userFaculty !== 'FST') {
+                Alert::warning('Perhatian', 'Form evaluasi ini khusus untuk mahasiswa Fakultas Sains & Teknologi (FST).')->toToast()->autoClose(4000);
+                return redirect()->route('dashboard.index');
+            }
+
             $existing = EvaluasiFst::where('user_id', Auth::id())->first();
             if ($existing) {
                 $existing->update($request->validated());

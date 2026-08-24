@@ -19,14 +19,13 @@ class KelulusanDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         $activeMenus = EvaluasiMenu::available()->where('is_active', true)->get();
-        $requiredEvaluasiTotal = $activeMenus->count();
 
-        // One query per active evaluasi model instead of one per student row.
+        // One query per active evaluasi model keyed by menu ID.
         $completedUserIdSets = [];
         foreach ($activeMenus as $menu) {
             $modelClass = $menu->model_class;
             if ($modelClass) {
-                $completedUserIdSets[] = $modelClass::pluck('user_id')->flip();
+                $completedUserIdSets[$menu->id] = $modelClass::pluck('user_id')->flip();
             }
         }
 
@@ -44,7 +43,7 @@ class KelulusanDataTable extends DataTable
             $allStudents = (clone $query)->get();
             $matchedIds = [];
             foreach ($allStudents as $student) {
-                [$isAllComplete, $isPassed, $finalScore] = $this->computeStatus($student, $completedUserIdSets, $requiredEvaluasiTotal);
+                [$isAllComplete, $isPassed, $finalScore] = $this->computeStatus($student, $completedUserIdSets, $activeMenus);
                 if ($statusFilter === 'lulus' && $isAllComplete && $isPassed) {
                     $matchedIds[] = $student->id;
                 } elseif ($statusFilter === 'tidak_lulus' && $isAllComplete && !$isPassed) {
@@ -129,16 +128,20 @@ class KelulusanDataTable extends DataTable
                 }
                 return '<span class="badge ' . ($complete ? 'bg-success text-white' : 'bg-warning text-dark') . ' rounded-pill px-2 py-1 text-nowrap">' . ($complete ? '1' : '0') . '/1</span>';
             })
-            ->addColumn('evaluasi', function (User $row) use ($completedUserIdSets, $requiredEvaluasiTotal) {
+            ->addColumn('evaluasi', function (User $row) use ($completedUserIdSets, $activeMenus) {
+                $relevantMenus = $activeMenus->filter(fn($m) => $m->matchesUserFaculty($row));
+                $requiredTotal = $relevantMenus->count();
                 $completed = 0;
-                foreach ($completedUserIdSets as $set) {
-                    if (isset($set[$row->id])) $completed++;
+                foreach ($relevantMenus as $menu) {
+                    if (isset($completedUserIdSets[$menu->id][$row->id])) {
+                        $completed++;
+                    }
                 }
-                $complete = $requiredEvaluasiTotal === 0 || $completed >= $requiredEvaluasiTotal;
-                return '<span class="badge ' . ($complete ? 'bg-success text-white' : 'bg-warning text-dark') . ' rounded-pill px-2 py-1 text-nowrap">' . $completed . '/' . $requiredEvaluasiTotal . '</span>';
+                $complete = $requiredTotal === 0 || $completed >= $requiredTotal;
+                return '<span class="badge ' . ($complete ? 'bg-success text-white' : 'bg-warning text-dark') . ' rounded-pill px-2 py-1 text-nowrap">' . $completed . '/' . $requiredTotal . '</span>';
             })
-            ->addColumn('status_kelulusan', function (User $row) use ($completedUserIdSets, $requiredEvaluasiTotal) {
-                [$isAllComplete, $isPassed, $finalScore] = $this->computeStatus($row, $completedUserIdSets, $requiredEvaluasiTotal);
+            ->addColumn('status_kelulusan', function (User $row) use ($completedUserIdSets, $activeMenus) {
+                [$isAllComplete, $isPassed, $finalScore] = $this->computeStatus($row, $completedUserIdSets, $activeMenus);
 
                 if (!$isAllComplete) {
                     return '<span class="badge bg-secondary bg-opacity-75 rounded-pill px-3 py-2 text-white fw-semibold text-nowrap" style="background: #64748b !important;"><i class="bi bi-clock-history me-1 text-white"></i>Belum Lengkap</span>';
@@ -148,8 +151,8 @@ class KelulusanDataTable extends DataTable
                     ? '<span class="badge bg-success text-white rounded-pill px-3 py-2 fw-bold shadow-sm text-nowrap" style="background: #15803d !important;"><i class="bi bi-check-circle-fill me-1 text-white"></i>LULUS (' . number_format($finalScore, 1) . ')</span>'
                     : '<span class="badge bg-danger text-white rounded-pill px-3 py-2 fw-bold shadow-sm text-nowrap" style="background: #dc2626 !important;"><i class="bi bi-x-circle-fill me-1 text-white"></i>TIDAK LULUS (' . number_format($finalScore, 1) . ')</span>';
             })
-            ->addColumn('nomor_sertifikat', function (User $row) use ($sertifikatSetting, $completedUserIdSets, $requiredEvaluasiTotal) {
-                [$isAllComplete, $isPassed, $finalScore] = $this->computeStatus($row, $completedUserIdSets, $requiredEvaluasiTotal);
+            ->addColumn('nomor_sertifikat', function (User $row) use ($sertifikatSetting, $completedUserIdSets, $activeMenus) {
+                [$isAllComplete, $isPassed, $finalScore] = $this->computeStatus($row, $completedUserIdSets, $activeMenus);
 
                 if ($isAllComplete && $isPassed) {
                     if ($row->nomor_sertifikat) {
@@ -162,8 +165,8 @@ class KelulusanDataTable extends DataTable
                     return '<span class="badge bg-secondary bg-opacity-75 px-3 py-2 rounded-pill text-white fw-semibold text-nowrap" style="background: #64748b !important; font-size: 0.78rem;">Belum Diterbitkan</span>';
                 }
             })
-            ->addColumn('sertifikat_action', function (User $row) use ($completedUserIdSets, $requiredEvaluasiTotal) {
-                [$isAllComplete, $isPassed, $finalScore] = $this->computeStatus($row, $completedUserIdSets, $requiredEvaluasiTotal);
+            ->addColumn('sertifikat_action', function (User $row) use ($completedUserIdSets, $activeMenus) {
+                [$isAllComplete, $isPassed, $finalScore] = $this->computeStatus($row, $completedUserIdSets, $activeMenus);
 
                 if ($isAllComplete && $isPassed) {
                     return '
@@ -174,11 +177,7 @@ class KelulusanDataTable extends DataTable
                         </button>
                     ';
                 } else {
-                    return '
-                        <button type="button" class="btn btn-sm btn-secondary rounded-pill px-3 py-1 opacity-50 text-white text-nowrap d-inline-flex align-items-center justify-content-center gap-1" style="min-width: 110px; background: #94a3b8; border-color: #94a3b8;" disabled title="Persyaratan kelulusan belum lengkap">
-                            <i class="bi bi-download text-white"></i> Unduh PNG
-                        </button>
-                    ';
+                    return '<span class="text-muted small">-</span>';
                 }
             })
             ->addColumn('kelulusan_is_active', function (User $row) {
@@ -200,16 +199,16 @@ class KelulusanDataTable extends DataTable
                     </div>
                 ';
             })
-            ->rawColumns(['name', 'kelompok', 'absensi', 'kedisiplinan', 'pretest', 'posttest', 'tugas', 'evaluasi', 'status_kelulusan', 'nomor_sertifikat', 'sertifikat_action', 'kelulusan_is_active']);
+            ->rawColumns(['name', 'kelompok', 'absensi', 'kedisiplinan', 'pretest', 'posttest', 'tugas', 'evaluasi', 'status_kelulusan', 'nomor_sertifikat', 'sertifikat_action', 'kelulusan_is_active'])
+            ->setRowId('id');
     }
 
     /**
-     * Mirrors the completeness/score logic in resources/views/dashboard/index.blade.php
-     * so the admin table and the student-facing card never disagree.
+     * Compute completion status, pass/fail result, and score.
      *
      * @return array{0: bool, 1: bool, 2: float}
      */
-    protected function computeStatus(User $row, array $completedUserIdSets, int $requiredEvaluasiTotal): array
+    protected function computeStatus(User $row, array $completedUserIdSets, $activeMenus): array
     {
         $absCount = 0;
         foreach ([$row->absenPertama, $row->absenKedua, $row->absenKetiga] as $ab) {
@@ -252,9 +251,13 @@ class KelulusanDataTable extends DataTable
 
         $tugasComplete = !$isM5Active || (bool) $row->tugasKelompok;
 
+        $relevantMenus = $activeMenus->filter(fn($m) => $m->matchesUserFaculty($row));
+        $requiredEvaluasiTotal = $relevantMenus->count();
         $completedEvaluasi = 0;
-        foreach ($completedUserIdSets as $set) {
-            if (isset($set[$row->id])) $completedEvaluasi++;
+        foreach ($relevantMenus as $menu) {
+            if (isset($completedUserIdSets[$menu->id][$row->id])) {
+                $completedEvaluasi++;
+            }
         }
         $evaluasiComplete = $requiredEvaluasiTotal === 0 || $completedEvaluasi >= $requiredEvaluasiTotal;
 

@@ -73,6 +73,70 @@ class EvaluasiMenu extends Model
         return self::MODEL_MAP_BY_ROUTE[$this->route_name] ?? self::MODEL_MAP_BY_NOMOR[$this->nomor] ?? null;
     }
 
+    public const FACULTY_ROUTES = [
+        'evaluasifikes.index' => 'FIKES',
+        'evaluasifst.index'   => 'FST',
+        'evaluasifeb.index'   => 'FEB',
+    ];
+
+    public function getFacultyCodeAttribute(): ?string
+    {
+        return self::FACULTY_ROUTES[$this->route_name] ?? null;
+    }
+
+    public function isFacultyMenu(): bool
+    {
+        return isset(self::FACULTY_ROUTES[$this->route_name]);
+    }
+
+    public function matchesUserFaculty(?User $user): bool
+    {
+        if (!$this->isFacultyMenu()) {
+            return true;
+        }
+
+        if (!$user) {
+            return true;
+        }
+
+        if ($user->role !== 'mahasiswa') {
+            return true;
+        }
+
+        $userFacultyCode = $user->faculty_code;
+        if ($userFacultyCode) {
+            return $this->faculty_code === $userFacultyCode;
+        }
+
+        $fak = strtoupper($user->fakultas ?? '');
+        if ($this->faculty_code === 'FIKES' && (str_contains($fak, 'FIKES') || str_contains($fak, 'KESEHATAN'))) {
+            return true;
+        }
+        if ($this->faculty_code === 'FST' && (str_contains($fak, 'FST') || (str_contains($fak, 'SAINS') && str_contains($fak, 'TEKNOLOGI')))) {
+            return true;
+        }
+        if ($this->faculty_code === 'FEB' && (str_contains($fak, 'FEB') || (str_contains($fak, 'EKONOMI') && str_contains($fak, 'BISNIS')))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function getMenusForUser(?User $user, bool $onlyActive = false)
+    {
+        $query = self::available()->orderBy('nomor');
+        if ($onlyActive) {
+            $query->where('is_active', true);
+        }
+        $menus = $query->get();
+
+        if (!$user || $user->role !== 'mahasiswa') {
+            return $menus;
+        }
+
+        return $menus->filter(fn($menu) => $menu->matchesUserFaculty($user))->values();
+    }
+
     public function getCleanNamaAttribute(): string
     {
         return preg_replace('/^\d+\.\s*/', '', $this->nama);

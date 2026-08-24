@@ -49,13 +49,13 @@ class KelulusanController extends Controller
         $isM5Active = ModulSetting::isActive(5);
 
         $activeEvaluasiMenus = EvaluasiMenu::available()->where('is_active', true)->get();
-        $requiredEvaluasiTotal = $activeEvaluasiMenus->count();
+        $requiredEvaluasiTotal = $activeEvaluasiMenus->filter(fn($m) => !$m->isFacultyMenu())->count() + ($activeEvaluasiMenus->contains(fn($m) => $m->isFacultyMenu()) ? 1 : 0);
 
         $completedUserIdSets = [];
         foreach ($activeEvaluasiMenus as $menu) {
             $modelClass = $menu->model_class;
             if ($modelClass) {
-                $completedUserIdSets[] = $modelClass::pluck('user_id')->flip();
+                $completedUserIdSets[$menu->id] = $modelClass::pluck('user_id')->flip();
             }
         }
 
@@ -126,11 +126,15 @@ class KelulusanController extends Controller
             if ($tugasComplete) $countCompleteTugas++;
 
             // 6. Evaluasi Materi
+            $studentRelevantMenus = $activeEvaluasiMenus->filter(fn($m) => $m->matchesUserFaculty($student));
+            $studentRequiredTotal = $studentRelevantMenus->count();
             $completedEvaluasi = 0;
-            foreach ($completedUserIdSets as $set) {
-                if (isset($set[$student->id])) $completedEvaluasi++;
+            foreach ($studentRelevantMenus as $menu) {
+                if (isset($completedUserIdSets[$menu->id][$student->id])) {
+                    $completedEvaluasi++;
+                }
             }
-            $evaluasiComplete = ($requiredEvaluasiTotal === 0) || ($completedEvaluasi >= $requiredEvaluasiTotal);
+            $evaluasiComplete = ($studentRequiredTotal === 0) || ($completedEvaluasi >= $studentRequiredTotal);
             if ($evaluasiComplete) $countCompleteEvaluasi++;
 
             $isAllComplete = $absComplete && $disComplete && $pretestComplete && $posttestComplete && $tugasComplete && $evaluasiComplete;

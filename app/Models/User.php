@@ -67,6 +67,21 @@ class User extends Authenticatable
         ];
     }
 
+    public function getFacultyCodeAttribute(): ?string
+    {
+        $fak = strtoupper($this->fakultas ?? '');
+        if (str_contains($fak, 'FIKES') || str_contains($fak, 'KESEHATAN')) {
+            return 'FIKES';
+        }
+        if (str_contains($fak, 'FST') || (str_contains($fak, 'SAINS') && str_contains($fak, 'TEKNOLOGI'))) {
+            return 'FST';
+        }
+        if (str_contains($fak, 'FEB') || (str_contains($fak, 'EKONOMI') && str_contains($fak, 'BISNIS'))) {
+            return 'FEB';
+        }
+        return null;
+    }
+
     public function absenPertama()
     {
         return $this->hasOne(AbsenPertama::class);

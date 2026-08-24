@@ -16,6 +16,12 @@ class EvaluasiFikesController extends Controller
     public function index(EvaluasiFikesDataTable $dataTable)
     {
         if (Auth::user()->role == 'mahasiswa') {
+            $userFaculty = Auth::user()->faculty_code;
+            if ($userFaculty && $userFaculty !== 'FIKES') {
+                Alert::warning('Perhatian', 'Form evaluasi ini khusus untuk mahasiswa Fakultas Ilmu Kesehatan (FIKes).')->toToast()->autoClose(4000);
+                return redirect()->route('dashboard.index');
+            }
+
             $evaluasi = EvaluasiFikes::where('user_id', Auth::id())->first();
             $questions = EvaluasiFikes::questions();
             $saranFields = EvaluasiFikes::saranFields();
@@ -36,6 +42,12 @@ class EvaluasiFikesController extends Controller
     public function create()
     {
         if (Auth::user()->role == 'mahasiswa') {
+            $userFaculty = Auth::user()->faculty_code;
+            if ($userFaculty && $userFaculty !== 'FIKES') {
+                Alert::warning('Perhatian', 'Form evaluasi ini khusus untuk mahasiswa Fakultas Ilmu Kesehatan (FIKes).')->toToast()->autoClose(4000);
+                return redirect()->route('dashboard.index');
+            }
+
             $evaluasi = EvaluasiFikes::where('user_id', Auth::id())->first();
             if ($evaluasi) {
                 return view('pages.evaluasifikes.completed', compact('evaluasi'));
@@ -52,6 +64,12 @@ class EvaluasiFikesController extends Controller
     public function store(EvaluasiFikesRequest $request)
     {
         if (Auth::user()->role == 'mahasiswa') {
+            $userFaculty = Auth::user()->faculty_code;
+            if ($userFaculty && $userFaculty !== 'FIKES') {
+                Alert::warning('Perhatian', 'Form evaluasi ini khusus untuk mahasiswa Fakultas Ilmu Kesehatan (FIKes).')->toToast()->autoClose(4000);
+                return redirect()->route('dashboard.index');
+            }
+
             $existing = EvaluasiFikes::where('user_id', Auth::id())->first();
             if ($existing) {
                 $existing->update($request->validated());

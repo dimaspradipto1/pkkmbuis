@@ -81,9 +81,10 @@ class SertifikatVerifikasiController extends Controller
         $tugasComplete = !$isM5Active || SoalTugasKelompok::where('user_id', $user->id)->exists();
 
         $activeEvaluasiMenus = EvaluasiMenu::available()->where('is_active', true)->get();
-        $requiredEvaluasiTotal = $activeEvaluasiMenus->count();
+        $studentRelevantMenus = $activeEvaluasiMenus->filter(fn($m) => $m->matchesUserFaculty($user));
+        $requiredEvaluasiTotal = $studentRelevantMenus->count();
         $completedEvaluasiTotal = 0;
-        foreach ($activeEvaluasiMenus as $menu) {
+        foreach ($studentRelevantMenus as $menu) {
             $modelClass = $menu->model_class;
             if ($modelClass && $modelClass::where('user_id', $user->id)->exists()) {
                 $completedEvaluasiTotal++;

@@ -2339,13 +2339,12 @@
                                 $tugasComplete = !$isM5Active || ($tugasCountUser >= 1);
 
                                 // 6. Evaluasi Penyampaian Materi
-                                $activeEvaluasiMenus = \App\Models\EvaluasiMenu::available()->where('is_active', true)->get();
-                                $userFakultas = strtoupper($user->fakultas ?? '');
+                                $studentEvaluasiMenus = \App\Models\EvaluasiMenu::getMenusForUser($user, true);
 
                                 $requiredEvaluasiTotal = 0;
                                 $completedEvaluasiTotal = 0;
 
-                                foreach ($activeEvaluasiMenus as $menu) {
+                                foreach ($studentEvaluasiMenus as $menu) {
                                     $modelClass = $menu->model_class;
                                     $requiredEvaluasiTotal++;
                                     if ($modelClass && $modelClass::where('user_id', $userId)->exists()) {

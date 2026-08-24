@@ -101,7 +101,7 @@
 
             @if ($canSeeEvaluasi)
                 @php
-                    $evaluasiMenus = \App\Models\EvaluasiMenu::available()->orderBy('nomor')->get();
+                    $evaluasiMenus = \App\Models\EvaluasiMenu::getMenusForUser(Auth::user());
                 @endphp
                 <li class="nav-item">
                     <a class="nav-link {{ (request()->routeIs('evaluasi*') || request()->routeIs('perpustakaan*')) ? '' : 'collapsed' }}" data-bs-target="#evaluasi" data-bs-toggle="collapse" href="#">
