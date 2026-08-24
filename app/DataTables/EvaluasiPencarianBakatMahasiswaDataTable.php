@@ -31,6 +31,22 @@ class EvaluasiPencarianBakatMahasiswaDataTable extends DataTable
             ->addColumn('user_kelompok', function ($item) {
                 return ($item->user && $item->user->kelompok) ? $item->user->kelompok->nama_kelompok : '-';
             })
+            ->filterColumn('user_name', function ($query, $keyword) {
+                $query->whereHas('user', function ($q) use ($keyword) {
+                    $q->where('name', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('user_npm', function ($query, $keyword) {
+                $query->whereHas('user', function ($q) use ($keyword) {
+                    $q->where('id_pendaftar', 'like', "%{$keyword}%")
+                        ->orWhere('nim', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('user_kelompok', function ($query, $keyword) {
+                $query->whereHas('user.kelompok', function ($q) use ($keyword) {
+                    $q->where('nama_kelompok', 'like', "%{$keyword}%");
+                });
+            })
             ->editColumn('created_at', function ($item) {
                 return $item->created_at ? $item->created_at->format('d-m-Y H:i') : '-';
             })
