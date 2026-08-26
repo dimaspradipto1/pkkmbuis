@@ -31,6 +31,9 @@ class EvaluasiPelayanansistemAdministrasiKeuanganDataTable extends DataTable
             ->addColumn('user_npm', function ($item) {
                 return $item->user ? $item->user->id_pendaftar : '-';
             })
+            ->addColumn('user_fakultas', function ($item) {
+                return $item->user ? ($item->user->fakultas ?: '-') : '-';
+            })
             ->addColumn('user_kelompok', function ($item) {
                 return ($item->user && $item->user->kelompok) ? $item->user->kelompok->nama_kelompok : '-';
             })
@@ -43,6 +46,11 @@ class EvaluasiPelayanansistemAdministrasiKeuanganDataTable extends DataTable
                 $query->whereHas('user', function ($q) use ($keyword) {
                     $q->where('id_pendaftar', 'like', "%{$keyword}%")
                         ->orWhere('nim', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('user_fakultas', function ($query, $keyword) {
+                $query->whereHas('user', function ($q) use ($keyword) {
+                    $q->where('fakultas', 'like', "%{$keyword}%");
                 });
             })
             ->filterColumn('user_kelompok', function ($query, $keyword) {
@@ -116,6 +124,7 @@ class EvaluasiPelayanansistemAdministrasiKeuanganDataTable extends DataTable
         $columns[] = Column::make('DT_RowIndex')->title('No')->searchable(false)->orderable(false)->width(50)->addClass('text-center');
         $columns[] = Column::make('user_name')->title('Nama Mahasiswa');
         $columns[] = Column::make('user_npm')->title('NPM / ID Pendaftar');
+        $columns[] = Column::make('user_fakultas')->title('Fakultas');
         $columns[] = Column::make('user_kelompok')->title('Kelompok');
         $columns[] = Column::make('created_at')->title('Waktu Mengisi');
 

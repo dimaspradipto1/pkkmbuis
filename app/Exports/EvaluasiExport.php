@@ -32,6 +32,7 @@ class EvaluasiExport implements FromCollection, WithHeadings, WithEvents, Should
                 'no'            => $index + 1,
                 'nama'          => $item->user->name ?? '-',
                 'npm'           => $item->user->id_pendaftar ?? '-',
+                'fakultas'      => $item->user->fakultas ?? '-',
                 'kelompok'      => $item->user->kelompok->nama_kelompok ?? '-',
                 'waktu_mengisi' => $item->created_at ? $item->created_at->format('d-m-Y H:i') : '-',
             ];
@@ -53,6 +54,7 @@ class EvaluasiExport implements FromCollection, WithHeadings, WithEvents, Should
             'NO',
             'NAMA MAHASISWA',
             'NPM / ID PENDAFTAR',
+            'FAKULTAS',
             'KELOMPOK',
             'WAKTU MENGISI',
         ];
@@ -148,8 +150,8 @@ class EvaluasiExport implements FromCollection, WithHeadings, WithEvents, Should
                     $sheet->getStyle("A5:A{$highestRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                     // Align center NPM column
                     $sheet->getStyle("C5:C{$highestRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                    // Align center Waktu Mengisi column
-                    $sheet->getStyle("E5:E{$highestRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                    // Align center Waktu Mengisi column (now column F)
+                    $sheet->getStyle("F5:F{$highestRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 }
             },
         ];

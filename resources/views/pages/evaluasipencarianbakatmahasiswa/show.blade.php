@@ -37,6 +37,7 @@
                 <div class="col-md-6">
                     <p class="mb-1"><strong>Nama Mahasiswa:</strong> {{ $evaluasi->user->name ?? '-' }}</p>
                     <p class="mb-1"><strong>NPM / ID Pendaftar:</strong> {{ $evaluasi->user->id_pendaftar ?? '-' }}</p>
+                    <p class="mb-1"><strong>Fakultas:</strong> {{ $evaluasi->user->fakultas ?? '-' }}</p>
                     <p class="mb-0"><strong>Kelompok:</strong> {{ $evaluasi->user->kelompok->nama_kelompok ?? '-' }}</p>
                 </div>
                 <div class="col-md-6 text-md-end mt-3 mt-md-0">

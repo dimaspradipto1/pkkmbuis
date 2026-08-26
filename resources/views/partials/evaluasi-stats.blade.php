@@ -1,5 +1,5 @@
 <!-- Evaluasi Stat Cards -->
-<div class="row g-3 mb-4">
+<div class="row g-3 mb-3">
     <!-- Total Mahasiswa -->
     <div class="col-12 col-sm-6 col-xl-4">
         <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid #3b82f6 !important; transition: all 0.2s ease;">
@@ -45,3 +45,49 @@
         </div>
     </div>
 </div>
+
+@if (!empty($facultyStats) && empty($isFacultySpecific))
+    <!-- Cards Progres Per Fakultas -->
+    <div class="row g-3 mb-4">
+        @foreach ($facultyStats as $fak)
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100 mb-0" style="border-left: 5px solid {{ $fak['border_color'] }} !important; background: #ffffff;">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm"
+                                     style="width: 40px; height: 40px; min-width: 40px; background: {{ $fak['bg_gradient'] }};">
+                                    <i class="bi {{ $fak['icon'] }} fs-6"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-dark" style="font-size: 0.85rem; line-height: 1.2;">{{ $fak['code'] }}</div>
+                                    <div class="text-muted extra-small text-truncate" style="max-width: 170px;" title="{{ $fak['fullName'] }}">{{ $fak['name'] }}</div>
+                                </div>
+                            </div>
+                            <span class="badge {{ $fak['badge_bg'] }} border rounded-pill px-2.5 py-1 fw-bold" style="font-size: 0.72rem;">
+                                {{ $fak['persen'] }}%
+                            </span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-baseline mt-2 mb-1">
+                            <div>
+                                <span class="fs-4 fw-bold text-dark lh-1">{{ number_format($fak['sudah']) }}</span>
+                                <span class="text-muted extra-small">/ {{ number_format($fak['total']) }} Mahasiswa</span>
+                            </div>
+                            <div class="text-end">
+                                <span class="text-muted extra-small">Belum: <strong class="text-danger">{{ number_format($fak['belum']) }}</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="progress rounded-pill bg-light mt-2" style="height: 6px;">
+                            <div class="progress-bar rounded-pill" role="progressbar" 
+                                 style="width: {{ $fak['persen'] }}%; background: {{ $fak['bg_gradient'] }};" 
+                                 aria-valuenow="{{ $fak['persen'] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+@endif
