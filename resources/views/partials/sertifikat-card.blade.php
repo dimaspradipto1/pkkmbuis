@@ -71,8 +71,10 @@
     .sertifikat-label { font-size: 0.8rem; color: #64748b; margin-top: 6px; line-height: 1.4; }
 
     .sertifikat-namebox {
-        font-family: 'Great Vibes', cursive;
-        font-size: 2.4rem;
+        font-family: 'Yeseva One', serif;
+        font-size: 2.1rem;
+        font-weight: 400;
+        letter-spacing: 0.5px;
         color: #166534;
         padding: 2px 34px;
         margin: 4px 0 2px;
@@ -168,7 +170,7 @@
         box-shadow: 0 4px 14px rgba(0,0,0,0.3);
     }
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap" rel="stylesheet">
 
 <div class="sertifikat-preview-wrapper">
     <div class="sertifikat-scale-outer" data-sertifikat-scale-outer>

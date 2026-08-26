@@ -69,14 +69,15 @@ class User extends Authenticatable
 
     public function getFacultyCodeAttribute(): ?string
     {
-        $fak = strtoupper($this->fakultas ?? '');
-        if (str_contains($fak, 'FIKES') || str_contains($fak, 'KESEHATAN')) {
+        $text = strtoupper(($this->fakultas ?? '') . ' ' . ($this->program_studi ?? ''));
+
+        if (str_contains($text, 'FIKES') || str_contains($text, 'KESEHATAN') || str_contains($text, 'FARMASI') || str_contains($text, 'KEBIDANAN') || str_contains($text, 'KEPERAWATAN')) {
             return 'FIKES';
         }
-        if (str_contains($fak, 'FST') || (str_contains($fak, 'SAINS') && str_contains($fak, 'TEKNOLOGI'))) {
+        if (str_contains($text, 'FST') || str_contains($text, 'INFORMATIKA') || str_contains($text, 'SISTEM INFORMASI') || str_contains($text, 'INDUSTRI') || str_contains($text, 'LOGISTIK') || str_contains($text, 'PERKAPALAN') || (str_contains($text, 'SAINS') && str_contains($text, 'TEKNOLOGI')) || str_contains($text, 'TEKNIK')) {
             return 'FST';
         }
-        if (str_contains($fak, 'FEB') || (str_contains($fak, 'EKONOMI') && str_contains($fak, 'BISNIS'))) {
+        if (str_contains($text, 'FEB') || str_contains($text, 'MANAJEMEN') || str_contains($text, 'AKUNTANSI') || (str_contains($text, 'EKONOMI') && str_contains($text, 'BISNIS'))) {
             return 'FEB';
         }
         return null;

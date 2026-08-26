@@ -64,9 +64,20 @@
                                     <tr>
                                         <td class="text-center font-monospace fw-bold">{{ $loop->iteration }}</td>
                                         <td>
-                                            <span class="{{ $menu->is_active ? 'fw-bold text-primary' : 'text-secondary' }}">
-                                                {{ $loop->iteration }}. {{ $menu->clean_nama }}
-                                            </span>
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                <span class="{{ $menu->is_active ? 'fw-bold text-primary' : 'text-secondary' }}">
+                                                    {{ $loop->iteration }}. {{ $menu->clean_nama }}
+                                                </span>
+                                                @if($menu->isFacultyMenu())
+                                                    <span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-pill px-2.5 py-1" style="font-size: 0.75rem;">
+                                                        <i class="bi bi-mortarboard-fill me-1"></i> Khusus {{ $menu->faculty_code }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border rounded-pill px-2.5 py-1" style="font-size: 0.75rem;">
+                                                        <i class="bi bi-globe2 me-1"></i> Evaluasi Umum
+                                                    </span>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td class="text-center">
                                             @if($menu->is_active)

@@ -108,14 +108,14 @@ class EvaluasiMenu extends Model
             return $this->faculty_code === $userFacultyCode;
         }
 
-        $fak = strtoupper($user->fakultas ?? '');
-        if ($this->faculty_code === 'FIKES' && (str_contains($fak, 'FIKES') || str_contains($fak, 'KESEHATAN'))) {
+        $fak = strtoupper(($user->fakultas ?? '') . ' ' . ($user->program_studi ?? ''));
+        if ($this->faculty_code === 'FIKES' && (str_contains($fak, 'FIKES') || str_contains($fak, 'KESEHATAN') || str_contains($fak, 'FARMASI') || str_contains($fak, 'KEBIDANAN') || str_contains($fak, 'KEPERAWATAN'))) {
             return true;
         }
-        if ($this->faculty_code === 'FST' && (str_contains($fak, 'FST') || (str_contains($fak, 'SAINS') && str_contains($fak, 'TEKNOLOGI')))) {
+        if ($this->faculty_code === 'FST' && (str_contains($fak, 'FST') || str_contains($fak, 'INFORMATIKA') || str_contains($fak, 'SISTEM INFORMASI') || str_contains($fak, 'INDUSTRI') || str_contains($fak, 'LOGISTIK') || str_contains($fak, 'PERKAPALAN') || (str_contains($fak, 'SAINS') && str_contains($fak, 'TEKNOLOGI')) || str_contains($fak, 'TEKNIK'))) {
             return true;
         }
-        if ($this->faculty_code === 'FEB' && (str_contains($fak, 'FEB') || (str_contains($fak, 'EKONOMI') && str_contains($fak, 'BISNIS')))) {
+        if ($this->faculty_code === 'FEB' && (str_contains($fak, 'FEB') || str_contains($fak, 'MANAJEMEN') || str_contains($fak, 'AKUNTANSI') || (str_contains($fak, 'EKONOMI') && str_contains($fak, 'BISNIS')))) {
             return true;
         }
 
