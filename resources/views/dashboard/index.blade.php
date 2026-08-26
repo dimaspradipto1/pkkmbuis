@@ -1817,10 +1817,10 @@
                     @else
                         {{-- MAHASISWA VIEW: JOURNEY --}}
                         <div class="col-12">
-                            <div class="row">
+                            <div class="row g-3 mb-3">
                                 {{-- Timeline Kehadiran --}}
                                 <div class="col-lg-6 col-12">
-                                    <div class="card shadow-sm border-0 mb-4 h-100">
+                                    <div class="card shadow-sm border-0 h-100">
                                         <div class="card-body">
                                             <h5 class="card-title">Timeline Kehadiran <span>| My Attendance</span></h5>
                                             <div class="table-responsive">
@@ -1909,7 +1909,7 @@
 
                                 {{-- Monitoring Kedisiplinan --}}
                                 <div class="col-lg-6 col-12">
-                                    <div class="card shadow-sm border-0 mb-4 h-100">
+                                    <div class="card shadow-sm border-0 h-100">
                                         <div class="card-body">
                                             <h5 class="card-title">Monitoring Kedisiplinan <span>| My Discipline</span></h5>
                                             <div class="table-responsive">
@@ -1995,27 +1995,36 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <div class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-2">
-                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
-                                                    <span class="badge bg-success py-1 px-2">A</span> Lengkap
-                                                </div>
-                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
-                                                    <span class="badge bg-danger py-1 px-2">TL</span> Tidak Lengkap/Telat
-                                                </div>
-                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
-                                                    <span class="badge bg-success py-1 px-2">W</span> Tepat Waktu
-                                                </div>
-                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
-                                                    <span class="badge bg-success py-1 px-2">SB</span> Sangat Baik
-                                                </div>
-                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
-                                                    <span class="badge bg-primary py-1 px-2">B</span> Baik
-                                                </div>
-                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
-                                                    <span class="badge bg-warning text-dark py-1 px-2">C</span> Cukup
-                                                </div>
-                                                <div class="d-flex align-items-center gap-1 extra-small text-muted fw-semibold">
-                                                    <span class="badge bg-danger py-1 px-2">K</span> Kurang
+                                            <div class="mt-3 pt-3 border-top border-light">
+                                                <div class="row row-cols-2 g-2 extra-small text-muted fw-semibold px-2">
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="badge bg-success py-1 px-2 text-center" style="width: 28px; flex-shrink: 0;">A</span>
+                                                        <span>Lengkap</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="badge bg-danger py-1 px-2 text-center" style="width: 28px; flex-shrink: 0;">TL</span>
+                                                        <span>Tidak Lengkap/Telat</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="badge bg-success py-1 px-2 text-center" style="width: 28px; flex-shrink: 0;">W</span>
+                                                        <span>Tepat Waktu</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="badge bg-success py-1 px-2 text-center" style="width: 28px; flex-shrink: 0;">SB</span>
+                                                        <span>Sangat Baik</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="badge bg-primary py-1 px-2 text-center" style="width: 28px; flex-shrink: 0;">B</span>
+                                                        <span>Baik</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="badge bg-warning text-dark py-1 px-2 text-center" style="width: 28px; flex-shrink: 0;">C</span>
+                                                        <span>Cukup</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="badge bg-danger py-1 px-2 text-center" style="width: 28px; flex-shrink: 0;">K</span>
+                                                        <span>Kurang</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -2023,9 +2032,9 @@
                                 </div>
                             </div>
 
-                            <div class="card shadow-sm border-0 mb-4">
+                            <div class="card shadow-sm border-0 mb-3">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h5 class="card-title mb-0">Rapor & Progress Materi <span>| My Academic
                                                 Ledger</span></h5>
                                         @php
@@ -2270,12 +2279,12 @@
                     @endif
                 @else
                     {{-- MAHASISWA SIDEBAR: STATUS KELULUSAN --}}
-                    <div class="alert bg-dark text-white border-0 extra-small rounded-4 shadow-sm mb-4"
+                    <div class="alert bg-dark text-white border-0 extra-small rounded-4 shadow-sm mb-3"
                         style="background: #0f172a !important;">
                         <i class="bi bi-info-circle text-warning me-2"></i> Nilai akhir bersifat final dan merupakan hasil
                         audit sistem otomatis.
                     </div>
-                    <div class="card shadow-sm border-0 mb-4 text-center">
+                    <div class="card shadow-sm border-0 mb-3 text-center">
                         <div class="card-body px-4 py-5">
                             <div class="mb-4">
                                 <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
@@ -2553,11 +2562,8 @@
                                 @endphp
 
                                 <div class="text-start border-top pt-4 mt-1">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex align-items-center justify-content-between mb-3">
                                         <h6 class="extra-small fw-bold text-uppercase text-muted mb-0"><i class="bi bi-award-fill me-1 text-warning"></i> Sertifikat Kelulusan</h6>
-                                        <button type="button" class="btn btn-sm btn-success rounded-pill px-3" onclick="downloadSertifikat(this)">
-                                            <i class="bi bi-download me-1"></i> Unduh PNG
-                                        </button>
                                     </div>
 
                                     @include('partials.sertifikat-card', [
@@ -2565,7 +2571,7 @@
                                         'nomorUrut' => str_pad($user->nomor_sertifikat, 4, '0', STR_PAD_LEFT),
                                         'kodeSurat' => $sertifikatSetting->kode_surat,
                                         'namaMahasiswa' => $user->name,
-                                        'npm' => $user->nim ?: ($user->id_pendaftar ?? '-'),
+                                        'npm' => $user->nim ?: '-',
                                         'prodi' => $user->program_studi ?? '-',
                                         'fakultas' => $user->fakultas ?? '-',
                                         'statusLulus' => $isPassed,
@@ -2585,6 +2591,12 @@
                                         'logoLima' => $logoLima,
                                         'verifikasiUrl' => $verifikasiUrl,
                                     ])
+
+                                    <div class="mt-3">
+                                        <button type="button" class="btn btn-success w-100 rounded-pill py-2 shadow-sm d-flex align-items-center justify-content-center gap-2 fw-semibold" onclick="downloadSertifikat(this)">
+                                            <i class="bi bi-download fs-6"></i> Download
+                                        </button>
+                                    </div>
                                 </div>
                             @else
                                 {{-- CARD KELENGKAPAN TAMPIL JIKA SALAH SATU BELUM LENGKAP --}}

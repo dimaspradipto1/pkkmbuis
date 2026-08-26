@@ -264,7 +264,7 @@
             <div class="verifikasi-row">
                 <div class="verifikasi-row-label">NIM</div>
                 <div class="verifikasi-row-sep">:</div>
-                <div class="verifikasi-row-value" style="color:#1e293b;">{{ $user->nim ?: ($user->id_pendaftar ?? '-') }}</div>
+                <div class="verifikasi-row-value" style="color:#1e293b;">{{ $user->nim ?: '-' }}</div>
             </div>
             <div class="verifikasi-row">
                 <div class="verifikasi-row-label">Program Studi</div>
@@ -332,7 +332,7 @@
             'nomorUrut' => str_pad($user->nomor_sertifikat, 4, '0', STR_PAD_LEFT),
             'kodeSurat' => $setting->kode_surat,
             'namaMahasiswa' => $user->name,
-            'npm' => $user->nim ?: ($user->id_pendaftar ?? '-'),
+            'npm' => $user->nim ?: '-',
             'prodi' => $user->program_studi ?? '-',
             'fakultas' => $user->fakultas ?? '-',
             'statusLulus' => $isPassed,
