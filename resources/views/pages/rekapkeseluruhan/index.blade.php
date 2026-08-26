@@ -12,10 +12,10 @@
                 </ol>
             </nav>
         </div>
-        <button onclick="masterExport()" class="btn btn-success text-white d-flex align-items-center gap-2 px-4 py-2">
-            <i class="bi bi-file-earmark-spreadsheet-fill fs-4"></i>
+        <a href="{{ route('rekapkeseluruhan.export') }}" class="btn btn-success text-white d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill">
+            <i class="bi bi-file-earmark-spreadsheet-fill fs-5"></i>
             <span class="text-uppercase fw-bold ls-1">Export Laporan Lengkap (.xlsx)</span>
-        </button>
+        </a>
     </div>
 
     <section class="section">
@@ -177,7 +177,6 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.3.0/dist/exceljs.min.js"></script>
     {!! $dtDetailed->scripts() !!}
     {!! $dtFinal->scripts() !!}
     <script>
@@ -188,156 +187,6 @@
                 finalTable.ajax.reload(null, false); // Reload without resetting pagination
             }
         });
-
-        async function masterExport() {
-            // ... (rest of the export function remains unchanged)
-            try {
-                const instances = $.fn.dataTable.settings;
-                if (!instances || instances.length < 2) return;
-
-                const dt1 = $(instances[0].nTable).DataTable(); // Detail
-                const dt2 = $(instances[1].nTable).DataTable(); // Final
-
-                const cleanText = (str) => {
-                    if (typeof str !== 'string') return str;
-                    return str.replace(/<[^>]*>?/gm, '').replace(/\\s+/g, ' ').trim();
-                };
-
-                const workbook = new ExcelJS.Workbook();
-                const worksheet = workbook.addWorksheet('Master Rekapitulasi');
-
-                // Header Row 1
-                const row1Values = [
-                    "NO", "NAMA MAHASISWA",
-                    "ABSEN HARI PERTAMA", "ABSEN HARI PERTAMA",
-                    "ABSEN HARI KEDUA", "ABSEN HARI KEDUA",
-                    "ABSEN HARI KETIGA", "ABSEN HARI KETIGA",
-                    "KEDISIPLINAN HARI PERTAMA", "KEDISIPLINAN HARI PERTAMA", "KEDISIPLINAN HARI PERTAMA",
-                    "KEDISIPLINAN HARI KEDUA", "KEDISIPLINAN HARI KEDUA", "KEDISIPLINAN HARI KEDUA",
-                    "KEDISIPLINAN HARI KETIGA", "KEDISIPLINAN HARI KETIGA", "KEDISIPLINAN HARI KETIGA",
-                    "MODUL 1", "MODUL 1",
-                    "MODUL 2", "MODUL 2",
-                    "MODUL 3", "MODUL 3",
-                    "MODUL 4", "MODUL 4",
-                    "MODUL 5",
-                    "REKAPITULASI NILAI AKHIR (BOBOT)", "REKAPITULASI NILAI AKHIR (BOBOT)", "REKAPITULASI NILAI AKHIR (BOBOT)", "REKAPITULASI NILAI AKHIR (BOBOT)"
-                ];
-                worksheet.addRow(row1Values);
-
-                // Header Row 2
-                const row2Values = [
-                    "", "",
-                    "PAGI", "SORE",
-                    "PAGI", "SORE",
-                    "PAGI", "SORE",
-                    "ATRIBUT", "WAKTU", "PERILAKU",
-                    "ATRIBUT", "WAKTU", "PERILAKU",
-                    "ATRIBUT", "WAKTU", "PERILAKU",
-                    "PRE", "POST",
-                    "PRE", "POST",
-                    "PRE", "POST",
-                    "PRE", "POST",
-                    "TUGAS",
-                    "TEST (20%)", "ABSEN (25%)", "DISIPLIN (30%)", "TOTAL NILAI"
-                ];
-                worksheet.addRow(row2Values);
-
-                // Merges
-                worksheet.mergeCells('A1:A2');
-                worksheet.mergeCells('B1:B2');
-                worksheet.mergeCells('C1:D1');
-                worksheet.mergeCells('E1:F1');
-                worksheet.mergeCells('G1:H1');
-                worksheet.mergeCells('I1:K1');
-                worksheet.mergeCells('L1:N1');
-                worksheet.mergeCells('O1:Q1');
-                worksheet.mergeCells('R1:S1');
-                worksheet.mergeCells('T1:U1');
-                worksheet.mergeCells('V1:W1');
-                worksheet.mergeCells('X1:Y1');
-                worksheet.mergeCells('Z1:Z2');
-                worksheet.mergeCells('AA1:AD1');
-
-                // Styling Headers
-                const headerStyle = {
-                    font: { bold: true, color: { argb: 'FF000000' } },
-                    fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE6E6E6' } },
-                    alignment: { vertical: 'middle', horizontal: 'center', wrapText: true },
-                    border: {
-                        top: { style: 'thin' },
-                        left: { style: 'thin' },
-                        bottom: { style: 'thin' },
-                        right: { style: 'thin' }
-                    }
-                };
-
-                [1, 2].forEach(num => {
-                    worksheet.getRow(num).eachCell({ includeEmpty: true }, (cell) => {
-                        cell.style = headerStyle;
-                    });
-                });
-
-                // Map Recap
-                const table2Map = {};
-                dt2.rows().every(function() {
-                    const node = this.node();
-                    if (!node) return;
-                    const cells = Array.from(node.querySelectorAll('td')).map(td => cleanText(td.innerText));
-                    const name = cells[1] || "";
-                    table2Map[name] = [cells[2], cells[3], cells[4], cells[5]]; 
-                });
-
-                // Add Data Rows
-                dt1.rows().every(function() {
-                    const node = this.node();
-                    if (!node) return;
-                    
-                    const cells1 = Array.from(node.querySelectorAll('td')).map(td => cleanText(td.innerText));
-                    const name = cells1[1] || "";
-                    const cells2 = table2Map[name] || ["-", "-", "-", "-"];
-                    
-                    const newRow = worksheet.addRow([...cells1, ...cells2]);
-                    newRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
-                        cell.border = {
-                            top: { style: 'thin' },
-                            left: { style: 'thin' },
-                            bottom: { style: 'thin' },
-                            right: { style: 'thin' }
-                        };
-                        
-                        // Special Case: Column B (NAMA) is Left Aligned
-                        if (colNumber === 2) {
-                            cell.alignment = { vertical: 'middle', horizontal: 'left', indent: 1 };
-                        } else {
-                            cell.alignment = { vertical: 'middle', horizontal: 'center' };
-                        }
-                    });
-                });
-
-                // Set Column Widths
-                worksheet.columns = [
-                    { width: 5 }, { width: 45 }, // No, Name (wider for names)
-                    { width: 10 }, { width: 10 }, { width: 10 }, { width: 10 }, { width: 10 }, { width: 10 }, // Absen
-                    { width: 12 }, { width: 12 }, { width: 12 }, // D1
-                    { width: 12 }, { width: 12 }, { width: 12 }, // D2
-                    { width: 12 }, { width: 12 }, { width: 12 }, // D3
-                    { width: 8 }, { width: 8 }, { width: 8 }, { width: 8 }, { width: 8 }, { width: 8 }, { width: 8 }, { width: 8 }, // Modul
-                    { width: 12 }, // Tugas
-                    { width: 15 }, { width: 15 }, { width: 15 }, { width: 15 } // Recap
-                ];
-
-                const buffer = await workbook.xlsx.writeBuffer();
-                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                const url = window.URL.createObjectURL(blob);
-                const anchor = document.createElement('a');
-                anchor.href = url;
-                anchor.download = 'MASTER_PKKMB_CENTRAL_REPORT.xlsx';
-                anchor.click();
-
-            } catch (err) {
-                console.error("Master Export Styling Failure:", err);
-            }
-        }
     </script>
 @endpush
 

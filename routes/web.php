@@ -79,6 +79,7 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('profile/password', [ProfileController::class, 'editPassword'])->name('profile.password.edit');
     Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+    Route::get('rekap-keseluruhan/export', [RekapKeseluruhanController::class, 'export'])->name('rekapkeseluruhan.export');
     Route::get('rekap-keseluruhan', [RekapKeseluruhanController::class, 'index'])->name('rekapkeseluruhan.index');
     Route::get('rekap-evaluasi', [RekapEvaluasiController::class, 'index'])->name('rekapevaluasi.index');
     Route::get('rekap-observasi', [\App\Http\Controllers\RekapObservasiController::class, 'index'])->name('rekapobservasi.index');

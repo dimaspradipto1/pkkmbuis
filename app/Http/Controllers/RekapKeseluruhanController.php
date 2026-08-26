@@ -118,4 +118,12 @@ class RekapKeseluruhanController extends Controller
             'stats'      => $stats,
         ]);
     }
+
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\RekapKeseluruhanExport(),
+            'MASTER_REKAPITULASI_PKKMB_UIS_' . date('Ymd_His') . '.xlsx'
+        );
+    }
 }
