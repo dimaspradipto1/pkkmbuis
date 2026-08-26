@@ -125,4 +125,21 @@ class EvaluasiKewirausahaanController extends Controller
         Alert::success('Berhasil', 'Evaluasi Kewirausahaan berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasikewirausahaan.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiKewirausahaan())->getTable() . ',id',
+        ]);
+
+        EvaluasiKewirausahaan::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasikewirausahaan.index');
+    }
 }

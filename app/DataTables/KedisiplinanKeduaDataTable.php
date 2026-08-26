@@ -168,7 +168,7 @@ class KedisiplinanKeduaDataTable extends DataTable
     {
         $columns = [];
 
-        if (in_array(Auth::user()->role, ['admin', 'stafbaak'])) {
+        if (Auth::user()->role != 'mahasiswa') {
             $columns[] = Column::make('checkbox')
                 ->title('<input type="checkbox" id="select-all">')
                 ->orderable(false)

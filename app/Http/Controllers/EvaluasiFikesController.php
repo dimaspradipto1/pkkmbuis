@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\EvaluasiFikesDataTable;
 use App\Http\Requests\EvaluasiFikesRequest;
 use App\Models\EvaluasiFikes;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -144,6 +145,23 @@ class EvaluasiFikesController extends Controller
         $evaluasi->delete();
 
         Alert::success('Berhasil', 'Evaluasi FIKes berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasifikes.index');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiFikes())->getTable() . ',id',
+        ]);
+
+        EvaluasiFikes::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasifikes.index');
     }
 }

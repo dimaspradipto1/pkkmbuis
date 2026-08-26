@@ -125,4 +125,21 @@ class PerpustakaanController extends Controller
         Alert::success('Berhasil', 'Evaluasi Perpustakaan berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasiperpustakaan.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new Perpustakaan())->getTable() . ',id',
+        ]);
+
+        Perpustakaan::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasiperpustakaan.index');
+    }
 }

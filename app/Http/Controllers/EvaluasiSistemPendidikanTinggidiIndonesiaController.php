@@ -125,4 +125,21 @@ class EvaluasiSistemPendidikanTinggidiIndonesiaController extends Controller
         Alert::success('Berhasil', 'Evaluasi Sistem Pendidikan Tinggi di Indonesia berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasisistempendidikantinggidiindonesia.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiSistemPendidikanTinggidiIndonesia())->getTable() . ',id',
+        ]);
+
+        EvaluasiSistemPendidikanTinggidiIndonesia::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasisistempendidikantinggidiindonesia.index');
+    }
 }

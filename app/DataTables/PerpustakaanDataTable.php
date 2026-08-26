@@ -22,6 +22,9 @@ class PerpustakaanDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addIndexColumn()
+            ->addColumn('checkbox', function ($item) {
+                return '<input type="checkbox" class="record-checkbox" value="' . $item->id . '">';
+            })
             ->addColumn('user_name', function ($item) {
                 return $item->user ? $item->user->name : '-';
             })
@@ -62,7 +65,7 @@ class PerpustakaanDataTable extends DataTable
                 }
                 return '<div class="d-flex justify-content-center">' . $showBtn . $editBtn . $deleteBtn . '</div>';
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action', 'checkbox'])
             ->setRowId('id');
     }
 
@@ -99,19 +102,33 @@ class PerpustakaanDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        return [
-            Column::make('DT_RowIndex')->title('No')->searchable(false)->orderable(false)->width(50)->addClass('text-center'),
-            Column::make('user_name')->title('Nama Mahasiswa'),
-            Column::make('user_npm')->title('NPM / ID Pendaftar'),
-            Column::make('user_kelompok')->title('Kelompok'),
-            Column::make('created_at')->title('Waktu Mengisi'),
-            Column::computed('action')
+        $columns = [];
+
+        if (Auth::user()->role != 'mahasiswa') {
+            $columns[] = Column::make('checkbox')
+                ->title('<input type="checkbox" id="select-all">')
+                ->orderable(false)
+                ->searchable(false)
+                ->width(30)
+                ->addClass('text-center');
+        }
+
+        $columns[] = Column::make('DT_RowIndex')->title('No')->searchable(false)->orderable(false)->width(50)->addClass('text-center');
+        $columns[] = Column::make('user_name')->title('Nama Mahasiswa');
+        $columns[] = Column::make('user_npm')->title('NPM / ID Pendaftar');
+        $columns[] = Column::make('user_kelompok')->title('Kelompok');
+        $columns[] = Column::make('created_at')->title('Waktu Mengisi');
+
+        if (Auth::user()->role != 'mahasiswa') {
+            $columns[] = Column::computed('action')
                   ->title('Aksi')
                   ->exportable(false)
                   ->printable(false)
                   ->width(120)
-                  ->addClass('text-center'),
-        ];
+                  ->addClass('text-center');
+        }
+
+        return $columns;
     }
 
     /**

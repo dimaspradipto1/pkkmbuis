@@ -125,4 +125,21 @@ class EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegaraControll
         Alert::success('Berhasil', 'Evaluasi Kehidupan Berbangsa, Bernegara dan Pembinaan Kesadaran Bela Negara berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasikehidupanberbangsabelanegara.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegara())->getTable() . ',id',
+        ]);
+
+        EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegara::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasikehidupanberbangsabelanegara.index');
+    }
 }

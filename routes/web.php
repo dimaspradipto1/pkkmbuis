@@ -228,70 +228,87 @@ Route::middleware(['auth', 'checkrole'])->group(function () {
     Route::delete('kelompok/{slug}/notes/{id}', [KelompokNoteController::class, 'destroy'])->name('kelompok.notes.destroy');
     Route::resource('kelompok', KelompokController::class);
 
+    Route::post('evaluasipengenalanwawasanibnusina/bulk-delete', [EvaluasiPengenalanWawasanIbnuSinaController::class, 'bulkDelete'])->name('evaluasipengenalanwawasanibnusina.bulk-delete');
     Route::resource('evaluasipengenalanwawasanibnusina', EvaluasiPengenalanWawasanIbnuSinaController::class)->parameters([
         'evaluasipengenalanwawasanibnusina' => 'evaluasi'
     ]);
 
+    Route::post('evaluasipelayanankemahasiswaanpusatprestasi/bulk-delete', [EvaluasiPelayananKemahasiswaanPusatPrestasiController::class, 'bulkDelete'])->name('evaluasipelayanankemahasiswaanpusatprestasi.bulk-delete');
     Route::resource('evaluasipelayanankemahasiswaanpusatprestasi', EvaluasiPelayananKemahasiswaanPusatPrestasiController::class)->parameters([
         'evaluasipelayanankemahasiswaanpusatprestasi' => 'evaluasi'
     ]);
 
+    Route::post('evaluasipelayanansistemakademik/bulk-delete', [EvaluasiPelayanansistemAkademikController::class, 'bulkDelete'])->name('evaluasipelayanansistemakademik.bulk-delete');
     Route::resource('evaluasipelayanansistemakademik', EvaluasiPelayanansistemAkademikController::class)->parameters([
         'evaluasipelayanansistemakademik' => 'evaluasi'
     ]);
 
+    Route::post('evaluasipelayanansistemadministrasikeuangan/bulk-delete', [EvaluasiPelayanansistemAdministrasiKeuanganController::class, 'bulkDelete'])->name('evaluasipelayanansistemadministrasikeuangan.bulk-delete');
     Route::resource('evaluasipelayanansistemadministrasikeuangan', EvaluasiPelayanansistemAdministrasiKeuanganController::class)->parameters([
         'evaluasipelayanansistemadministrasikeuangan' => 'evaluasi'
     ]);
 
+    Route::post('evaluasikehidupanberbangsabelanegara/bulk-delete', [EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegaraController::class, 'bulkDelete'])->name('evaluasikehidupanberbangsabelanegara.bulk-delete');
     Route::resource('evaluasikehidupanberbangsabelanegara', EvaluasiKehidupanBerbangsaBernegaradanPembinaanKesadaranBelaNegaraController::class)->parameters([
         'evaluasikehidupanberbangsabelanegara' => 'evaluasi'
     ]);
 
+    Route::post('evaluasisistempendidikantinggidiindonesia/bulk-delete', [EvaluasiSistemPendidikanTinggidiIndonesiaController::class, 'bulkDelete'])->name('evaluasisistempendidikantinggidiindonesia.bulk-delete');
     Route::resource('evaluasisistempendidikantinggidiindonesia', EvaluasiSistemPendidikanTinggidiIndonesiaController::class)->parameters([
         'evaluasisistempendidikantinggidiindonesia' => 'evaluasi'
     ]);
 
+    Route::post('evaluasipendidikantinggieradigital/bulk-delete', [EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustriController::class, 'bulkDelete'])->name('evaluasipendidikantinggieradigital.bulk-delete');
     Route::resource('evaluasipendidikantinggieradigital', EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustriController::class)->parameters([
         'evaluasipendidikantinggieradigital' => 'evaluasi'
     ]);
 
+    Route::post('evaluasipengenalank3l/bulk-delete', [EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkunganController::class, 'bulkDelete'])->name('evaluasipengenalank3l.bulk-delete');
     Route::resource('evaluasipengenalank3l', EvaluasiPengenalanKeselamatanKesehatanKerjadanLingkunganController::class)->parameters([
         'evaluasipengenalank3l' => 'evaluasi'
     ]);
 
+    Route::post('evaluasiperpustakaan/bulk-delete', [PerpustakaanController::class, 'bulkDelete'])->name('evaluasiperpustakaan.bulk-delete');
     Route::resource('evaluasiperpustakaan', PerpustakaanController::class)->parameters([
         'evaluasiperpustakaan' => 'evaluasi'
     ]);
 
+    Route::post('evaluasiikauis/bulk-delete', [EvaluasiIkaUisController::class, 'bulkDelete'])->name('evaluasiikauis.bulk-delete');
     Route::resource('evaluasiikauis', EvaluasiIkaUisController::class)->parameters([
         'evaluasiikauis' => 'evaluasi'
     ]);
 
+    Route::post('evaluasikewirausahaan/bulk-delete', [EvaluasiKewirausahaanController::class, 'bulkDelete'])->name('evaluasikewirausahaan.bulk-delete');
     Route::resource('evaluasikewirausahaan', EvaluasiKewirausahaanController::class)->parameters([
         'evaluasikewirausahaan' => 'evaluasi'
     ]);
 
+    Route::post('evaluasipencarianbakatmahasiswa/bulk-delete', [EvaluasiPencarianBakatMahasiswaController::class, 'bulkDelete'])->name('evaluasipencarianbakatmahasiswa.bulk-delete');
     Route::resource('evaluasipencarianbakatmahasiswa', EvaluasiPencarianBakatMahasiswaController::class)->parameters([
         'evaluasipencarianbakatmahasiswa' => 'evaluasi'
     ]);
 
+    Route::post('evaluasimotivasiwalikotabatam/bulk-delete', [EvaluasiMotivasiWaliKotaBatamController::class, 'bulkDelete'])->name('evaluasimotivasiwalikotabatam.bulk-delete');
     Route::resource('evaluasimotivasiwalikotabatam', EvaluasiMotivasiWaliKotaBatamController::class)->parameters([
         'evaluasimotivasiwalikotabatam' => 'evaluasi'
     ]);
 
+    Route::post('evaluasimotivasigubernurkepulauanriau/bulk-delete', [EvaluasiMotivasiGubernurKepulauanRiauController::class, 'bulkDelete'])->name('evaluasimotivasigubernurkepulauanriau.bulk-delete');
     Route::resource('evaluasimotivasigubernurkepulauanriau', EvaluasiMotivasiGubernurKepulauanRiauController::class)->parameters([
         'evaluasimotivasigubernurkepulauanriau' => 'evaluasi'
     ]);
 
+    Route::post('evaluasifikes/bulk-delete', [EvaluasiFikesController::class, 'bulkDelete'])->name('evaluasifikes.bulk-delete');
     Route::resource('evaluasifikes', EvaluasiFikesController::class)->parameters([
         'evaluasifikes' => 'evaluasi'
     ]);
 
+    Route::post('evaluasifst/bulk-delete', [EvaluasiFstController::class, 'bulkDelete'])->name('evaluasifst.bulk-delete');
     Route::resource('evaluasifst', EvaluasiFstController::class)->parameters([
         'evaluasifst' => 'evaluasi'
     ]);
 
+    Route::post('evaluasifeb/bulk-delete', [EvaluasiFebController::class, 'bulkDelete'])->name('evaluasifeb.bulk-delete');
     Route::resource('evaluasifeb', EvaluasiFebController::class)->parameters([
         'evaluasifeb' => 'evaluasi'
     ]);

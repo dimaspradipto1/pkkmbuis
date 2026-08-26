@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\EvaluasiFebDataTable;
 use App\Http\Requests\EvaluasiFebRequest;
 use App\Models\EvaluasiFeb;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -144,6 +145,23 @@ class EvaluasiFebController extends Controller
         $evaluasi->delete();
 
         Alert::success('Berhasil', 'Evaluasi FEB berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasifeb.index');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiFeb())->getTable() . ',id',
+        ]);
+
+        EvaluasiFeb::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasifeb.index');
     }
 }

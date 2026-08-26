@@ -124,4 +124,21 @@ class EvaluasiMotivasiWaliKotaBatamController extends Controller
         Alert::success('Berhasil', 'Evaluasi Motivasi Wali Kota Batam berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasimotivasiwalikotabatam.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiMotivasiWaliKotaBatam())->getTable() . ',id',
+        ]);
+
+        EvaluasiMotivasiWaliKotaBatam::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasimotivasiwalikotabatam.index');
+    }
 }

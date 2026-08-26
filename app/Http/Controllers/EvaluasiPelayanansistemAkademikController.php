@@ -125,4 +125,21 @@ class EvaluasiPelayanansistemAkademikController extends Controller
         Alert::success('Berhasil', 'Evaluasi Pelayanan Sistem Akademik berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasipelayanansistemakademik.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiPelayanansistemAkademik())->getTable() . ',id',
+        ]);
+
+        EvaluasiPelayanansistemAkademik::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasipelayanansistemakademik.index');
+    }
 }

@@ -125,4 +125,21 @@ class EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustriController extend
         Alert::success('Berhasil', 'Evaluasi Pendidikan Tinggi di Era Digital dan Revolusi Industri berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasipendidikantinggieradigital.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri())->getTable() . ',id',
+        ]);
+
+        EvbvaluasiPendidikanTinggidiEraDigitaldanRevolusiIndustri::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasipendidikantinggieradigital.index');
+    }
 }

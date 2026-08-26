@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\DataTables\EvaluasiFstDataTable;
 use App\Http\Requests\EvaluasiFstRequest;
 use App\Models\EvaluasiFst;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -144,6 +145,23 @@ class EvaluasiFstController extends Controller
         $evaluasi->delete();
 
         Alert::success('Berhasil', 'Evaluasi FST berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasifst.index');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiFst())->getTable() . ',id',
+        ]);
+
+        EvaluasiFst::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasifst.index');
     }
 }

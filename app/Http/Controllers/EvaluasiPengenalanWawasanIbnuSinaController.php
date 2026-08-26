@@ -333,4 +333,21 @@ class EvaluasiPengenalanWawasanIbnuSinaController extends Controller
         Alert::success('Berhasil', 'Evaluasi penyampaian materi berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasipengenalanwawasanibnusina.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiPengenalanWawasanIbnuSina())->getTable() . ',id',
+        ]);
+
+        EvaluasiPengenalanWawasanIbnuSina::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasipengenalanwawasanibnusina.index');
+    }
 }

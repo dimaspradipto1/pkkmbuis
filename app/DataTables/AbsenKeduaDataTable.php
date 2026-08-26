@@ -22,6 +22,9 @@ class AbsenKeduaDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addIndexColumn()
+            ->addColumn('checkbox', function ($item) {
+                return '<input type="checkbox" class="record-checkbox" value="' . $item->id . '">';
+            })
             ->addColumn('DT_RowIndex', '')
             ->addColumn('action', function ($item) {
                 if (Auth::user()->role == 'mahasiswa') {
@@ -87,7 +90,7 @@ class AbsenKeduaDataTable extends DataTable
                 }
                 return '-';
             })
-            ->rawColumns(['action', 'DT_RowIndex', 'bukti_izin']);
+            ->rawColumns(['action', 'DT_RowIndex', 'checkbox', 'bukti_izin']);
     }
 
     /**
@@ -148,35 +151,44 @@ class AbsenKeduaDataTable extends DataTable
      */
     public function getColumns(): array
     {
-        $columns = [
-            Column::make('DT_RowIndex')
-                ->title('NO')
+        $columns = [];
+
+        if (Auth::user()->role != 'mahasiswa') {
+            $columns[] = Column::make('checkbox')
+                ->title('<input type="checkbox" id="select-all">')
                 ->orderable(false)
-                ->searchable(false),
-            Column::make('user_name')
-                ->title('Nama Pengguna'),
-            Column::make('hadir_pagi')
-                ->title('Hadir Datang'),
-            Column::computed('waktu_datang')
-                ->title('Waktu Datang')
-                ->addClass('text-center'),
-            Column::computed('catatan_datang')
-                ->title('Catatan Datang')
-                ->defaultContent('-'),
-            Column::make('hadir_sore')
-                ->title('Hadir Pulang'),
-            Column::computed('waktu_pulang')
-                ->title('Waktu Pulang')
-                ->addClass('text-center'),
-            Column::computed('catatan_pulang')
-                ->title('Catatan Pulang')
-                ->defaultContent('-'),
-            Column::computed('bukti_izin')
-                ->title('Bukti Izin')
-                ->exportable(false)
-                ->printable(false)
-                ->addClass('text-center'),
-        ];
+                ->searchable(false)
+                ->width(30)
+                ->addClass('text-center');
+        }
+
+        $columns[] = Column::make('DT_RowIndex')
+            ->title('NO')
+            ->orderable(false)
+            ->searchable(false);
+        $columns[] = Column::make('user_name')
+            ->title('Nama Pengguna');
+        $columns[] = Column::make('hadir_pagi')
+            ->title('Hadir Datang');
+        $columns[] = Column::computed('waktu_datang')
+            ->title('Waktu Datang')
+            ->addClass('text-center');
+        $columns[] = Column::computed('catatan_datang')
+            ->title('Catatan Datang')
+            ->defaultContent('-');
+        $columns[] = Column::make('hadir_sore')
+            ->title('Hadir Pulang');
+        $columns[] = Column::computed('waktu_pulang')
+            ->title('Waktu Pulang')
+            ->addClass('text-center');
+        $columns[] = Column::computed('catatan_pulang')
+            ->title('Catatan Pulang')
+            ->defaultContent('-');
+        $columns[] = Column::computed('bukti_izin')
+            ->title('Bukti Izin')
+            ->exportable(false)
+            ->printable(false)
+            ->addClass('text-center');
 
         if (Auth::user()->role != 'mahasiswa') {
             $columns[] = Column::computed('action')

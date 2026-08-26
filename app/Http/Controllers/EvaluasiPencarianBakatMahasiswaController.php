@@ -125,4 +125,21 @@ class EvaluasiPencarianBakatMahasiswaController extends Controller
         Alert::success('Berhasil', 'Evaluasi Pencarian Bakat Mahasiswa berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasipencarianbakatmahasiswa.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiPencarianBakatMahasiswa())->getTable() . ',id',
+        ]);
+
+        EvaluasiPencarianBakatMahasiswa::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasipencarianbakatmahasiswa.index');
+    }
 }

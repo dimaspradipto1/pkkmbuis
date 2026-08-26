@@ -124,4 +124,21 @@ class EvaluasiMotivasiGubernurKepulauanRiauController extends Controller
         Alert::success('Berhasil', 'Evaluasi Motivasi Gubernur Kepulauan Riau berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasimotivasigubernurkepulauanriau.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiMotivasiGubernurKepulauanRiau())->getTable() . ',id',
+        ]);
+
+        EvaluasiMotivasiGubernurKepulauanRiau::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasimotivasigubernurkepulauanriau.index');
+    }
 }

@@ -125,4 +125,21 @@ class EvaluasiPelayananKemahasiswaanPusatPrestasiController extends Controller
         Alert::success('Berhasil', 'Evaluasi Pelayanan Kemahasiswaan & Pusat Prestasi berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasipelayanankemahasiswaanpusatprestasi.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiPelayananKemahasiswaanPusatPrestasi())->getTable() . ',id',
+        ]);
+
+        EvaluasiPelayananKemahasiswaanPusatPrestasi::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasipelayanankemahasiswaanpusatprestasi.index');
+    }
 }

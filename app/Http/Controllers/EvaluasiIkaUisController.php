@@ -125,4 +125,21 @@ class EvaluasiIkaUisController extends Controller
         Alert::success('Berhasil', 'Evaluasi IKA UIS berhasil dihapus.')->toToast()->autoClose(3000);
         return redirect()->route('evaluasiikauis.index');
     }
+
+    public function bulkDelete(Request $request)
+    {
+        if (Auth::user()->role == 'mahasiswa') {
+            abort(403);
+        }
+
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'exists:' . (new EvaluasiIkaUis())->getTable() . ',id',
+        ]);
+
+        EvaluasiIkaUis::whereIn('id', $request->ids)->delete();
+
+        Alert::success('Berhasil', 'Data evaluasi terpilih berhasil dihapus.')->toToast()->autoClose(3000);
+        return redirect()->route('evaluasiikauis.index');
+    }
 }
