@@ -663,42 +663,42 @@
                 <div class="col-12">
                     <div class="card border-0 shadow-sm overflow-hidden" style="background: #fff; border-radius: 12px;">
                         <div class="card-body p-3 p-md-4">
-                            <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-between gap-3">
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="rounded-circle flex-shrink-0 d-flex align-items-center justify-content-center shadow-sm" style="width: 54px; height: 54px; background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);">
-                                        <i class="bi bi-file-earmark-text-fill text-white fs-3"></i>
+                            <div class="d-flex flex-column flex-xl-row align-items-start align-items-xl-center justify-content-between gap-3">
+                                <div class="d-flex align-items-center gap-3 flex-shrink-0">
+                                    <div class="rounded-circle flex-shrink-0 d-flex align-items-center justify-content-center shadow-sm" style="width: 48px; height: 48px; background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);">
+                                        <i class="bi bi-file-earmark-text-fill text-white fs-4"></i>
                                     </div>
                                     <div>
-                                        <h5 class="fw-bold text-dark mb-1 mb-md-0">Dokumen Pendukung</h5>
-                                        <p class="text-muted small mb-0 d-none d-md-block">Akses Buku Saku, Daftar Kelompok, dan Rundown acara di sini.</p>
+                                        <h5 class="fw-bold text-dark mb-0 text-nowrap">Dokumen Pendukung</h5>
+                                        <p class="text-muted extra-small mb-0 d-none d-md-block text-nowrap">Akses Buku Saku, Daftar Kelompok & Rundown</p>
                                     </div>
                                 </div>
                                 @php
                                     $dokumen = \App\Models\Dokumen::latest()->first();
                                 @endphp
-                                <div class="d-grid gap-2 d-lg-flex mt-3 mt-lg-0 w-100 w-lg-auto">
+                                <div class="d-flex flex-wrap align-items-center justify-content-start justify-content-xl-end gap-2 flex-grow-1">
                                     @if($dokumen && $dokumen->link_buku_saku)
-                                        <a href="{{ $dokumen->link_buku_saku }}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                        <a href="{{ $dokumen->link_buku_saku }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 fw-semibold text-nowrap shadow-sm d-inline-flex align-items-center" style="font-size: 0.8rem;">
                                             <i class="bi bi-book me-1"></i> Buku Saku
                                         </a>
                                     @endif
                                     @if($dokumen && $dokumen->link_daftar_kelompok)
-                                        <a href="{{ $dokumen->link_daftar_kelompok }}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                        <a href="{{ $dokumen->link_daftar_kelompok }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 fw-semibold text-nowrap shadow-sm d-inline-flex align-items-center" style="font-size: 0.8rem;">
                                             <i class="bi bi-people me-1"></i> Daftar Kelompok
                                         </a>
                                     @endif
                                     @if($dokumen && $dokumen->link_rundown)
-                                        <a href="{{ $dokumen->link_rundown }}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                        <a href="{{ $dokumen->link_rundown }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 fw-semibold text-nowrap shadow-sm d-inline-flex align-items-center" style="font-size: 0.8rem;">
                                             <i class="bi bi-calendar-event me-1"></i> Rundown
                                         </a>
                                     @endif
                                     @if($dokumen && $dokumen->link_tata_tertib_kehidupan_mahasiswa)
-                                        <a href="{{ $dokumen->link_tata_tertib_kehidupan_mahasiswa }}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                        <a href="{{ $dokumen->link_tata_tertib_kehidupan_mahasiswa }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 fw-semibold text-nowrap shadow-sm d-inline-flex align-items-center" style="font-size: 0.8rem;">
                                             <i class="bi bi-shield-exclamation me-1"></i> Tata Tertib
                                         </a>
                                     @endif
                                     @if($dokumen && $dokumen->link_video_tutorial_penggunaan_sistem_PKKMB)
-                                        <a href="{{ $dokumen->link_video_tutorial_penggunaan_sistem_PKKMB }}" target="_blank" class="btn btn-outline-primary rounded-pill px-3 fw-bold shadow-sm">
+                                        <a href="{{ $dokumen->link_video_tutorial_penggunaan_sistem_PKKMB }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 fw-semibold text-nowrap shadow-sm d-inline-flex align-items-center" style="font-size: 0.8rem;">
                                             <i class="bi bi-play-btn me-1"></i> Video Tutorial
                                         </a>
                                     @endif
@@ -815,833 +815,319 @@
                                 </div>
                             </div>
                         </div>
-
-                        {{-- Card 1: Main Attendance Hub: Multi-Day --}}
+                        {{-- Card 1: Grafik Absensi & Kehadiran Mahasiswa --}}
                         <div class="col-12">
                             <div class="card border-0 shadow-sm mb-4 overflow-hidden">
                                 <div class="card-body p-3 p-xl-4">
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
                                         <div>
-                                            <h5 class="card-title mb-0 fs-5">Hub Absensi <span>| All Days</span></h5>
-                                            <p class="text-muted extra-small mb-0 opacity-75">Monitoring kehadiran mahasiswa
-                                                real-time.</p>
+                                            <h5 class="card-title mb-0 fs-5">Grafik Presensi & Kehadiran <span>| All Days</span></h5>
+                                            <p class="text-muted extra-small mb-0 opacity-75">Statistik kehadiran mahasiswa sesi Datang & Pulang (Hari 1 s/d Hari 3)</p>
                                         </div>
 
-                                        <div class="d-flex align-items-center flex-wrap gap-2 ms-xl-auto w-100 w-xl-auto">
-                                            {{-- Detail Link --}}
-                                            <div class="dropdown me-md-2 mb-2 mb-md-0">
-                                                <button
-                                                    class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 fw-bold extra-small dropdown-toggle shadow-none"
-                                                    type="button" data-bs-toggle="dropdown">
-                                                    <i class="bi bi-box-arrow-up-right me-1"></i> Manage
-                                                </button>
-                                                <ul
-                                                    class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-4 extra-small">
-                                                    <li><a class="dropdown-item py-2"
-                                                            href="{{ route('absenpertama.index') }}"><i
-                                                                class="bi bi-calendar-event me-2"></i> Hari Pertama</a></li>
-                                                    <li><a class="dropdown-item py-2"
-                                                            href="{{ route('absenkedua.index') }}"><i
-                                                                class="bi bi-calendar-event me-2"></i> Hari Kedua</a></li>
-                                                    <li><a class="dropdown-item py-2"
-                                                            href="{{ route('absenketiga.index') }}"><i
-                                                                class="bi bi-calendar-event me-2"></i> Hari Ketiga</a></li>
-                                                </ul>
-                                            </div>
-
-                                            {{-- Search Input --}}
-                                            <div class="position-relative w-100 w-md-auto mb-2 mb-md-0">
-                                                <input type="text" id="attendanceSearch"
-                                                    class="form-control form-control-sm rounded-pill px-4 ps-5 w-100 shadow-none border-light"
-                                                    placeholder="Cari..."
-                                                    style="background: #f8fafc; min-width: 200px; height: 38px;">
-                                                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted opacity-50"
-                                                    style="left: 0;"></i>
-                                            </div>
-
-                                            {{-- Tabs --}}
-                                            <ul class="nav nav-pills nav-pills-custom gap-1 flex-nowrap overflow-auto pb-1"
-                                                id="attendanceTab" role="tablist">
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link active btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="day1-tab" data-bs-toggle="tab" data-bs-target="#day1"
-                                                        type="button" role="tab">H-1</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="day2-tab" data-bs-toggle="tab" data-bs-target="#day2"
-                                                        type="button" role="tab">H-2</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="day3-tab" data-bs-toggle="tab" data-bs-target="#day3"
-                                                        type="button" role="tab">H-3</button>
-                                                </li>
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 fw-bold extra-small dropdown-toggle shadow-none" type="button" data-bs-toggle="dropdown">
+                                                <i class="bi bi-box-arrow-up-right me-1"></i> Kelola Presensi
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-4 extra-small">
+                                                <li><a class="dropdown-item py-2" href="{{ route('absenpertama.index') }}"><i class="bi bi-calendar-event me-2"></i> Hari Pertama (H-1)</a></li>
+                                                <li><a class="dropdown-item py-2" href="{{ route('absenkedua.index') }}"><i class="bi bi-calendar-event me-2"></i> Hari Kedua (H-2)</a></li>
+                                                <li><a class="dropdown-item py-2" href="{{ route('absenketiga.index') }}"><i class="bi bi-calendar-event me-2"></i> Hari Ketiga (H-3)</a></li>
                                             </ul>
                                         </div>
                                     </div>
 
-                                    <div class="tab-content pt-2" id="attendanceTabContent">
-                                        {{-- Day 1 Pane --}}
-                                        <div class="tab-pane fade show active" id="day1" role="tabpanel">
-                                            <div class="table-responsive">
-                                                <table
-                                                    class="table table-sm table-hover align-middle mb-0 attendance-table">
-                                                    <thead>
-                                                        <tr class="text-uppercase extra-small fw-bold"
-                                                            style="background: #f8fafc; color: #012970;">
-                                                            <th class="ps-3 py-2">NO</th>
-                                                            <th>NAMA</th>
-                                                            <th>DATANG</th>
-                                                            <th class="text-end pe-3">PULANG</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @forelse($allAbsen1 as $index => $abs)
-                                                            <tr class="extra-small border-bottom border-light">
-                                                                <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
-                                                                <td class="text-nowrap"><span
-                                                                        class="fw-bold text-dark search-target">{{ $abs->user->name }}</span>
-                                                                </td>
-                                                                <td>
-                                                                    @php
-                                                                        $statusPagi = $abs->hadir_pagi;
-                                                                        $initialPagi = substr($statusPagi, 0, 1);
-                                                                        $colorPagi = match ($statusPagi) {
-                                                                            'Hadir' => 'bg-success',
-                                                                            'Izin' => 'bg-warning',
-                                                                            'Sakit' => 'bg-info',
-                                                                            'Alpa' => 'bg-danger',
-                                                                            default => 'bg-light text-muted border',
-                                                                        };
-                                                                    @endphp
-                                                                    <span
-                                                                        class="badge {{ $colorPagi }}">{{ $initialPagi }}</span>
-                                                                </td>
-                                                                <td class="text-end pe-3">
-                                                                    @php
-                                                                        $statusSore = $abs->hadir_sore;
-                                                                        $initialSore = substr($statusSore, 0, 1);
-                                                                        $colorSore = match ($statusSore) {
-                                                                            'Hadir' => 'bg-success',
-                                                                            'Izin' => 'bg-warning',
-                                                                            'Sakit' => 'bg-info',
-                                                                            'Alpa' => 'bg-danger',
-                                                                            default => 'bg-light text-muted border',
-                                                                        };
-                                                                    @endphp
-                                                                    <span
-                                                                        class="badge {{ $colorSore }}">{{ $initialSore }}</span>
-                                                                </td>
-                                                            </tr>
-                                                        @empty
-                                                            <tr class="empty-row">
-                                                                <td colspan="4" class="text-center py-3 text-muted">No
-                                                                    data</td>
-                                                            </tr>
-                                                        @endforelse
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="table-pagination-wrapper"></div>
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-12 col-lg-8">
+                                            <div id="chartAbsensiBar" style="min-height: 290px;"></div>
                                         </div>
-
-                                        {{-- Day 2 Pane --}}
-                                        <div class="tab-pane fade" id="day2" role="tabpanel">
-                                            <div class="table-responsive">
-                                                <table
-                                                    class="table table-sm table-hover align-middle mb-0 attendance-table">
-                                                    <thead>
-                                                        <tr class="text-uppercase extra-small fw-bold"
-                                                            style="background: #f8fafc; color: #012970;">
-                                                            <th class="ps-3 py-2">NO</th>
-                                                            <th>NAMA</th>
-                                                            <th>DATANG</th>
-                                                            <th class="text-end pe-3">PULANG</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @forelse($allAbsen2 as $index => $abs)
-                                                            <tr class="extra-small border-bottom border-light">
-                                                                <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
-                                                                <td class="text-nowrap"><span
-                                                                        class="fw-bold text-dark search-target">{{ $abs->user->name }}</span>
-                                                                </td>
-                                                                <td>
-                                                                    @php
-                                                                        $statusPagi = $abs->hadir_pagi;
-                                                                        $initialPagi = substr($statusPagi, 0, 1);
-                                                                        $colorPagi = match ($statusPagi) {
-                                                                            'Hadir' => 'bg-success',
-                                                                            'Izin' => 'bg-warning',
-                                                                            'Sakit' => 'bg-info',
-                                                                            'Alpa' => 'bg-danger',
-                                                                            default => 'bg-light text-muted border',
-                                                                        };
-                                                                    @endphp
-                                                                    <span
-                                                                        class="badge {{ $colorPagi }}">{{ $initialPagi }}</span>
-                                                                </td>
-                                                                <td class="text-end pe-3">
-                                                                    @php
-                                                                        $statusSore = $abs->hadir_sore;
-                                                                        $initialSore = substr($statusSore, 0, 1);
-                                                                        $colorSore = match ($statusSore) {
-                                                                            'Hadir' => 'bg-success',
-                                                                            'Izin' => 'bg-warning',
-                                                                            'Sakit' => 'bg-info',
-                                                                            'Alpa' => 'bg-danger',
-                                                                            default => 'bg-light text-muted border',
-                                                                        };
-                                                                    @endphp
-                                                                    <span
-                                                                        class="badge {{ $colorSore }}">{{ $initialSore }}</span>
-                                                                </td>
-                                                            </tr>
-                                                        @empty
-                                                            <tr class="empty-row">
-                                                                <td colspan="4" class="text-center py-3 text-muted">No
-                                                                    data</td>
-                                                            </tr>
-                                                        @endforelse
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="table-pagination-wrapper"></div>
-                                        </div>
-
-                                        {{-- Day 3 Pane --}}
-                                        <div class="tab-pane fade" id="day3" role="tabpanel">
-                                            <div class="table-responsive">
-                                                <table
-                                                    class="table table-sm table-hover align-middle mb-0 attendance-table">
-                                                    <thead>
-                                                        <tr class="text-uppercase extra-small fw-bold"
-                                                            style="background: #f8fafc; color: #012970;">
-                                                            <th class="ps-3 py-2">NO</th>
-                                                            <th>NAMA</th>
-                                                            <th>DATANG</th>
-                                                            <th class="text-end pe-3">PULANG</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @forelse($allAbsen3 as $index => $abs)
-                                                            <tr class="extra-small border-bottom border-light">
-                                                                <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
-                                                                <td class="text-nowrap"><span
-                                                                        class="fw-bold text-dark search-target">{{ $abs->user->name }}</span>
-                                                                </td>
-                                                                <td>
-                                                                    @php
-                                                                        $statusPagi = $abs->hadir_pagi;
-                                                                        $initialPagi = substr($statusPagi, 0, 1);
-                                                                        $colorPagi = match ($statusPagi) {
-                                                                            'Hadir' => 'bg-success',
-                                                                            'Izin' => 'bg-warning',
-                                                                            'Sakit' => 'bg-info',
-                                                                            'Alpa' => 'bg-danger',
-                                                                            default => 'bg-light text-muted border',
-                                                                        };
-                                                                    @endphp
-                                                                    <span
-                                                                        class="badge {{ $colorPagi }}">{{ $initialPagi }}</span>
-                                                                </td>
-                                                                <td class="text-end pe-3">
-                                                                    @php
-                                                                        $statusSore = $abs->hadir_sore;
-                                                                        $initialSore = substr($statusSore, 0, 1);
-                                                                        $colorSore = match ($statusSore) {
-                                                                            'Hadir' => 'bg-success',
-                                                                            'Izin' => 'bg-warning',
-                                                                            'Sakit' => 'bg-info',
-                                                                            'Alpa' => 'bg-danger',
-                                                                            default => 'bg-light text-muted border',
-                                                                        };
-                                                                    @endphp
-                                                                    <span
-                                                                        class="badge {{ $colorSore }}">{{ $initialSore }}</span>
-                                                                </td>
-                                                            </tr>
-                                                        @empty
-                                                            <tr class="empty-row">
-                                                                <td colspan="4" class="text-center py-3 text-muted">No
-                                                                    data</td>
-                                                            </tr>
-                                                        @endforelse
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="table-pagination-wrapper"></div>
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-2">
-                                        <div
-                                            class="extra-small text-muted fw-semibold me-2 opacity-75 d-flex align-items-center text-uppercase">
-                                            KETERANGAN:</div>
-                                        <div class="d-flex align-items-center gap-1 extra-small">
-                                            <span class="badge bg-success py-1 px-2">H: Hadir</span>
-                                            <span class="badge bg-warning py-1 px-2">I: Izin</span>
-                                            <span class="badge bg-info text-white py-1 px-2">S: Sakit</span>
-                                            <span class="badge bg-danger py-1 px-2">A: Alpa</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Card 2: Main Discipline Hub: Multi-Day --}}
-                        <div class="col-12">
-                            <div class="card border-0 shadow-sm mb-4 overflow-hidden">
-                                <div class="card-body p-3 p-xl-4">
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-                                        <div>
-                                            <h5 class="card-title mb-0 fs-5">Hub Kedisiplinan <span>| All Days</span></h5>
-                                            <p class="text-muted extra-small mb-0 opacity-75">Monitoring kedisiplinan
-                                                (Atribut, Waktu, Perilaku) mahasiswa.</p>
-                                        </div>
-
-                                        <div class="d-flex align-items-center flex-wrap gap-2 ms-xl-auto w-100 w-xl-auto">
-                                            {{-- Detail Link --}}
-                                            <div class="dropdown me-md-2 mb-2 mb-md-0">
-                                                <button
-                                                    class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 fw-bold extra-small dropdown-toggle shadow-none"
-                                                    type="button" data-bs-toggle="dropdown"
-                                                    style="border-color: rgba(13, 202, 240, 0.3);">
-                                                    <i class="bi bi-shield-check me-1"></i> Manage
-                                                </button>
-                                                <ul
-                                                    class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-4 extra-small">
-                                                    <li><a class="dropdown-item py-2"
-                                                            href="{{ route('kedisiplinanpertama.index') }}"><i
-                                                                class="bi bi-calendar-check me-2"></i> Hari Pertama</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item py-2"
-                                                            href="{{ route('kedisiplinankedua.index') }}"><i
-                                                                class="bi bi-calendar-check me-2"></i> Hari Kedua</a></li>
-                                                    <li><a class="dropdown-item py-2"
-                                                            href="{{ route('kedisiplinanketiga.index') }}"><i
-                                                                class="bi bi-calendar-check me-2"></i> Hari Ketiga</a></li>
-                                                </ul>
-                                            </div>
-
-                                            {{-- Search Input --}}
-                                            <div class="position-relative w-100 w-md-auto mb-2 mb-md-0">
-                                                <input type="text" id="disciplineSearch"
-                                                    class="form-control form-control-sm rounded-pill px-4 ps-5 w-100 shadow-none border-light"
-                                                    placeholder="Cari..."
-                                                    style="background: #f8fafc; min-width: 200px; height: 38px;">
-                                                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted opacity-50"
-                                                    style="left: 0;"></i>
-                                            </div>
-
-                                            {{-- Tabs --}}
-                                            <ul class="nav nav-pills nav-pills-custom gap-1 flex-nowrap overflow-auto pb-1"
-                                                id="disciplineTab" role="tablist">
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link active btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="dis1-tab" data-bs-toggle="tab" data-bs-target="#dis1"
-                                                        type="button" role="tab">H-1</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="dis2-tab" data-bs-toggle="tab" data-bs-target="#dis2"
-                                                        type="button" role="tab">H-2</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="dis3-tab" data-bs-toggle="tab" data-bs-target="#dis3"
-                                                        type="button" role="tab">H-3</button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="tab-content pt-2" id="disciplineTabContent">
-                                        @foreach ([['id' => 'dis1', 'data' => $allDis1], ['id' => 'dis2', 'data' => $allDis2], ['id' => 'dis3', 'data' => $allDis3]] as $pane)
-                                            <div class="tab-pane fade {{ $pane['id'] == 'dis1' ? 'show active' : '' }}"
-                                                id="{{ $pane['id'] }}" role="tabpanel">
-                                                <div class="table-responsive">
-                                                    <table
-                                                        class="table table-sm table-hover align-middle mb-0 discipline-table">
-                                                        <thead>
-                                                            <tr class="text-uppercase extra-small fw-bold"
-                                                                style="background: #f8fafc; color: #012970;">
-                                                                <th class="ps-3 py-2">NO</th>
-                                                                <th>NAMA</th>
-                                                                <th>ATRIBUT</th>
-                                                                <th>WAKTU</th>
-                                                                <th class="text-end pe-3">PERILAKU</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @forelse($pane['data'] as $index => $dis)
-                                                                <tr class="extra-small border-bottom border-light">
-                                                                    <td class="ps-3 py-2 text-muted">{{ $index + 1 }}
-                                                                    </td>
-                                                                    <td class="text-nowrap"><span
-                                                                            class="fw-bold text-dark search-target">{{ $dis->user->name }}</span>
-                                                                    </td>
-                                                                    <td>
-                                                                        @php
-                                                                            $stA = strtolower(
-                                                                                $dis->kelengkapan_atribut ?? '',
-                                                                            );
-                                                                            $colA =
-                                                                                $stA === 'lengkap'
-                                                                                    ? 'bg-success'
-                                                                                    : ($stA === 'tidak lengkap'
-                                                                                        ? 'bg-danger'
-                                                                                        : 'bg-light text-muted border');
-                                                                            $iconA =
-                                                                                $stA === 'lengkap'
-                                                                                    ? 'A'
-                                                                                    : ($stA === 'tidak lengkap'
-                                                                                        ? 'TL'
-                                                                                        : '-');
-                                                                        @endphp
-                                                                        <span
-                                                                            class="badge {{ $colA }}">{{ $iconA }}</span>
-                                                                    </td>
-                                                                    <td>
-                                                                        @php
-                                                                            $stW = strtolower(
-                                                                                $dis->ketepatan_waktu ?? '',
-                                                                            );
-                                                                            $colW =
-                                                                                $stW === 'tepat waktu'
-                                                                                    ? 'bg-success'
-                                                                                    : ($stW === 'terlambat'
-                                                                                        ? 'bg-danger'
-                                                                                        : 'bg-light text-muted border');
-                                                                            $iconW =
-                                                                                $stW === 'tepat waktu'
-                                                                                    ? 'W'
-                                                                                    : ($stW === 'terlambat'
-                                                                                        ? 'TL'
-                                                                                        : '-');
-                                                                        @endphp
-                                                                        <span
-                                                                            class="badge {{ $colW }}">{{ $iconW }}</span>
-                                                                    </td>
-                                                                    <td class="text-end pe-3">
-                                                                        @php
-                                                                            $stP = strtolower($dis->perilaku ?? '');
-                                                                            $colP = match ($stP) {
-                                                                                'sangat baik' => 'bg-success',
-                                                                                'baik' => 'bg-primary',
-                                                                                'cukup' => 'bg-warning',
-                                                                                'kurang' => 'bg-danger',
-                                                                                default
-                                                                                    => 'bg-light text-muted border',
-                                                                            };
-                                                                            $iconP = match ($stP) {
-                                                                                'sangat baik' => 'SB',
-                                                                                'baik' => 'B',
-                                                                                'cukup' => 'C',
-                                                                                'kurang' => 'K',
-                                                                                default => '-',
-                                                                            };
-                                                                        @endphp
-                                                                        <span
-                                                                            class="badge {{ $colP }}">{{ $iconP }}</span>
-                                                                    </td>
-                                                                </tr>
-                                                            @empty
-                                                                <tr class="empty-row">
-                                                                    <td colspan="5"
-                                                                        class="text-center py-3 text-muted">No data</td>
-                                                                </tr>
-                                                            @endforelse
-                                                        </tbody>
-                                                    </table>
+                                        <div class="col-12 col-lg-4">
+                                            <div class="p-3 bg-light rounded-4 border-light h-100 d-flex flex-column justify-content-between">
+                                                <h6 class="fw-bold extra-small text-uppercase tracking-wider text-muted mb-1 text-center">
+                                                    <i class="bi bi-pie-chart-fill text-primary me-1"></i> Rekap Status Presensi
+                                                </h6>
+                                                <div id="chartAbsensiStatusDonut" style="min-height: 200px;"></div>
+                                                <div class="row row-cols-2 g-2 extra-small text-muted fw-semibold mt-2 pt-2 border-top border-light px-2">
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #00A551; flex-shrink: 0;"></span>
+                                                        <span>Hadir</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #f59e0b; flex-shrink: 0;"></span>
+                                                        <span>Izin</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #06b6d4; flex-shrink: 0;"></span>
+                                                        <span>Sakit</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #ef4444; flex-shrink: 0;"></span>
+                                                        <span>Alpa</span>
+                                                    </div>
                                                 </div>
-                                                <div class="table-pagination-wrapper"></div>
                                             </div>
-                                        @endforeach
-                                    </div>
-                                    <div
-                                        class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-2">
-                                        <div
-                                            class="extra-small text-muted fw-semibold me-2 opacity-75 d-flex align-items-center">
-                                            KETERANGAN:</div>
-                                        <div
-                                            class="d-flex align-items-center gap-1 extra-small flex-wrap justify-content-center">
-                                            <span class="badge bg-success py-1 px-2">A: Lengkap</span>
-                                            <span class="badge bg-danger py-1 px-2">TL: Tidak Lengkap/Telat</span>
-                                            <span class="badge bg-success py-1 px-2">W: Tepat</span>
-                                            <span class="badge bg-success py-1 px-2">SB: Sangat Baik</span>
-                                            <span class="badge bg-primary py-1 px-2">B: Baik</span>
-                                            <span class="badge bg-warning py-1 px-2">C: Cukup</span>
-                                            <span class="badge bg-danger py-1 px-2">K: Kurang</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- SECTION 2: EVALUASI AKADEMIK & PENUGASAN --}}
+                        {{-- Card 2: Grafik Rekapitulasi Kedisiplinan --}}
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+                                <div class="card-body p-3 p-xl-4">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                                        <div>
+                                            <h5 class="card-title mb-0 fs-5">Grafik Monitoring Kedisiplinan <span>| All Days</span></h5>
+                                            <p class="text-muted extra-small mb-0 opacity-75">Statistik evaluasi Atribut, Ketepatan Waktu, dan Perilaku (Hari 1 s/d Hari 3)</p>
+                                        </div>
+
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-info btn-sm rounded-pill px-3 py-2 fw-bold extra-small dropdown-toggle shadow-none" type="button" data-bs-toggle="dropdown" style="border-color: rgba(13, 202, 240, 0.3);">
+                                                <i class="bi bi-shield-check me-1"></i> Kelola Kedisiplinan
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-4 extra-small">
+                                                <li><a class="dropdown-item py-2" href="{{ route('kedisiplinanpertama.index') }}"><i class="bi bi-calendar-check me-2"></i> Hari Pertama (H-1)</a></li>
+                                                <li><a class="dropdown-item py-2" href="{{ route('kedisiplinankedua.index') }}"><i class="bi bi-calendar-check me-2"></i> Hari Kedua (H-2)</a></li>
+                                                <li><a class="dropdown-item py-2" href="{{ route('kedisiplinanketiga.index') }}"><i class="bi bi-calendar-check me-2"></i> Hari Ketiga (H-3)</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-12 col-lg-7">
+                                            <div id="chartKedisiplinanBar" style="min-height: 270px;"></div>
+                                        </div>
+                                        <div class="col-12 col-lg-5">
+                                            <div class="p-3 bg-light rounded-4 border-light h-100 d-flex flex-column justify-content-between">
+                                                <h6 class="fw-bold extra-small text-uppercase tracking-wider text-muted mb-1 text-center">
+                                                    <i class="bi bi-award-fill text-warning me-1"></i> Distribusi Perilaku
+                                                </h6>
+                                                <div id="chartPerilakuDonut" style="min-height: 200px;"></div>
+                                                <div class="row row-cols-2 g-2 extra-small text-muted fw-semibold mt-2 pt-2 border-top border-light px-2">
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #00A551; flex-shrink: 0;"></span>
+                                                        <span>Sangat Baik</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #3b82f6; flex-shrink: 0;"></span>
+                                                        <span>Baik</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #f59e0b; flex-shrink: 0;"></span>
+                                                        <span>Cukup</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #ef4444; flex-shrink: 0;"></span>
+                                                        <span>Kurang</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Card 3: Grafik Capaian Pre-Test & Post-Test Modul 1-4 --}}
+                        <div class="col-12">
+                            <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+                                <div class="card-body p-3 p-xl-4">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                                        <div>
+                                            <h5 class="card-title mb-0 fs-5">Grafik Capaian Pre-Test & Post-Test <span>| Modul 1 s/d Modul 4</span></h5>
+                                            <p class="text-muted extra-small mb-0 opacity-75">Perbandingan rata-rata nilai tes dan rasio ketuntasan materi modul</p>
+                                        </div>
+
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-success btn-sm rounded-pill px-3 py-2 fw-bold extra-small dropdown-toggle shadow-none" type="button" data-bs-toggle="dropdown" style="border-color: rgba(34, 197, 94, 0.3);">
+                                                <i class="bi bi-journal-check me-1"></i> Kelola Hasil Test
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-4 extra-small">
+                                                <li><a class="dropdown-item py-2" href="{{ route('hasiltest.index') }}"><i class="bi bi-list-check me-2"></i> Hasil Test (Pre / Post)</a></li>
+                                                <li><a class="dropdown-item py-2" href="{{ route('soaltugaskelompok.index') }}"><i class="bi bi-people me-2"></i> Tugas Kelompok</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-12 col-lg-7">
+                                            <div id="chartPrePostBar" style="min-height: 280px;"></div>
+                                        </div>
+                                        <div class="col-12 col-lg-5">
+                                            <div class="p-3 bg-light rounded-4 border-light h-100 d-flex flex-column justify-content-between">
+                                                <h6 class="fw-bold extra-small text-uppercase tracking-wider text-muted mb-1 text-center">
+                                                    <i class="bi bi-check-circle-fill text-success me-1"></i> Ketuntasan Post-Test
+                                                </h6>
+                                                <div id="chartKetuntasanBar" style="min-height: 200px;"></div>
+                                                <div class="row row-cols-2 g-2 extra-small text-muted fw-semibold mt-2 pt-2 border-top border-light px-2">
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #00A551; flex-shrink: 0;"></span>
+                                                        <span>Tuntas (&ge; 65)</span>
+                                                    </div>
+                                                    <div class="col d-flex align-items-center gap-2">
+                                                        <span class="rounded-circle d-inline-block" style="width: 10px; height: 10px; background-color: #ef4444; flex-shrink: 0;"></span>
+                                                        <span>Belum Tuntas</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                // 1. Absensi Charts
+                                const absData = @json($chartAbsensi ?? []);
+                                if (document.querySelector("#chartAbsensiBar") && absData.categories) {
+                                    new ApexCharts(document.querySelector("#chartAbsensiBar"), {
+                                        series: [
+                                            { name: 'Sesi Datang (Hadir)', data: absData.datang?.hadir || [0,0,0] },
+                                            { name: 'Sesi Pulang (Hadir)', data: absData.pulang?.hadir || [0,0,0] }
+                                        ],
+                                        chart: { type: 'bar', height: 290, toolbar: { show: false } },
+                                        plotOptions: { bar: { horizontal: false, columnWidth: '45%', borderRadius: 6 } },
+                                        dataLabels: { enabled: false },
+                                        stroke: { show: true, width: 2, colors: ['transparent'] },
+                                        xaxis: { categories: absData.categories },
+                                        yaxis: { title: { text: 'Jumlah Mahasiswa' } },
+                                        fill: { opacity: 1 },
+                                        colors: ['#0284c7', '#00A551'],
+                                        legend: { position: 'top', horizontalAlign: 'center', fontSize: '11px' },
+                                        tooltip: { y: { formatter: val => val + ' Mahasiswa' } }
+                                    }).render();
+
+                                    const totalHadir = (absData.breakdown?.hadir || []).reduce((a,b)=>a+b, 0);
+                                    const totalIzin = (absData.breakdown?.izin || []).reduce((a,b)=>a+b, 0);
+                                    const totalSakit = (absData.breakdown?.sakit || []).reduce((a,b)=>a+b, 0);
+                                    const totalAlpa = (absData.breakdown?.alpa || []).reduce((a,b)=>a+b, 0);
+
+                                    new ApexCharts(document.querySelector("#chartAbsensiStatusDonut"), {
+                                        series: [totalHadir, totalIzin, totalSakit, totalAlpa],
+                                        chart: { type: 'donut', height: 200 },
+                                        labels: ['Hadir', 'Izin', 'Sakit', 'Alpa'],
+                                        colors: ['#00A551', '#f59e0b', '#06b6d4', '#ef4444'],
+                                        legend: { show: false },
+                                        dataLabels: { enabled: false },
+                                        plotOptions: { pie: { donut: { size: '65%' } } }
+                                    }).render();
+                                }
+
+                                // 2. Kedisiplinan Charts
+                                const disData = @json($chartKedisiplinan ?? []);
+                                if (document.querySelector("#chartKedisiplinanBar") && disData.categories) {
+                                    new ApexCharts(document.querySelector("#chartKedisiplinanBar"), {
+                                        series: [
+                                            { name: 'Atribut Lengkap', data: disData.atribut?.lengkap || [0,0,0] },
+                                            { name: 'Tepat Waktu', data: disData.waktu?.tepat_waktu || [0,0,0] }
+                                        ],
+                                        chart: { type: 'bar', height: 270, toolbar: { show: false } },
+                                        plotOptions: { bar: { horizontal: false, columnWidth: '45%', borderRadius: 6 } },
+                                        dataLabels: { enabled: false },
+                                        stroke: { show: true, width: 2, colors: ['transparent'] },
+                                        xaxis: { categories: disData.categories },
+                                        yaxis: { title: { text: 'Mahasiswa' } },
+                                        colors: ['#6366f1', '#00A551'],
+                                        legend: { position: 'top', horizontalAlign: 'center', fontSize: '11px' },
+                                        tooltip: { y: { formatter: val => val + ' Mahasiswa' } }
+                                    }).render();
+
+                                    const pData = disData.perilaku || {};
+                                    new ApexCharts(document.querySelector("#chartPerilakuDonut"), {
+                                        series: [pData.sangat_baik || 0, pData.baik || 0, pData.cukup || 0, pData.kurang || 0],
+                                        chart: { type: 'donut', height: 200 },
+                                        labels: ['Sangat Baik (SB)', 'Baik (B)', 'Cukup (C)', 'Kurang (K)'],
+                                        colors: ['#00A551', '#3b82f6', '#f59e0b', '#ef4444'],
+                                        legend: { show: false },
+                                        dataLabels: { enabled: false },
+                                        plotOptions: { pie: { donut: { size: '65%' } } }
+                                    }).render();
+                                }
+
+                                // 3. Pre-Test & Post-Test Charts
+                                const testData = @json($chartHasilTest ?? []);
+                                if (document.querySelector("#chartPrePostBar") && testData.categories) {
+                                    new ApexCharts(document.querySelector("#chartPrePostBar"), {
+                                        series: [
+                                            { name: 'Rata-rata Pre-Test', data: testData.pretestAvg || [0,0,0,0] },
+                                            { name: 'Rata-rata Post-Test', data: testData.posttestAvg || [0,0,0,0] }
+                                        ],
+                                        chart: { type: 'bar', height: 280, toolbar: { show: false } },
+                                        plotOptions: { bar: { horizontal: false, columnWidth: '48%', borderRadius: 6 } },
+                                        dataLabels: { enabled: true, style: { fontSize: '11px' } },
+                                        stroke: { show: true, width: 2, colors: ['transparent'] },
+                                        xaxis: { categories: testData.categories },
+                                        yaxis: { title: { text: 'Nilai Rata-rata' }, max: 100 },
+                                        colors: ['#8b5cf6', '#0284c7'],
+                                        legend: { position: 'top', horizontalAlign: 'center', fontSize: '11px' },
+                                        tooltip: { y: { formatter: val => val + ' Poin' } }
+                                    }).render();
+
+                                    new ApexCharts(document.querySelector("#chartKetuntasanBar"), {
+                                        series: [
+                                            { name: 'Tuntas (>=65)', data: testData.tuntas || [0,0,0,0] },
+                                            { name: 'Belum Tuntas (<65)', data: testData.belumTuntas || [0,0,0,0] }
+                                        ],
+                                        chart: { type: 'bar', height: 200, stacked: true, toolbar: { show: false } },
+                                        plotOptions: { bar: { horizontal: true, borderRadius: 4 } },
+                                        dataLabels: { enabled: false },
+                                        xaxis: { categories: testData.categories },
+                                        colors: ['#00A551', '#ef4444'],
+                                        legend: { show: false },
+                                        tooltip: { y: { formatter: val => val + ' Mahasiswa' } }
+                                    }).render();
+                                }
+                            });
+                        </script>
+
+                        {{-- SECTION 3: ANALISIS & GRAFIK PROGRESS PENUNTASAN --}}
                         <div class="col-12 mb-3 mt-2">
                             <div class="d-flex align-items-center justify-content-between border-bottom pb-2">
                                 <div class="d-flex align-items-center gap-2">
-                                    <span class="badge bg-primary bg-opacity-10 text-primary p-2 rounded-3"><i class="bi bi-award fs-6"></i></span>
+                                    <span class="badge bg-info bg-opacity-10 text-info p-2 rounded-3"><i class="bi bi-bar-chart-line fs-6"></i></span>
                                     <div>
-                                        <h6 class="fw-bold text-dark mb-0">Evaluasi Nilai & Capaian Akademik</h6>
-                                        <span class="text-muted extra-small">Snapshot nilai pre-test, post-test, penugasan kelompok, dan modul</span>
+                                        <h6 class="fw-bold text-dark mb-0">Grafik Progress Penuntasan</h6>
+                                        <span class="text-muted extra-small">Visualisasi komparasi penyelesaian pre-test, post-test, dan tugas kelompok</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Card 3: Main Snapshot Hub: Pre-Test, Post-Test & Tugas Kelompok --}}
-                        <div class="col-12">
-                            <div class="card border-0 shadow-sm mb-4 overflow-hidden">
-                                <div class="card-body p-3 p-xl-4">
+                        {{-- Card: Academic Bar Chart Hub --}}
+                        <div class="col-12 mb-4">
+                            <div class="card border-0 shadow-sm overflow-hidden">
+                                <div class="card-body p-4">
                                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-                                        <div>
-                                            <h5 class="card-title mb-0 fs-5">Hub Snapshot Nilai & Tugas <span>| Pre, Post & Tugas</span></h5>
-                                            <p class="text-muted extra-small mb-0 opacity-75">Monitoring capaian nilai pre-test, post-test, dan link pengumpulan tugas mahasiswa.</p>
+                                        <div class="pe-md-3" style="max-width: 620px;">
+                                            <h5 class="card-title mb-0 fs-5">Progress Penuntasan Akademik <span>| 6 Pilar Utama</span></h5>
+                                            <p class="text-muted extra-small mb-0 opacity-75">Statistik komparasi penuntasan: Absensi, Kedisiplinan, Pre-Test, Post-Test, Tugas Kelompok, dan Ketuntasan Hasil Test.</p>
                                         </div>
-
-                                        <div class="d-flex align-items-center flex-wrap gap-2 ms-xl-auto w-100 w-xl-auto">
-                                            {{-- Detail Link --}}
-                                            <div class="dropdown me-md-2 mb-2 mb-md-0">
-                                                <button
-                                                    class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 fw-bold extra-small dropdown-toggle shadow-none"
-                                                    type="button" data-bs-toggle="dropdown">
-                                                    <i class="bi bi-box-arrow-up-right me-1"></i> Manage
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-4 extra-small">
-                                                    <li><a class="dropdown-item py-2" href="{{ route('hasiltest.index') }}"><i class="bi bi-clipboard-data me-2"></i> Hasil Test (Pre / Post)</a></li>
-                                                    <li><a class="dropdown-item py-2" href="{{ route('soaltugaskelompok.index') }}"><i class="bi bi-book-half me-2"></i> Tugas Kelompok</a></li>
-                                                </ul>
+                                        <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-auto">
+                                            @php
+                                                $detailTargetUrl = route('rekapkeseluruhan.index');
+                                                if (in_array(Auth::user()->role, ['kakakpendamping', 'dosenpendamping'])) {
+                                                    $detailTargetUrl = $myKelompokSlug ? route('kelompok.show', $myKelompokSlug) : route('kelompok.index');
+                                                }
+                                            @endphp
+                                            <a href="{{ $detailTargetUrl }}"
+                                                class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 fw-bold extra-small shadow-none text-nowrap d-inline-flex align-items-center">
+                                                <i class="bi bi-person-lines-fill me-1"></i> Detail
+                                            </a>
+                                            <div
+                                                class="bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold extra-small text-nowrap">
+                                                Total: {{ $totalMahasiswa }}
                                             </div>
-
-                                            {{-- Search Input --}}
-                                            <div class="position-relative w-100 w-md-auto mb-2 mb-md-0">
-                                                <input type="text" id="snapshotSearch"
-                                                    class="form-control form-control-sm rounded-pill px-4 ps-5 w-100 shadow-none border-light"
-                                                    placeholder="Cari nama..."
-                                                    style="background: #f8fafc; min-width: 200px; height: 38px;">
-                                                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted opacity-50"
-                                                    style="left: 0;"></i>
-                                            </div>
-
-                                            {{-- Tabs --}}
-                                            <ul class="nav nav-pills nav-pills-custom gap-1 flex-nowrap overflow-auto pb-1"
-                                                id="snapshotTab" role="tablist">
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link active btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="snap-pre-tab" data-bs-toggle="tab" data-bs-target="#snap-pre"
-                                                        type="button" role="tab">Pre-Test</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="snap-post-tab" data-bs-toggle="tab" data-bs-target="#snap-post"
-                                                        type="button" role="tab">Post-Test</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="snap-tugas-tab" data-bs-toggle="tab" data-bs-target="#snap-tugas"
-                                                        type="button" role="tab">Kelompok / Tugas</button>
-                                                </li>
-                                            </ul>
                                         </div>
                                     </div>
-
-                                    <div class="tab-content pt-2" id="snapshotTabContent">
-                                        {{-- Pre-Test Tab Pane --}}
-                                        <div class="tab-pane fade show active" id="snap-pre" role="tabpanel">
-                                            <div class="table-responsive">
-                                                <table class="table table-sm table-hover align-middle mb-0 snapshot-table">
-                                                    <thead>
-                                                        <tr class="text-uppercase extra-small fw-bold"
-                                                            style="background: #f8fafc; color: #012970;">
-                                                            <th class="ps-3 py-2" style="width: 60px;">NO</th>
-                                                            <th>NAMA MAHASISWA</th>
-                                                            <th class="text-end pe-3" style="width: 140px;">SKOR PRE-TEST</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @forelse($allPretest as $index => $pre)
-                                                            <tr class="extra-small border-bottom border-light">
-                                                                <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
-                                                                <td class="text-nowrap"><span
-                                                                        class="fw-bold text-dark search-target">{{ $pre->user->name ?? '-' }}</span>
-                                                                </td>
-                                                                <td class="text-end pe-3"><span
-                                                                        class="badge bg-info text-white fs-6 px-3 py-1">{{ $pre->skor }}</span>
-                                                                </td>
-                                                            </tr>
-                                                        @empty
-                                                            <tr class="empty-row">
-                                                                <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Pre-Test</td>
-                                                            </tr>
-                                                        @endforelse
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="table-pagination-wrapper"></div>
-                                        </div>
-
-                                        {{-- Post-Test Tab Pane --}}
-                                        <div class="tab-pane fade" id="snap-post" role="tabpanel">
-                                            <div class="table-responsive">
-                                                <table class="table table-sm table-hover align-middle mb-0 snapshot-table">
-                                                    <thead>
-                                                        <tr class="text-uppercase extra-small fw-bold"
-                                                            style="background: #f8fafc; color: #012970;">
-                                                            <th class="ps-3 py-2" style="width: 60px;">NO</th>
-                                                            <th>NAMA MAHASISWA</th>
-                                                            <th class="text-end pe-3" style="width: 140px;">SKOR POST-TEST</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @forelse($allPosttest as $index => $post)
-                                                            <tr class="extra-small border-bottom border-light">
-                                                                <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
-                                                                <td class="text-nowrap"><span
-                                                                        class="fw-bold text-dark search-target">{{ $post->user->name ?? '-' }}</span>
-                                                                </td>
-                                                                <td class="text-end pe-3"><span
-                                                                        class="badge bg-primary fs-6 px-3 py-1">{{ $post->skor }}</span></td>
-                                                            </tr>
-                                                        @empty
-                                                            <tr class="empty-row">
-                                                                <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Post-Test</td>
-                                                            </tr>
-                                                        @endforelse
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="table-pagination-wrapper"></div>
-                                        </div>
-
-                                        {{-- Kelompok / Tugas Tab Pane --}}
-                                        <div class="tab-pane fade" id="snap-tugas" role="tabpanel">
-                                            <div class="table-responsive">
-                                                <table class="table table-sm table-hover align-middle mb-0 snapshot-table">
-                                                    <thead>
-                                                        <tr class="text-uppercase extra-small fw-bold"
-                                                            style="background: #f8fafc; color: #012970;">
-                                                            <th class="ps-3 py-2" style="width: 60px;">NO</th>
-                                                            <th>NAMA MAHASISWA</th>
-                                                            <th class="text-end pe-3" style="width: 140px;">LINK TUGAS</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @forelse($allTugas as $index => $tug)
-                                                            <tr class="extra-small border-bottom border-light">
-                                                                <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
-                                                                <td class="text-nowrap"><span
-                                                                        class="fw-bold text-dark search-target">{{ $tug->user->name ?? '-' }}</span>
-                                                                </td>
-                                                                <td class="text-end pe-3">
-                                                                    <a href="{{ $tug->link_tugas }}" target="_blank"
-                                                                        class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 extra-small fw-bold"><i
-                                                                            class="bi bi-link-45deg me-1"></i> Buka Link</a>
-                                                                </td>
-                                                            </tr>
-                                                        @empty
-                                                            <tr class="empty-row">
-                                                                <td colspan="3" class="text-center py-3 text-muted small">Belum ada data Tugas Kelompok</td>
-                                                            </tr>
-                                                        @endforelse
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="table-pagination-wrapper"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Card 4: Main Test Hub: Multi-Module --}}
-                        <div class="col-12">
-                            <div class="card border-0 shadow-sm mb-4 overflow-hidden">
-                                <div class="card-body p-3 p-xl-4">
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-                                        <div>
-                                            <h5 class="card-title mb-0 fs-5">Hub Hasil Test Modul <span>| M-1 s/d M-5</span></h5>
-                                            <p class="text-muted extra-small mb-0 opacity-75">Detail perolehan nilai pretest & posttest per materi modul.</p>
-                                        </div>
-
-                                        <div class="d-flex align-items-center flex-wrap gap-2 ms-xl-auto w-100 w-xl-auto">
-                                            {{-- Detail Link --}}
-                                            <div class="dropdown me-md-2 mb-2 mb-md-0">
-                                                <button
-                                                    class="btn btn-outline-success btn-sm rounded-pill px-3 py-2 fw-bold extra-small dropdown-toggle shadow-none"
-                                                    type="button" data-bs-toggle="dropdown"
-                                                    style="border-color: rgba(34, 197, 94, 0.3);">
-                                                    <i class="bi bi-journal-check me-1"></i> Manage
-                                                </button>
-                                                <ul
-                                                    class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-4 extra-small">
-                                                    <li><a class="dropdown-item py-2"
-                                                            href="{{ route('hasiltest.index') }}"><i
-                                                                class="bi bi-list-check me-2"></i> Kelola Hasil Test</a>
-                                                    </li>
-                                                    <li><a class="dropdown-item py-2"
-                                                            href="{{ route('soaltugaskelompok.index') }}"><i
-                                                                class="bi bi-people me-2"></i> Tugas Kelompok</a></li>
-                                                </ul>
-                                            </div>
-
-                                            {{-- Search Input --}}
-                                            <div class="position-relative w-100 w-md-auto mb-2 mb-md-0">
-                                                <input type="text" id="testSearch"
-                                                    class="form-control form-control-sm rounded-pill px-4 ps-5 w-100 shadow-none border-light"
-                                                    placeholder="Cari..."
-                                                    style="background: #f8fafc; min-width: 200px; height: 38px;">
-                                                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted opacity-50"
-                                                    style="left: 0;"></i>
-                                            </div>
-
-                                            {{-- Tabs --}}
-                                            <ul class="nav nav-pills nav-pills-custom gap-1 flex-nowrap overflow-auto pb-1"
-                                                id="testTab" role="tablist">
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link active btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="m1-tab" data-bs-toggle="tab" data-bs-target="#m1"
-                                                        type="button" role="tab">M-1</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="m2-tab" data-bs-toggle="tab" data-bs-target="#m2"
-                                                        type="button" role="tab">M-2</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="m3-tab" data-bs-toggle="tab" data-bs-target="#m3"
-                                                        type="button" role="tab">M-3</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="m4-tab" data-bs-toggle="tab" data-bs-target="#m4"
-                                                        type="button" role="tab">M-4</button>
-                                                </li>
-                                                <li class="nav-item" role="presentation">
-                                                    <button class="nav-link btn-sm extra-small px-3 py-2 fw-bold"
-                                                        id="m5-tab" data-bs-toggle="tab" data-bs-target="#m5"
-                                                        type="button" role="tab">M-5</button>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="tab-content pt-2" id="testTabContent">
-                                        {{-- Modul Panes --}}
-                                        @foreach ([['id' => 'm1', 'data' => $allM1], ['id' => 'm2', 'data' => $allM2], ['id' => 'm3', 'data' => $allM3], ['id' => 'm4', 'data' => $allM4]] as $index => $pane)
-                                            <div class="tab-pane fade {{ $pane['id'] == 'm1' ? 'show active' : '' }}"
-                                                id="{{ $pane['id'] }}" role="tabpanel">
-                                                <div class="table-responsive">
-                                                    <table class="table table-sm table-hover align-middle mb-0 test-table">
-                                                        <thead>
-                                                            <tr class="text-uppercase extra-small fw-bold"
-                                                                style="background: #f8fafc; color: #012970;">
-                                                                <th class="ps-3 py-2">NO</th>
-                                                                <th>NAMA</th>
-                                                                <th>PRE-TEST</th>
-                                                                <th class="text-end pe-3">POST-TEST</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @forelse($pane['data'] as $idx => $user)
-                                                                <tr class="extra-small border-bottom border-light">
-                                                                    <td class="ps-3 py-2 text-muted">{{ $idx + 1 }}</td>
-                                                                    <td class="text-nowrap"><span
-                                                                            class="fw-bold text-dark search-target">{{ $user->name }}</span>
-                                                                    </td>
-                                                                    <td>
-                                                                        @php
-                                                                            $pre = $user->hasilTests
-                                                                                ->where('type', 'pretest')
-                                                                                ->first();
-                                                                            $skorPre = $pre ? $pre->skor : '-';
-                                                                            $colPre = $pre ? ($pre->skor >= 65 ? 'text-success' : 'text-danger') : 'text-muted opacity-50';
-                                                                        @endphp
-                                                                        <span
-                                                                            class="fw-bold {{ $colPre }}">{{ $skorPre }}</span>
-                                                                    </td>
-                                                                    <td class="text-end pe-3">
-                                                                        @php
-                                                                            $post = $user->hasilTests
-                                                                                ->where('type', 'posttest')
-                                                                                ->first();
-                                                                            $skorPost = $post ? $post->skor : '-';
-                                                                            $colPost = $post ? ($post->skor >= 65 ? 'text-success' : 'text-danger') : 'text-muted opacity-50';
-                                                                        @endphp
-                                                                        <span
-                                                                            class="fw-bold {{ $colPost }}">{{ $skorPost }}</span>
-                                                                    </td>
-                                                                </tr>
-                                                            @empty
-                                                                <tr class="empty-row">
-                                                                    <td colspan="4" class="text-center py-3 text-muted">
-                                                                        No data</td>
-                                                                </tr>
-                                                            @endforelse
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="table-pagination-wrapper"></div>
-                                            </div>
-                                        @endforeach
-
-                                        {{-- Group Task Pane (M5) --}}
-                                        <div class="tab-pane fade" id="m5" role="tabpanel">
-                                            <div class="table-responsive">
-                                                <table class="table table-sm table-hover align-middle mb-0 test-table">
-                                                    <thead>
-                                                        <tr class="text-uppercase extra-small fw-bold"
-                                                            style="background: #f8fafc; color: #012970;">
-                                                            <th class="ps-3 py-2">NO</th>
-                                                            <th>NAMA</th>
-                                                            <th class="text-end pe-3">NILAI TUGAS</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @forelse($allTugas as $idx => $tug)
-                                                            <tr class="extra-small border-bottom border-light">
-                                                                <td class="ps-3 py-2 text-muted">{{ $idx + 1 }}</td>
-                                                                <td class="text-nowrap"><span
-                                                                        class="fw-bold text-dark search-target">{{ $tug->user->name }}</span>
-                                                                </td>
-                                                                <td class="text-end pe-3">
-                                                                    <span class="fw-bold text-success">100</span>
-                                                                </td>
-                                                            </tr>
-                                                        @empty
-                                                            <tr class="empty-row">
-                                                                <td colspan="3" class="text-center py-3 text-muted">No
-                                                                    data</td>
-                                                            </tr>
-                                                        @endforelse
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                            <div class="table-pagination-wrapper"></div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="mt-3 pt-3 border-top border-light d-flex flex-wrap justify-content-center gap-2">
-                                        <div
-                                            class="extra-small text-muted fw-semibold me-2 opacity-75 d-flex align-items-center">
-                                            KETERANGAN:</div>
-                                        <div
-                                            class="d-flex align-items-center gap-1 extra-small flex-wrap justify-content-center">
-                                            <span class="badge text-white py-1 px-2" style="background-color: #00A551;">Nilai >= 65: Tuntas</span>
-                                            <span class="badge bg-danger text-white py-1 px-2">Nilai < 65: Belum Tuntas</span>
-                                        </div>
-                                    </div>
+                                    <div id="academicBarChart" style="min-height: 300px;"></div>
                                 </div>
                             </div>
                         </div>
 
                         @if (Auth::user()->role !== 'timevaluasi')
-                            {{-- SECTION 3: SERTIFIKAT KELULUSAN --}}
+                            {{-- SECTION 4: SERTIFIKAT KELULUSAN --}}
                             <div class="col-12 mb-3 mt-2">
                                 <div class="d-flex align-items-center justify-content-between border-bottom pb-2">
                                     <div class="d-flex align-items-center gap-2">
@@ -1770,50 +1256,6 @@
                                 </div>
                             </div>
                         @endif
-
-                        {{-- SECTION 4: ANALISIS & GRAFIK PROGRESS --}}
-                        <div class="col-12 mb-3 mt-2">
-                            <div class="d-flex align-items-center justify-content-between border-bottom pb-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <span class="badge bg-info bg-opacity-10 text-info p-2 rounded-3"><i class="bi bi-bar-chart-line fs-6"></i></span>
-                                    <div>
-                                        <h6 class="fw-bold text-dark mb-0">Grafik Progress Penuntasan</h6>
-                                        <span class="text-muted extra-small">Visualisasi komparasi penyelesaian pre-test, post-test, dan tugas kelompok</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Card 5: Academic Bar Chart Hub --}}
-                        <div class="col-12 mb-4">
-                            <div class="card border-0 shadow-sm overflow-hidden">
-                                <div class="card-body p-4">
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-                                        <div class="pe-md-3" style="max-width: 620px;">
-                                            <h5 class="card-title mb-0 fs-5">Progress Penuntasan Akademik <span>| 6 Pilar Utama</span></h5>
-                                            <p class="text-muted extra-small mb-0 opacity-75">Statistik komparasi penuntasan: Absensi, Kedisiplinan, Pre-Test, Post-Test, Tugas Kelompok, dan Ketuntasan Hasil Test.</p>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-2 flex-shrink-0 ms-auto">
-                                            @php
-                                                $detailTargetUrl = route('rekapkeseluruhan.index');
-                                                if (in_array(Auth::user()->role, ['kakakpendamping', 'dosenpendamping'])) {
-                                                    $detailTargetUrl = $myKelompokSlug ? route('kelompok.show', $myKelompokSlug) : route('kelompok.index');
-                                                }
-                                            @endphp
-                                            <a href="{{ $detailTargetUrl }}"
-                                                class="btn btn-outline-primary btn-sm rounded-pill px-3 py-2 fw-bold extra-small shadow-none text-nowrap d-inline-flex align-items-center">
-                                                <i class="bi bi-person-lines-fill me-1"></i> Detail
-                                            </a>
-                                            <div
-                                                class="bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold extra-small text-nowrap">
-                                                Total: {{ $totalMahasiswa }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="academicBarChart" style="min-height: 300px;"></div>
-                                </div>
-                            </div>
-                        </div>
                     @else
                         {{-- MAHASISWA VIEW: JOURNEY --}}
                         <div class="col-12">

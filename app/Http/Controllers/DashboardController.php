@@ -271,7 +271,9 @@ class DashboardController extends Controller
                     ->take(10)
                     ->get();
 
-                return compact(
+                $chartsData = $this->getDashboardChartsData($targetUserIds);
+
+                return array_merge(compact(
                     'totalMahasiswa',
                     'myKelompokNama',
                     'myKelompokSlug',
@@ -313,7 +315,7 @@ class DashboardController extends Controller
                     'allM4',
                     'allSertifikatMahasiswa',
                     'sertifikatCount'
-                );
+                ), $chartsData);
             });
 
             $data['sertifikatSetting'] = $sertifikatSetting;
@@ -446,7 +448,9 @@ class DashboardController extends Controller
                 ->take(10)
                 ->get();
 
-            return compact(
+            $chartsData = $this->getDashboardChartsData(null);
+
+            return array_merge(compact(
                 'totalMahasiswa',
                 'absen1',
                 'absen2',
@@ -486,7 +490,7 @@ class DashboardController extends Controller
                 'allM4',
                 'allSertifikatMahasiswa',
                 'sertifikatCount'
-            );
+            ), $chartsData);
         });
 
         $globalData['myKelompokNama'] = null;
@@ -494,5 +498,113 @@ class DashboardController extends Controller
         $globalData['sertifikatSetting'] = $sertifikatSetting;
 
         return view('dashboard.index', $globalData);
+    }
+
+    /**
+     * Helper to compute chart series data for Absensi, Kedisiplinan, and Pre/Post Test
+     */
+    private function getDashboardChartsData($targetUserIds = null)
+    {
+        $userIdFilter = function ($query) use ($targetUserIds) {
+            if ($targetUserIds !== null) {
+                $query->whereIn('user_id', $targetUserIds);
+            }
+        };
+
+        // 1. Absensi (Hari 1, Hari 2, Hari 3 - Datang vs Pulang & Status Breakdown)
+        $h1Pagi = AbsenPertama::where($userIdFilter)->selectRaw('hadir_pagi, count(*) as total')->groupBy('hadir_pagi')->pluck('total', 'hadir_pagi')->toArray();
+        $h1Sore = AbsenPertama::where($userIdFilter)->selectRaw('hadir_sore, count(*) as total')->groupBy('hadir_sore')->pluck('total', 'hadir_sore')->toArray();
+        $h2Pagi = AbsenKedua::where($userIdFilter)->selectRaw('hadir_pagi, count(*) as total')->groupBy('hadir_pagi')->pluck('total', 'hadir_pagi')->toArray();
+        $h2Sore = AbsenKedua::where($userIdFilter)->selectRaw('hadir_sore, count(*) as total')->groupBy('hadir_sore')->pluck('total', 'hadir_sore')->toArray();
+        $h3Pagi = AbsenKetiga::where($userIdFilter)->selectRaw('hadir_pagi, count(*) as total')->groupBy('hadir_pagi')->pluck('total', 'hadir_pagi')->toArray();
+        $h3Sore = AbsenKetiga::where($userIdFilter)->selectRaw('hadir_sore, count(*) as total')->groupBy('hadir_sore')->pluck('total', 'hadir_sore')->toArray();
+
+        $chartAbsensi = [
+            'categories' => ['Hari 1 (H-1)', 'Hari 2 (H-2)', 'Hari 3 (H-3)'],
+            'datang' => [
+                'hadir' => [($h1Pagi['Hadir'] ?? 0), ($h2Pagi['Hadir'] ?? 0), ($h3Pagi['Hadir'] ?? 0)],
+                'izin' => [($h1Pagi['Izin'] ?? 0), ($h2Pagi['Izin'] ?? 0), ($h3Pagi['Izin'] ?? 0)],
+                'sakit' => [($h1Pagi['Sakit'] ?? 0), ($h2Pagi['Sakit'] ?? 0), ($h3Pagi['Sakit'] ?? 0)],
+                'alpa' => [($h1Pagi['Alpa'] ?? 0), ($h2Pagi['Alpa'] ?? 0), ($h3Pagi['Alpa'] ?? 0)],
+            ],
+            'pulang' => [
+                'hadir' => [($h1Sore['Hadir'] ?? 0), ($h2Sore['Hadir'] ?? 0), ($h3Sore['Hadir'] ?? 0)],
+                'izin' => [($h1Sore['Izin'] ?? 0), ($h2Sore['Izin'] ?? 0), ($h3Sore['Izin'] ?? 0)],
+                'sakit' => [($h1Sore['Sakit'] ?? 0), ($h2Sore['Sakit'] ?? 0), ($h3Sore['Sakit'] ?? 0)],
+                'alpa' => [($h1Sore['Alpa'] ?? 0), ($h2Sore['Alpa'] ?? 0), ($h3Sore['Alpa'] ?? 0)],
+            ],
+            'totalDatang' => [
+                (($h1Pagi['Hadir'] ?? 0) + ($h1Pagi['Izin'] ?? 0) + ($h1Pagi['Sakit'] ?? 0) + ($h1Pagi['Alpa'] ?? 0)),
+                (($h2Pagi['Hadir'] ?? 0) + ($h2Pagi['Izin'] ?? 0) + ($h2Pagi['Sakit'] ?? 0) + ($h2Pagi['Alpa'] ?? 0)),
+                (($h3Pagi['Hadir'] ?? 0) + ($h3Pagi['Izin'] ?? 0) + ($h3Pagi['Sakit'] ?? 0) + ($h3Pagi['Alpa'] ?? 0)),
+            ],
+            'totalPulang' => [
+                (($h1Sore['Hadir'] ?? 0) + ($h1Sore['Izin'] ?? 0) + ($h1Sore['Sakit'] ?? 0) + ($h1Sore['Alpa'] ?? 0)),
+                (($h2Sore['Hadir'] ?? 0) + ($h2Sore['Izin'] ?? 0) + ($h2Sore['Sakit'] ?? 0) + ($h2Sore['Alpa'] ?? 0)),
+                (($h3Sore['Hadir'] ?? 0) + ($h3Sore['Izin'] ?? 0) + ($h3Sore['Sakit'] ?? 0) + ($h3Sore['Alpa'] ?? 0)),
+            ],
+        ];
+
+        // 2. Kedisiplinan
+        $dis1Atribut = KedisiplinanPertama::where($userIdFilter)->selectRaw('LOWER(kelengkapan_atribut) as val, count(*) as total')->groupBy('val')->pluck('total', 'val')->toArray();
+        $dis2Atribut = KedisiplinanKedua::where($userIdFilter)->selectRaw('LOWER(kelengkapan_atribut) as val, count(*) as total')->groupBy('val')->pluck('total', 'val')->toArray();
+        $dis3Atribut = KedisiplinanKetiga::where($userIdFilter)->selectRaw('LOWER(kelengkapan_atribut) as val, count(*) as total')->groupBy('val')->pluck('total', 'val')->toArray();
+
+        $dis1Waktu = KedisiplinanPertama::where($userIdFilter)->selectRaw('LOWER(ketepatan_waktu) as val, count(*) as total')->groupBy('val')->pluck('total', 'val')->toArray();
+        $dis2Waktu = KedisiplinanKedua::where($userIdFilter)->selectRaw('LOWER(ketepatan_waktu) as val, count(*) as total')->groupBy('val')->pluck('total', 'val')->toArray();
+        $dis3Waktu = KedisiplinanKetiga::where($userIdFilter)->selectRaw('LOWER(ketepatan_waktu) as val, count(*) as total')->groupBy('val')->pluck('total', 'val')->toArray();
+
+        $dis1Perilaku = KedisiplinanPertama::where($userIdFilter)->selectRaw('LOWER(perilaku) as val, count(*) as total')->groupBy('val')->pluck('total', 'val')->toArray();
+        $dis2Perilaku = KedisiplinanKedua::where($userIdFilter)->selectRaw('LOWER(perilaku) as val, count(*) as total')->groupBy('val')->pluck('total', 'val')->toArray();
+        $dis3Perilaku = KedisiplinanKetiga::where($userIdFilter)->selectRaw('LOWER(perilaku) as val, count(*) as total')->groupBy('val')->pluck('total', 'val')->toArray();
+
+        $chartKedisiplinan = [
+            'categories' => ['Hari 1', 'Hari 2', 'Hari 3'],
+            'atribut' => [
+                'lengkap' => [($dis1Atribut['lengkap'] ?? 0), ($dis2Atribut['lengkap'] ?? 0), ($dis3Atribut['lengkap'] ?? 0)],
+                'tidak_lengkap' => [($dis1Atribut['tidak lengkap'] ?? 0), ($dis2Atribut['tidak lengkap'] ?? 0), ($dis3Atribut['tidak lengkap'] ?? 0)],
+            ],
+            'waktu' => [
+                'tepat_waktu' => [($dis1Waktu['tepat waktu'] ?? 0), ($dis2Waktu['tepat waktu'] ?? 0), ($dis3Waktu['tepat waktu'] ?? 0)],
+                'terlambat' => [($dis1Waktu['terlambat'] ?? 0), ($dis2Waktu['terlambat'] ?? 0), ($dis3Waktu['terlambat'] ?? 0)],
+            ],
+            'perilaku' => [
+                'sangat_baik' => (($dis1Perilaku['sangat baik'] ?? 0) + ($dis2Perilaku['sangat baik'] ?? 0) + ($dis3Perilaku['sangat baik'] ?? 0)),
+                'baik' => (($dis1Perilaku['baik'] ?? 0) + ($dis2Perilaku['baik'] ?? 0) + ($dis3Perilaku['baik'] ?? 0)),
+                'cukup' => (($dis1Perilaku['cukup'] ?? 0) + ($dis2Perilaku['cukup'] ?? 0) + ($dis3Perilaku['cukup'] ?? 0)),
+                'kurang' => (($dis1Perilaku['kurang'] ?? 0) + ($dis2Perilaku['kurang'] ?? 0) + ($dis3Perilaku['kurang'] ?? 0)),
+            ],
+        ];
+
+        // 3. Pre-Test & Post-Test Modul 1 s/d 4
+        $pretestAvg = [];
+        $posttestAvg = [];
+        $tuntasCount = [];
+        $belumTuntasCount = [];
+
+        for ($m = 1; $m <= 4; $m++) {
+            $preQ = HasilTest::where('modul', $m)->where('type', 'pretest')->where($userIdFilter);
+            $postQ = HasilTest::where('modul', $m)->where('type', 'posttest')->where($userIdFilter);
+
+            $pretestAvg[] = round((clone $preQ)->avg('skor') ?? 0, 1);
+            $posttestAvg[] = round((clone $postQ)->avg('skor') ?? 0, 1);
+
+            $tuntasCount[] = (clone $postQ)->where('skor', '>=', 65)->count();
+            $belumTuntasCount[] = (clone $postQ)->where('skor', '<', 65)->count();
+        }
+
+        $chartHasilTest = [
+            'categories' => ['Modul 1', 'Modul 2', 'Modul 3', 'Modul 4'],
+            'pretestAvg' => $pretestAvg,
+            'posttestAvg' => $posttestAvg,
+            'tuntas' => $tuntasCount,
+            'belumTuntas' => $belumTuntasCount,
+        ];
+
+        return [
+            'chartAbsensi' => $chartAbsensi,
+            'chartKedisiplinan' => $chartKedisiplinan,
+            'chartHasilTest' => $chartHasilTest,
+        ];
     }
 }
