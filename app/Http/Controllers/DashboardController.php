@@ -266,7 +266,7 @@ class DashboardController extends Controller
                     ->whereIn('id', $targetUserIds)
                     ->where(fn($q) => $q->whereNotNull('nomor_sertifikat')->orWhere('kelulusan_is_active', true))
                     ->with('kelompok:id,nama_kelompok')
-                    ->select('id', 'name', 'id_pendaftar', 'program_studi', 'kelompok_id', 'nomor_sertifikat', 'kelulusan_is_active')
+                    ->select('id', 'name', 'id_pendaftar', 'nim', 'program_studi', 'kelompok_id', 'nomor_sertifikat', 'kelulusan_is_active')
                     ->orderBy('name')
                     ->take(10)
                     ->get();
@@ -441,7 +441,7 @@ class DashboardController extends Controller
             $allSertifikatMahasiswa = User::where('role', 'mahasiswa')
                 ->where(fn($q) => $q->whereNotNull('nomor_sertifikat')->orWhere('kelulusan_is_active', true))
                 ->with('kelompok:id,nama_kelompok')
-                ->select('id', 'name', 'id_pendaftar', 'program_studi', 'kelompok_id', 'nomor_sertifikat', 'kelulusan_is_active')
+                ->select('id', 'name', 'id_pendaftar', 'nim', 'program_studi', 'kelompok_id', 'nomor_sertifikat', 'kelulusan_is_active')
                 ->orderBy('name')
                 ->take(10)
                 ->get();

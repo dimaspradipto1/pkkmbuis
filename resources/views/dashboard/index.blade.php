@@ -1709,7 +1709,7 @@
                                                             <td class="ps-3 py-2 text-muted">{{ $index + 1 }}</td>
                                                             <td class="text-nowrap">
                                                                 <span class="fw-bold text-dark search-target d-block">{{ $mhs->name }}</span>
-                                                                <span class="text-muted extra-small">{{ $mhs->id_pendaftar }} &bull; {{ $mhs->program_studi ?? '-' }}</span>
+                                                                <span class="text-muted extra-small">{{ $mhs->nim ?: ($mhs->id_pendaftar ?: '-') }} &bull; {{ $mhs->program_studi ?? '-' }}</span>
                                                             </td>
                                                             <td class="text-nowrap">
                                                                 <span class="badge bg-light text-dark border extra-small">
@@ -2565,7 +2565,7 @@
                                         'nomorUrut' => str_pad($user->nomor_sertifikat, 4, '0', STR_PAD_LEFT),
                                         'kodeSurat' => $sertifikatSetting->kode_surat,
                                         'namaMahasiswa' => $user->name,
-                                        'npm' => $user->id_pendaftar,
+                                        'npm' => $user->nim ?: ($user->id_pendaftar ?? '-'),
                                         'prodi' => $user->program_studi ?? '-',
                                         'fakultas' => $user->fakultas ?? '-',
                                         'statusLulus' => $isPassed,

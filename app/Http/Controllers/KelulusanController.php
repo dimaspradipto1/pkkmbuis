@@ -217,7 +217,7 @@ class KelulusanController extends Controller
             'kodeSurat' => $sertifikatSetting->kode_surat,
             'nomorSertifikatLengkap' => '#' . str_pad($user->nomor_sertifikat, 4, '0', STR_PAD_LEFT) . '/' . $sertifikatSetting->kode_surat,
             'namaMahasiswa' => $user->name,
-            'npm' => $user->id_pendaftar ?: ($user->nim ?: '-'),
+            'npm' => $user->nim ?: ($user->id_pendaftar ?: '-'),
             'prodi' => $user->program_studi ?? '-',
             'fakultas' => $user->fakultas ?? '-',
             'statusLulus' => true,

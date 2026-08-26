@@ -168,6 +168,7 @@
         line-height: 1;
         cursor: pointer;
         box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+        z-index: 10;
     }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap" rel="stylesheet">
@@ -257,7 +258,6 @@
         var outer = canvas.parentElement;
 
         function fitSertifikatScale() {
-            if (canvas.dataset.zoomed === '1') return;
             var w = outer.clientWidth || outer.offsetWidth;
             if (!w || w <= 0) {
                 var p = outer.parentElement;
@@ -287,11 +287,9 @@
     })();
 
     if (typeof window.openSertifikatZoom !== 'function') {
-        window.__sertifikatZoomState = { canvas: null, parent: null, next: null };
-
         window.openSertifikatZoom = function (canvasId) {
-            var canvas = document.getElementById(canvasId);
-            if (!canvas) return;
+            var original = document.getElementById(canvasId);
+            if (!original) return;
 
             var modal = document.getElementById('sertifikatZoomModal');
             if (!modal) {
@@ -310,44 +308,56 @@
                 });
             }
 
-            window.__sertifikatZoomState = {
-                canvas: canvas,
-                parent: canvas.parentElement,
-                next: canvas.nextSibling
-            };
-
             var inner = modal.querySelector('.sertifikat-zoom-modal-inner');
-            inner.appendChild(canvas);
-            canvas.dataset.zoomed = '1';
+            if (!inner) return;
 
-            var scale = Math.min((window.innerWidth * 0.9) / 1000, (window.innerHeight * 0.85) / 707, 1.6);
-            canvas.style.transform = 'scale(' + scale + ')';
+            // Clear any previously cloned canvas
+            var oldClones = inner.querySelectorAll('.sertifikat-canvas');
+            oldClones.forEach(function (c) { c.remove(); });
+
+            var clone = original.cloneNode(true);
+            clone.id = canvasId + '-zoomed';
+            clone.onclick = null;
+            clone.title = '';
+
+            // Copy any canvas bitmap data (e.g. QR code canvas)
+            var origCanvases = original.querySelectorAll('canvas');
+            var cloneCanvases = clone.querySelectorAll('canvas');
+            origCanvases.forEach(function (origCanvas, i) {
+                if (cloneCanvases[i]) {
+                    var ctx = cloneCanvases[i].getContext('2d');
+                    if (ctx) {
+                        ctx.drawImage(origCanvas, 0, 0);
+                    }
+                }
+            });
+
+            var scale = Math.min((window.innerWidth * 0.92) / 1000, (window.innerHeight * 0.88) / 707, 1.6);
+            clone.style.transform = 'scale(' + scale + ')';
+            clone.style.position = 'absolute';
+            clone.style.top = '0';
+            clone.style.left = '0';
 
             inner.style.width = (1000 * scale) + 'px';
             inner.style.height = (707 * scale) + 'px';
 
+            inner.appendChild(clone);
+
             modal.classList.add('is-open');
             document.body.style.overflow = 'hidden';
-            
         };
 
         window.closeSertifikatZoom = function () {
             var modal = document.getElementById('sertifikatZoomModal');
-            var state = window.__sertifikatZoomState;
-            if (modal) modal.classList.remove('is-open');
-            document.body.style.overflow = '';
-
-            if (state && state.canvas && state.parent) {
-                if (state.next) {
-                    state.parent.insertBefore(state.canvas, state.next);
-                } else {
-                    state.parent.appendChild(state.canvas);
-                }
-                state.canvas.dataset.zoomed = '0';
-                if (window.__sertifikatFit && window.__sertifikatFit[state.canvas.id]) {
-                    window.__sertifikatFit[state.canvas.id]();
+            if (modal) {
+                modal.classList.remove('is-open');
+                var inner = modal.querySelector('.sertifikat-zoom-modal-inner');
+                if (inner) {
+                    var clones = inner.querySelectorAll('.sertifikat-canvas');
+                    clones.forEach(function (c) { c.remove(); });
                 }
             }
+            document.body.style.overflow = '';
         };
     }
 </script>

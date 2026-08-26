@@ -74,7 +74,7 @@ class KelulusanDataTable extends DataTable
             ->addIndexColumn()
             ->addColumn('name', function (User $row) {
                 $prodi = $row->program_studi ?: ($row->fakultas ?: '-');
-                $npm = $row->id_pendaftar ?: ($row->nim ?: '-');
+                $npm = $row->nim ?: ($row->id_pendaftar ?: '-');
                 return '
                     <div class="d-flex flex-column text-start">
                         <span class="fw-bold text-dark fs-6" style="color: #0f172a !important;">' . e($row->name) . '</span>
